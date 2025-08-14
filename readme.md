@@ -23,3 +23,11 @@ This workspace periodically pulls updates from that repo and converts the Markdo
 
 
 ---
+
+## SYSTEM REFERENCE DOCUMENT 1.0
+
+**SRD Writer: Rob Hebert | Technical Editor: Shawn Banerjee | Layout: Matt Paquette & Co. | Producer: Madigan Hunt**
+
+This document, including the Witherwild Campaign Frame, is considered Public Game Content per the Darrington Press Community Gaming License. Please read the Darrington Press Community Gaming License before using this material.
+
+© 2025 Critical Role LLC. All rights reserved. For more information, please visit [www.darringtonpress.com/license](http://www.darringtonpress.com/license).
