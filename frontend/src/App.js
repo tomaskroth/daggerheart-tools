@@ -1,0 +1,92 @@
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // Add this import if using react-router
+import SearchBar from './components/SearchBar';
+import ItemList from './components/ItemList';
+import ItemDetail from './components/ItemDetail';
+import TypeMenu from './components/TypeMenu';
+
+function App() {
+  const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [types, setTypes] = useState([]);
+  const [selectedType, setSelectedType] = useState(null);
+
+  // Get current URL path
+  const location = window.location.pathname; // If not using react-router, use this
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/srd/types')
+      .then(res => res.json())
+      .then(setTypes)
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+  // Check if path matches /type/ItemName.md
+    const match = location.match(/^\/([^/]+)\/([^/]+)$/);
+    if (match) {
+      const itemName = decodeURIComponent(match[2].replace('.md', ''));
+      fetch('http://localhost:8080/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q: itemName })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data.items) && data.items.length > 0) {
+            setSelectedItem(data.items[0]);
+            setItems(data.items);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [location]);
+
+  const handleSearch = async (query) => {
+  const response = await fetch('http://localhost:8080/api/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ q: query })
+  });
+  const data = await response.json();
+  setItems(data.items || []);
+  setSelectedType(null);
+  setSelectedItem(null);
+};
+
+const handleTypeClick = async (type) => {
+  const response = await fetch('http://localhost:8080/api/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ types: [type] })
+  });
+  const data = await response.json();
+  setItems(Array.isArray(data.items) ? data.items : []);
+  setSelectedType(type);
+  setSelectedItem(null);
+};
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+          <img src="/logo.webp" alt="Daggerheart Logo" style={{ height: '4rem', verticalAlign: 'middle' }} />
+        </h1>
+        <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+          <span>Compendium</span>
+        </h1>
+        <SearchBar onSearch={handleSearch} />
+        <TypeMenu types={types} onTypeClick={handleTypeClick} />
+      </header>
+      <main>
+        {selectedItem ? (
+          <ItemDetail item={selectedItem} onBack={() => setSelectedItem(null)} />
+        ) : (
+          <ItemList items={items} onItemClick={setSelectedItem} />
+        )}
+      </main>
+    </div>
+  );
+}
+
+export default App;

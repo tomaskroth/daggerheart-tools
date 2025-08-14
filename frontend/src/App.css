@@ -1,0 +1,223 @@
+/* Base body */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #ece0f8; /* light purple background */
+  color: #2c2a33;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar with logo and type menu */
+.navbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #5b3cb3; /* darker purple */
+  border-bottom: 4px solid #d4b04f; /* golden border */
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Logo */
+.navbar img.logo {
+  max-height: 60px;
+  margin-bottom: 0.5rem;
+}
+
+/* Type menu - centered, angular style borders */
+.type-menu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.type-menu button {
+  position: relative;
+  padding: 0.5rem 1.2rem;
+  border: 2px solid #d4b04f; /* gold */
+  background-color: #4a2a99; /* dark purple */
+  color: #ffd166; /* gold text */
+  font-weight: bold;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Angular “diamond” shapes on corners of buttons */
+.type-menu button::before,
+.type-menu button::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #d4b04f;
+  transform: rotate(45deg);
+}
+
+.type-menu button::before {
+  top: -5px;
+  left: -5px;
+}
+
+.type-menu button::after {
+  bottom: -5px;
+  right: -5px;
+}
+
+.type-menu button:hover {
+  background-color: #6b4cd6;
+  color: white;
+  border-color: #ffd166;
+}
+
+/* Search bar below navbar */
+.search-bar {
+  display: flex;
+  max-width: 500px;
+  margin: 1rem auto;
+  flex: 1;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 2px solid #d4b04f; /* gold */
+  border-right: none;
+  border-radius: 0.5rem 0 0 0.5rem;
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-bar button {
+  background-color: #6b4cd6;
+  border: 2px solid #d4b04f;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: white;
+  font-weight: bold;
+  padding: 0 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.search-bar button:hover {
+  background-color: #7a5de3;
+}
+
+/* Item cards */
+.item-card {
+  background-color: white;
+  border-left: 5px solid #6b4cd6; /* purple accent */
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  margin: 1rem 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  borderRadius: '8px';
+  padding: '1rem';
+  margin: '0.5rem';
+  cursor: 'pointer';
+  width: '200px';
+  textAlign: 'center'
+}
+
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.item-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #5b3cb3; /* dark purple */
+  font-size: 1.25rem;
+}
+
+.item-card p.type {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #d4b04f; /* gold accent */
+  margin: 0 0 0.5rem 0;
+}
+
+/* Expanded content */
+.item-content {
+  margin-top: 0.5rem;
+  line-height: 1.6;
+  color: #2c2a33;
+}
+
+/* Footer placeholder (optional) */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  color: #5b3cb3;
+  font-size: 0.9rem;
+}
+
+.item-detail {
+  background-color: white;
+  border-left: 5px solid #6b4cd6; /* purple accent */
+  border-radius: 0.5rem;
+  padding: 2rem 2.5rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  color: #2c2a33;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.item-detail h1 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #5b3cb3; /* dark purple */
+  font-size: 1.5rem;
+}
+
+
+.item-detail h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #5b3cb3; /* dark purple */
+  font-size: 1.2rem;
+}
+
+.item-detail p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1d190d; /* gold accent */
+  margin: 0 0 1rem 0;
+}
+
+.item-detail button {
+  background-color: #6b4cd6;
+  border: 2px solid #d4b04f;
+  border-radius: 0.3rem;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 1rem;
+}
+
+.item-detail button:hover {
+  background-color: #7a5de3;
+}
+
+.item-detail div {
+  margin-top: 1rem;
+  line-height: 1.6;
+  color: #2c2a33;
+}
+
+.app-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 2rem;
+  margin-top: -2rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  background-color: #5b3cb3;
+} 
