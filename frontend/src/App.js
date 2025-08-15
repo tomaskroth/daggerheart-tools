@@ -14,8 +14,10 @@ function App() {
   // Get current URL path
   const location = window.location.pathname; // If not using react-router, use this
 
+  // const SERVER_URL = 'http://localhost:8080/api';
+  const SERVER_URL = 'https://daggerheart-tools-4v1t.onrender.com/api';
   useEffect(() => {
-    fetch('http://localhost:8080/api/srd/types')
+    fetch(SERVER_URL+"/srd/types")
       .then(res => res.json())
       .then(setTypes)
       .catch(console.error);
@@ -26,7 +28,7 @@ function App() {
     const match = location.match(/^\/([^/]+)\/([^/]+)$/);
     if (match) {
       const itemName = decodeURIComponent(match[2].replace('.md', ''));
-      fetch('http://localhost:8080/api/search', {
+      fetch(SERVER_URL+'/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ q: itemName })
@@ -43,7 +45,7 @@ function App() {
   }, [location]);
 
   const handleSearch = async (query) => {
-  const response = await fetch('http://localhost:8080/api/search', {
+  const response = await fetch(SERVER_URL+'/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ q: query })
@@ -55,7 +57,7 @@ function App() {
 };
 
 const handleTypeClick = async (type) => {
-  const response = await fetch('http://localhost:8080/api/search', {
+  const response = await fetch(SERVER_URL+'/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ types: [type] })
