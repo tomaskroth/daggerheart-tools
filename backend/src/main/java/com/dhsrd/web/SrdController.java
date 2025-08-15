@@ -60,7 +60,7 @@ public class SrdController {
     }
 
     /** Force a full reindex from DB */
-    @PostMapping("/srd/_reindex")
+    @GetMapping("/srd/_reindex")
     public ResponseEntity<?> reindex() throws Exception {
         lucene.deleteAll();
         lucene.indexAll(repo.findAll());
