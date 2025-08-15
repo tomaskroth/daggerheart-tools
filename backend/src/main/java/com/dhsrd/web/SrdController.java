@@ -22,6 +22,11 @@ public class SrdController {
         this.lucene = lucene;
     }
 
+    @GetMapping("")
+    public ResponseEntity<String> aliveCheck() {
+        return ResponseEntity.ok("SRD API is alive");
+    }
+
     /** Bulk upsert SRD items and (re)index them */
     @PostMapping("/srd/_bulkUpsert")
     @Transactional
