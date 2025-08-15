@@ -1,4 +1,4 @@
-package com.example.dhsrd.model;
+package com.dhsrd.model;
 
 import jakarta.persistence.*;
 import java.time.Instant;

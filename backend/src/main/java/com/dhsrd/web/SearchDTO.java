@@ -1,6 +1,6 @@
-package com.example.dhsrd.web;
+package com.dhsrd.web;
 
-import com.example.dhsrd.model.SrdType;
+import com.dhsrd.model.SrdType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.List;

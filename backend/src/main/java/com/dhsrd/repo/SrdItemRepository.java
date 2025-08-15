@@ -1,7 +1,7 @@
-package com.example.dhsrd.repo;
+package com.dhsrd.repo;
 
-import com.example.dhsrd.model.SrdItem;
-import com.example.dhsrd.model.SrdType;
+import com.dhsrd.model.SrdItem;
+import com.dhsrd.model.SrdType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

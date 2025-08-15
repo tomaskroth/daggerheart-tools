@@ -1,5 +1,5 @@
 
-package com.example.dhsrd.web.config;
+package com.dhsrd.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

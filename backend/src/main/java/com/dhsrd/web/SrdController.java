@@ -1,9 +1,9 @@
-package com.example.dhsrd.web;
+package com.dhsrd.web;
 
-import com.example.dhsrd.model.SrdItem;
-import com.example.dhsrd.model.SrdType;
-import com.example.dhsrd.repo.SrdItemRepository;
-import com.example.dhsrd.search.LuceneService;
+import com.dhsrd.model.SrdItem;
+import com.dhsrd.model.SrdType;
+import com.dhsrd.repo.SrdItemRepository;
+import com.dhsrd.search.LuceneService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.example.dhsrd.controller;
+package com.dhsrd.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

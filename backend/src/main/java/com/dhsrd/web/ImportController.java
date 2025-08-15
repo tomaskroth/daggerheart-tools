@@ -1,8 +1,8 @@
-package com.example.dhsrd.web;
+package com.dhsrd.web;
 
-import com.example.dhsrd.model.SrdItem;
-import com.example.dhsrd.repo.SrdItemRepository;
-import com.example.dhsrd.search.LuceneService;
+import com.dhsrd.model.SrdItem;
+import com.dhsrd.repo.SrdItemRepository;
+import com.dhsrd.search.LuceneService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;

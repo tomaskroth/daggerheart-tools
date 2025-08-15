@@ -1,7 +1,7 @@
-package com.example.dhsrd.search;
+package com.dhsrd.search;
 
-import com.example.dhsrd.model.SrdItem;
-import com.example.dhsrd.model.SrdType;
+import com.dhsrd.model.SrdItem;
+import com.dhsrd.model.SrdType;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.DirectoryReader;

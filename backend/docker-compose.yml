@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  backend:
+    build: ./
+    container_name: dhsrd-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./.data:/app/.data
+      - ./.data/lucene:/app/.data/lucene

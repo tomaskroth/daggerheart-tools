@@ -1,4 +1,4 @@
-package com.example.dhsrd.search;
+package com.dhsrd.search;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;

@@ -1,4 +1,4 @@
-package com.example.dhsrd.model;
+package com.dhsrd.model;
 
 public enum SrdType {
     CONTENTS, ABILITIES, ADVERSARIES, ANCESTRIES, ARMOR, COMMUNITIES, CONSUMABLES, DOMAINS, ENVIRONMENTS, FRAMES, ITEMS, CLASSES, SUBCLASSES,
