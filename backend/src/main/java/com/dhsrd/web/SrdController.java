@@ -46,7 +46,7 @@ public class SrdController {
                 dto.levelMin(),
                 dto.levelMax(),
                 dto.from() == null ? 0 : dto.from(),
-                dto.size() == null ? 20 : dto.size(),
+                dto.size() == null ? 300 : dto.size(),
                 dto.fuzzy() == null || dto.fuzzy()
         ));
     }
