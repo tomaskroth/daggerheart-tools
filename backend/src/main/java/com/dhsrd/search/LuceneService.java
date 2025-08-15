@@ -10,9 +10,11 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.search.*;
+import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -124,6 +126,20 @@ public class LuceneService {
                 hits.add(m);
             }
             return Map.of("total", td.totalHits.value, "items", hits);
+        }
+    }
+
+    public boolean isEmpty() {
+        try {
+            String[] files = directory.listAll();
+            for (String file : files) {
+                if (file.startsWith("segments")) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (IOException e) {
+            return true;
         }
     }
 }

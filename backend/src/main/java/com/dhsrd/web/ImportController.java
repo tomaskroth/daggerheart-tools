@@ -5,15 +5,16 @@ import com.dhsrd.repo.SrdItemRepository;
 import com.dhsrd.search.LuceneService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.logging.Logger;
 
-@RestController
-@RequestMapping("/api/import")
-@CrossOrigin(origins = "*")
+@Component
 public class ImportController {
     private final SrdItemRepository repo;
     private final LuceneService lucene;
@@ -25,14 +26,19 @@ public class ImportController {
     }
 
     /** Import SRD from a JSON array on classpath: /srd.json */
-    @GetMapping("/classpath")
-    public ResponseEntity<?> importFromClasspath() throws Exception {
+    @PostConstruct
+    public void importFromClasspath() throws Exception {
+        if (!lucene.isEmpty()) {
+            System.out.println("Lucene index is not empty, skipping import.");
+            return;
+        }
         try (InputStream is = getClass().getResourceAsStream("/srd.json")) {
-            if (is == null) return ResponseEntity.badRequest().body("No /srd.json on classpath");
+            if (is == null) return;
             List<SrdItem> items = om.readValue(is, new TypeReference<>() {});
             var saved = repo.saveAll(items);
             lucene.indexAll(saved);
-            return ResponseEntity.ok().body("Imported " + saved.size() + " items");
+            Logger.getLogger(ImportController.class.getName()).info(
+                    "Imported " + saved.size() + " items from classpath: /srd.json");
         }
     }
 }
