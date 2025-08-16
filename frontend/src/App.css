@@ -248,7 +248,8 @@ body.dark-mode {
   margin-bottom: 1rem;
 }
 
-.item-detail blockquote, .item-detail table {
+.item-detail blockquote, 
+.item-detail table {
   background-color: #f3e9ff; /* light purple */
   border-left: 4px solid #6b4cd6; /* dark purple */
   padding: 1rem 1rem 0.5rem;
@@ -256,12 +257,15 @@ body.dark-mode {
   color: #2c2a33;
   width: 90%;
   border-radius: 6px;
+  overflow: hidden;   
 }
 
 .item-detail table {
   width: 100%;
   border-collapse: collapse;
   text-align: center;
+  border-collapse: separate;   /* needed for radius */
+  border-spacing: 0;           /* removes gaps */  
 }
 
 .item-detail button:hover {
