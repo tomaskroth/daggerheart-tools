@@ -255,6 +255,7 @@ body.dark-mode {
   margin: 1rem 0;
   color: #2c2a33;
   width: 90%;
+  border-radius: 6px;
 }
 
 .item-detail table {
@@ -420,6 +421,7 @@ main {
   border-left: 5px solid #a88b32;
   box-shadow: 0 4px 12px rgba(40,20,60,0.5);
 }
+
 .dark-mode .item-detail h1,
 .dark-mode .item-detail h2 {
   color: #ffd166;
@@ -449,8 +451,9 @@ main {
 
 .dark-mode .item-detail table, 
 .dark-mode .item-detail blockquote {
-  color: #b3a888;
-  background-color: #311b6a;
+  background-color: #2e2450; 
+  border-left: 4px solid #a88b32; 
+  color: #e0d6b4;            
 }
 
 .dark-mode .item-detail a {
