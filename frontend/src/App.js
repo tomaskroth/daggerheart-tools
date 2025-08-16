@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { useLocation } from 'react-router-dom'; // Add this import if using react-router
 import SearchBar from './components/SearchBar';
 import ItemList from './components/ItemList';
@@ -10,6 +10,9 @@ function App({serverUrl}) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [types, setTypes] = useState([]);
   const [selectedType, setSelectedType] = useState(null);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
 
   // Get current URL path
   const location = window.location.pathname; // If not using react-router, use this
@@ -44,38 +47,62 @@ function App({serverUrl}) {
   }, [location]);
 
   const handleSearch = async (query) => {
-  const response = await fetch(serverUrl+'/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ q: query })
-  });
-  const data = await response.json();
-  setItems(data.items || []);
-  setSelectedType(null);
-  setSelectedItem(null);
-};
+    const response = await fetch(serverUrl+'/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ q: query })
+    });
+    const data = await response.json();
+    setItems(data.items || []);
+    setSelectedType(null);
+    setSelectedItem(null);
+  };
 
-const handleTypeClick = async (type) => {
-  const response = await fetch(serverUrl+'/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ types: [type] })
-  });
-  const data = await response.json();
-  setItems(Array.isArray(data.items) ? data.items : []);
-  setSelectedType(type);
-  setSelectedItem(null);
-};
+  const handleTypeClick = async (type) => {
+    const response = await fetch(serverUrl+'/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ types: [type] })
+    });
+    const data = await response.json();
+    setItems(Array.isArray(data.items) ? data.items : []);
+    setSelectedType(type);
+    setSelectedItem(null);
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(dm => {
+      localStorage.setItem('darkMode', !dm);
+      return !dm;
+    });
+  };
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+      document.documentElement.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
 
   return (
-    <div className="app">
+    <div className={`app${darkMode ? ' dark-mode' : ''}`}>
       <header className="app-header">
-        <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+        <h1>
           <img src="/logo.webp" alt="Daggerheart Logo" style={{ height: '4rem', verticalAlign: 'middle' }} />
         </h1>
-        <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+        <h1>
           <span>Compendium</span>
         </h1>
+        <button
+          className="dark-mode-toggle"
+          onClick={toggleDarkMode}
+          aria-label="Toggle dark mode"
+        >
+          {!darkMode ? '🌙' : '☀️'}
+        </button>
         <SearchBar onSearch={handleSearch} />
         <TypeMenu types={types} onTypeClick={handleTypeClick} />
       </header>
