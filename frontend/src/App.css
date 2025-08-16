@@ -401,9 +401,10 @@ main {
   color: #ffd166;
 }
 
-.dark-mode .item-detail h3 {
+.dark-mode .item-detail h3, .dark-mode .item-detail h4 {
   color: #bba060;
 }
+
 
 .dark-mode .item-detail p {
   color: #b3a888;

@@ -10,6 +10,7 @@ function ServerStatusGate({ serverUrl, children }) {
         const res = await fetch(serverUrl, { method: 'GET' });
         if (res.status === 200) {
           setReady(true);
+          clearInterval(interval); // Stop checking once server is ready
         } else {
           setReady(false);
         }
@@ -20,6 +21,7 @@ function ServerStatusGate({ serverUrl, children }) {
     checkServer();
     interval = setInterval(checkServer, 10000);
     return () => clearInterval(interval);
+        
   }, [serverUrl]);
 
   if (!ready) {
