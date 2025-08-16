@@ -8,6 +8,24 @@ main {
   flex: 1; /* pushes footer down */
 }
 
+.app-header {
+  position: relative;
+}
+
+/* Dark mode toggle top right */
+.dark-mode-toggle {
+  position: absolute;
+  top: 1.8rem;
+  right: 1rem;
+  background: none;
+  border: 2px solid #d4b04f;
+  color: #ffd166;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
 
 body {
   font-family: 'Inter', sans-serif;
@@ -15,9 +33,16 @@ body {
   color: #2c2a33;
   margin: 0;
   padding: 0;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
+
+body.dark-mode {
+  background-color: #18122b;
+  color: #f3e9ff;
+}
+
 
 /* Navbar with logo and type menu */
 .navbar {
@@ -234,6 +259,13 @@ body {
   background-color: #5b3cb3;
 } 
 
+.app-header h1 {
+  display: 'flex'; 
+  alignItems: 'center';
+  justifyContent: 'center';
+   gap: '1rem';
+}
+
 /* Footer - matches header style */
 .app-footer {
   position: fixed;
@@ -284,5 +316,165 @@ body {
 /* Add bottom padding to main so footer doesn't overlap */
 main {
   padding-bottom: 80px; /* match footer height */
+}
+
+/* Dark mode styles */
+.dark-mode {
+  background-color: #18122b;
+  color: #f3e9ff;
+}
+
+.dark-mode body,
+.dark-mode html,
+.dark-mode main {
+  background-color: #18122b;
+  color: #f3e9ff;
+}
+
+
+.dark-mode .app-header {
+  background-color: #2d1950;
+  color: #ffd166;
+}
+
+.dark-mode .dark-mode-toggle {
+  border-color: #a88b32;
+  color: #ffd166;
+}
+
+.dark-mode-toggle:hover {
+  background: #6b4cd6;
+  color: #fff;
+}
+
+.dark-mode .dark-mode-toggle:hover {
+  background: #3a2472;
+  color: #fff;
+}
+
+.dark-mode .type-menu button {
+  background-color: #2d1950;
+  color: #ffd166;
+  border-color: #a88b32;
+}
+.dark-mode .type-menu button:hover {
+  background-color: #3a2472;
+  color: #fff;
+  border-color: #ffd166;
+}
+
+.dark-mode .search-bar input {
+  background-color: #231942;
+  color: #ffd166;
+  border-color: #a88b32;
+}
+.dark-mode .search-bar button {
+  background-color: #3a2472;
+  color: #ffd166;
+  border-color: #a88b32;
+}
+.dark-mode .search-bar button:hover {
+  background-color: #4b2e8c;
+}
+
+.dark-mode .item-card {
+  background-color: #231942;
+  color: #878172;
+  border-left: 5px solid #a88b32;
+  box-shadow: 0 4px 12px rgba(40,20,60,0.5);
+}
+.dark-mode .item-card h3 {
+  color: #ffd166;
+}
+.dark-mode .item-card p.type {
+  color: #a88b32;
+}
+
+.dark-mode .item-detail {
+  background-color: #231942;
+  color: #ffd166;
+  border-left: 5px solid #a88b32;
+  box-shadow: 0 4px 12px rgba(40,20,60,0.5);
+}
+.dark-mode .item-detail h1,
+.dark-mode .item-detail h2 {
+  color: #ffd166;
+}
+
+.dark-mode .item-detail h3 {
+  color: #bba060;
+}
+
+.dark-mode .item-detail p {
+  color: #b3a888;
+}
+
+.dark-mode .item-detail li {
+  color:  #b3a888;
+}
+
+.dark-mode .item-detail button {
+  background-color: #3a2472;
+  color: #ffd166;
+  border-color: #a88b32;
+}
+.dark-mode .item-detail button:hover {
+  background-color: #4b2e8c;
+}
+
+.dark-mode .item-detail table {
+  color: #b3a888;
+}
+
+.dark-mode .item-detail a {
+  color: #ffd166;
+}
+
+
+.dark-mode .app-footer {
+  background-color: #2d1950;
+  color: #ffd166;
+  border-top: 4px solid #a88b32;
+}
+.dark-mode .app-footer a {
+  color: #ffd166;
+}
+.dark-mode .app-footer a:hover {
+  color: #fff;
+}
+.dark-mode .app-footer small {
+  color: #a88b32;
+}
+
+.dark-mode .spinner {
+  border: 8px solid #231942;
+  border-top: 8px solid #a88b32;
+}
+
+/* Toggle button style */
+.dark-mode-toggle {
+  background: none;
+  border: 2px solid #d4b04f;
+  color: #ffd166;
+  font-size: 1.1rem;
+  border-radius: 0.5rem;
+  padding: 0.3rem 1rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.dark-mode .dark-mode-toggle {
+  border-color: #a88b32;
+  color: #ffd166;
+}
+.dark-mode-toggle:hover {
+  background: #6b4cd6;
+  color: #fff;
+}
+.dark-mode .dark-mode-toggle:hover {
+  background: #3a2472;
+  color: #fff;
 }
 
