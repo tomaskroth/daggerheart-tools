@@ -5,7 +5,7 @@ import ItemList from './components/ItemList';
 import ItemDetail from './components/ItemDetail';
 import TypeMenu from './components/TypeMenu';
 
-function App() {
+function App({serverUrl}) {
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [types, setTypes] = useState([]);
@@ -14,10 +14,9 @@ function App() {
   // Get current URL path
   const location = window.location.pathname; // If not using react-router, use this
 
-  // const SERVER_URL = 'http://localhost:8080/api';
-  const SERVER_URL = 'https://daggerheart-tools-4v1t.onrender.com/api';
+  
   useEffect(() => {
-    fetch(SERVER_URL+"/srd/types")
+    fetch(serverUrl+"/srd/types")
       .then(res => res.json())
       .then(setTypes)
       .catch(console.error);
@@ -28,7 +27,7 @@ function App() {
     const match = location.match(/^\/([^/]+)\/([^/]+)$/);
     if (match) {
       const itemName = decodeURIComponent(match[2].replace('.md', ''));
-      fetch(SERVER_URL+'/search', {
+      fetch(serverUrl+'/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ q: itemName })
@@ -45,7 +44,7 @@ function App() {
   }, [location]);
 
   const handleSearch = async (query) => {
-  const response = await fetch(SERVER_URL+'/search', {
+  const response = await fetch(serverUrl+'/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ q: query })
@@ -57,7 +56,7 @@ function App() {
 };
 
 const handleTypeClick = async (type) => {
-  const response = await fetch(SERVER_URL+'/search', {
+  const response = await fetch(serverUrl+'/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ types: [type] })
