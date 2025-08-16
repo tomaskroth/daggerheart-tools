@@ -25,15 +25,7 @@ function ServerStatusGate({ serverUrl, children }) {
   if (!ready) {
     return (
       <div style={{ textAlign: 'center', marginTop: '5rem' }}>
-        <div className="spinner" style={{
-          border: '8px solid #ece0f8',
-          borderTop: '8px solid #6b4cd6',
-          borderRadius: '50%',
-          width: '64px',
-          height: '64px',
-          animation: 'spin 1s linear infinite',
-          margin: '0 auto'
-        }} />
+        <div className="spinner" />
         <p>Daggerheart Tools is starting up...</p>
         <style>
           {`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}
