@@ -87,7 +87,7 @@ const handleTypeClick = async (type) => {
         )}
       </main>
       <footer className="app-footer">
-        <p>Made by Tomás Kroth | All content derived from <a href="https://www.daggerheart.com/srd/" title="Daggerheart SRD">Daggerheart SRD</a></p>
+        <p>Made by <a href="https://github.com/tomaskroth/daggerheart-tools" title="Tomas Kroth">Tomás Kroth</a> | All content derived from <a href="https://www.daggerheart.com/srd/" title="Daggerheart SRD">Daggerheart SRD</a></p>
         <a href="https://www.flaticon.com" title="frame icons">Icons created by Flaticon</a>        
       </footer>
     </div>
