@@ -203,6 +203,15 @@ body.dark-mode {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   color: #2c2a33;
   transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
+}
+
+.item-detail-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 64px;
+  height: 64px;
 }
 
 .item-detail h1 {
@@ -237,6 +246,21 @@ body.dark-mode {
   cursor: pointer;
   transition: background-color 0.2s;
   margin-bottom: 1rem;
+}
+
+.item-detail blockquote, .item-detail table {
+  background-color: #f3e9ff; /* light purple */
+  border-left: 4px solid #6b4cd6; /* dark purple */
+  padding: 1rem 1rem 0.5rem;
+  margin: 1rem 0;
+  color: #2c2a33;
+  width: 90%;
+}
+
+.item-detail table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
 }
 
 .item-detail button:hover {
@@ -423,8 +447,10 @@ main {
   background-color: #4b2e8c;
 }
 
-.dark-mode .item-detail table {
+.dark-mode .item-detail table, 
+.dark-mode .item-detail blockquote {
   color: #b3a888;
+  background-color: #311b6a;
 }
 
 .dark-mode .item-detail a {
