@@ -1,6 +1,11 @@
 import React from 'react';
+import AbilitiesCard from './AbilitiesCard';
 
-function ItemDetail({ item, icon, onBack }) {
+function ItemDetail({ item, icon, onBack, darkMode }) {
+
+  if (item.type === 'ABILITIES') {
+    return <AbilitiesCard item={item} onBack={onBack} darkMode={darkMode}/>;
+  }
 
   const typeIcons = {
     contents: '/icons/contents.png',

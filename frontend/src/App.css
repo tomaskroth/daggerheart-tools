@@ -248,6 +248,11 @@ body.dark-mode {
   margin-bottom: 1rem;
 }
 
+.item-detail button:hover {
+  background-color: #7a5de3;
+}
+
+
 .item-detail blockquote, 
 .item-detail table {
   background-color: #f3e9ff; /* light purple */
@@ -268,14 +273,110 @@ body.dark-mode {
   border-spacing: 0;           /* removes gaps */  
 }
 
-.item-detail button:hover {
-  background-color: #7a5de3;
-}
-
 .item-detail div {
   margin-top: 1rem;
   line-height: 1.6;
   color: #2c2a33;
+}
+/* AbilityCard scoped styles */
+.ability-card .ability-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ability-card h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #5b3cb3;
+  margin: 0;
+  text-align: left;
+}
+
+.ability-card h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #5b3cb3; /* dark purple */
+  font-size: 1.2rem;
+}
+
+.dark-mode .ability-card h1 {
+  color: #ffd166;
+}
+
+/* Recall = square, Level = circle */
+.ability-card .ability-meta {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.ability-card .ability-meta .recall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  width: auto;
+  min-width: 32px;
+  height: 32px;
+  padding-right: 0.2rem;
+  font-weight: bold;
+  font-size: 1rem;
+  background: #ece0f8;
+  border: 2px solid #5b3cb3;
+  border-radius: 50%;
+  color: #2c2a33;
+}
+
+.ability-card .ability-meta .recall-icon {
+  width: 14px;
+  height: 14px;
+  padding-left: 1.2rem;
+  /* padding-right: 0.2rem; */
+  padding-bottom: 0.1rem;
+  position: absolute
+}
+
+.dark-mode .ability-card .ability-meta .recall {
+  background: #2e2450;
+  border-color: #a88b32;
+  color: #ffd166;
+}
+
+.ability-card .ability-meta .level {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1rem;
+  background: #ece0f8;
+  border: 2px solid #5b3cb3;
+  border-radius: 4px; /* square */
+  
+  color: #2c2a33;
+}
+
+.dark-mode .ability-card .ability-meta .recall,
+.dark-mode .ability-card .ability-meta .level {
+  background: #2e2450;
+  border-color: #a88b32;
+  color: #ffd166;
+}
+
+.ability-card h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  float: right;
+  font-style: italic;
+  color: #5b3cb3;
+}
+
+.dark-mode .ability-card h2 {
+  color: #ffd166;
 }
 
 .app-header {
