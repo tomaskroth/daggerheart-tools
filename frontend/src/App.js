@@ -13,7 +13,13 @@ function App({serverUrl}) {
   const [types, setTypes] = useState([]);
   const [selectedType, setSelectedType] = useState(null);
   const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('darkMode') === 'true';
+    const stored = localStorage.getItem("darkMode");
+    if (stored !== null) {
+      return stored === "true";
+    }
+    // fallback to system preference
+    return window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
   // Get current URL path
@@ -110,7 +116,7 @@ function App({serverUrl}) {
       </header>
       <main>
         {selectedItem ? (
-          <ItemDetail item={selectedItem} onBack={() => setSelectedItem(null)} />
+          <ItemDetail item={selectedItem} onBack={() => setSelectedItem(null)} darkMode={darkMode}/>
         ) : (
           <ItemList items={items} onItemClick={setSelectedItem} />
         )}
