@@ -5,6 +5,3 @@ services:
     container_name: dhsrd-backend
     ports:
       - "8080:8080"
-    volumes:
-      - ./.data:/app/.data
-      - ./.data/lucene:/app/.data/lucene
