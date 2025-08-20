@@ -33,7 +33,7 @@ public class SrdItem {
 
     private String subtype;
 
-    private int recallCost;
+    private Integer recallCost;
     private Integer level;   // optional
     private String sourceRef;
 
@@ -72,8 +72,8 @@ public class SrdItem {
     public String getSubtype() { return subtype; }
     public void setSubtype(String subtype) { this.subtype = subtype; }
 
-    public int getRecallCost() { return recallCost; }
-    public void setRecallCost(int recallCost) { this.recallCost = recallCost; }
+    public Integer getRecallCost() { return recallCost; }
+    public void setRecallCost(Integer recallCost) { this.recallCost = recallCost; }
 
     public String getSourceRef() { return sourceRef; }
     public void setSourceRef(String sourceRef) { this.sourceRef = sourceRef; }

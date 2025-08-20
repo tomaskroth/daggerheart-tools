@@ -116,7 +116,7 @@ function App({serverUrl}) {
       </header>
       <main>
         {selectedItem ? (
-          <ItemDetail item={selectedItem} onBack={() => setSelectedItem(null)} darkMode={darkMode}/>
+          <ItemDetail item={selectedItem} onBack={() => setSelectedItem(null)} />
         ) : (
           <ItemList items={items} onItemClick={setSelectedItem} />
         )}

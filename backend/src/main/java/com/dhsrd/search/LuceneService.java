@@ -32,9 +32,11 @@ public class LuceneService {
         d.add(new StringField("id", String.valueOf(it.getId()), Field.Store.YES));
         d.add(new StringField("slug", it.getSlug(), Field.Store.YES));
         d.add(new StringField("type", it.getType().name(), Field.Store.YES));
+        if (it.getSubtype() != null) d.add(new StringField("subtype", it.getSubtype(), Field.Store.YES));
         d.add(new TextField("title", nz(it.getTitle()), Field.Store.YES));
         d.add(new TextField("excerpt", nz(it.getExcerpt()), Field.Store.YES));
         d.add(new TextField("content", nz(it.getContent()), Field.Store.YES));
+        if (it.getRecallCost() != null) d.add(new IntField("recallCost", it.getRecallCost(), Field.Store.YES));
         if (it.getTags() != null) it.getTags().forEach(t -> d.add(new StringField("tag", t, Field.Store.YES)));
         if (it.getLevel() != null) {
             d.add(new IntPoint("level", it.getLevel()));
@@ -118,7 +120,9 @@ public class LuceneService {
                 m.put("title", d.get("title"));
                 m.put("excerpt", d.get("excerpt"));
                 m.put("content", d.get("content"));
+                m.put("recallCost", d.get("recallCost"));
                 m.put("type", d.get("type"));
+                m.put("subtype", d.get("subtype"));
                 m.put("level", d.get("level_store") == null ? null : Integer.valueOf(d.get("level_store")));
                 m.put("tags", Arrays.asList(d.getValues("tag")));
                 m.put("score", sd[i].score);

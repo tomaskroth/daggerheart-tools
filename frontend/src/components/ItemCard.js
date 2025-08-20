@@ -19,8 +19,7 @@ function ItemCard({ item, onClick }) {
         subclasses: '/icons/class.png',
         weapons: '/icons/weapon.png',
     };
-    console.log(item.type);
-    console.log(typeIcons[item.type.toLowerCase()]);
+    
   return (
     <div 
       className="item-card" 
