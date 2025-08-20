@@ -433,6 +433,23 @@ body.dark-mode {
   color: #d4b04f;
 }
 
+.support-button {
+  position: absolute;   /* take it out of center flow */
+  right: 1.5rem;        /* push to right edge */
+  top: 50%;             /* vertical center */
+  transform: translateY(-50%); /* correct vertical centering */
+  margin-right: 2rem;
+}
+
+/* Mobile override */
+@media (max-width: 600px) {
+  .support-button {
+    position: static;       /* back into normal flow */
+    margin: 0.5rem auto 0;  /* centered under text */
+    transform: none;        /* reset vertical centering */
+  }
+}
+
 .spinner {
   border: 8px solid #ece0f8; /* light purple */
   border-top: 8px solid #6b4cd6; /* dark purple */
@@ -612,4 +629,3 @@ main {
   background: #3a2472;
   color: #fff;
 }
-

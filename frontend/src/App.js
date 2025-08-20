@@ -5,6 +5,7 @@ import ItemList from './components/ItemList';
 import ItemDetail from './components/ItemDetail';
 import TypeMenu from './components/TypeMenu';
 import { Analytics } from "@vercel/analytics/react"
+import { KofiButton } from "react-kofi-button";
 
 
 function App({serverUrl}) {
@@ -123,7 +124,10 @@ function App({serverUrl}) {
       </main>
       <footer className="app-footer">
         <p>Made by <a href="https://github.com/tomaskroth/daggerheart-tools" title="Tomas Kroth">Tomás Kroth</a> | All content derived from <a href="https://www.daggerheart.com/srd/" title="Daggerheart SRD">Daggerheart SRD</a></p>
-        <a href="https://www.flaticon.com" title="frame icons">Icons created by Flaticon</a>        
+        <a href="https://www.flaticon.com" title="frame icons">Icons created by Flaticon</a>
+        <div className="support-button">    
+          <KofiButton username='tomaskroth' label='Support me' backgroundColor='#7e37e0ff' className='.support-button'/>
+        </div>
       </footer>
       <Analytics/>
     </div>
