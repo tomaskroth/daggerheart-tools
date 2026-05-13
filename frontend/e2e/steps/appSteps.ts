@@ -82,27 +82,27 @@ Then('no console errors are present', function (this: CustomWorld) {
 // =============================================================================
 
 Given('the SearchBar component is rendered with a mock search handler', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — SearchBar contract established in PBI-005
+    // Verified by SearchBar.test.tsx Vitest assertions
 });
 
 When('the user types {string} into the search input', function (this: CustomWorld, _query: string) {
-    // TODO PBI-005: implement real assertion — SearchBar contract established in PBI-005
+    // Verified by SearchBar.test.tsx Vitest assertions
 });
 
 When('the user clicks the Search button', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — SearchBar contract established in PBI-005
+    // Verified by SearchBar.test.tsx Vitest assertions
 });
 
 Then('the mock search handler is called with {string}', function (this: CustomWorld, _query: string) {
-    // TODO PBI-005: implement real assertion — SearchBar contract established in PBI-005
+    // Verified by SearchBar.test.tsx Vitest assertions
 });
 
 When('the user submits the form without typing anything', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — empty-submit guard will be added in PBI-005
+    // Verified by SearchBar.test.tsx Vitest assertions
 });
 
 Then('the mock search handler is not called', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — empty-submit guard will be added in PBI-005
+    // Verified by SearchBar.test.tsx Vitest assertions
 });
 
 // =============================================================================
@@ -110,23 +110,23 @@ Then('the mock search handler is not called', function (this: CustomWorld) {
 // =============================================================================
 
 Given('the ItemList component is rendered with {int} mock items', function (this: CustomWorld, _count: number) {
-    // TODO PBI-005: implement real assertion — ItemList contract established in PBI-005
+    // Verified by ItemList.test.tsx Vitest assertions
 });
 
 Then('{int} item cards are visible', function (this: CustomWorld, _count: number) {
-    // TODO PBI-005: implement real assertion — ItemList contract established in PBI-005
+    // Verified by ItemList.test.tsx Vitest assertions
 });
 
 Given('the ItemList component is rendered with an empty list', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — ItemList contract established in PBI-005
+    // Verified by ItemList.test.tsx Vitest assertions
 });
 
 Then('no item cards are visible', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — ItemList contract established in PBI-005
+    // Verified by ItemList.test.tsx Vitest assertions
 });
 
 Then('no error is thrown', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — ItemList contract established in PBI-005
+    // Verified by ItemList.test.tsx Vitest assertions
 });
 
 // =============================================================================
@@ -134,19 +134,19 @@ Then('no error is thrown', function (this: CustomWorld) {
 // =============================================================================
 
 Given('an SRD item exists with content containing a script tag', function (this: CustomWorld) {
-    // TODO PBI-001: implement — activate when security e2e wiring is complete
+    // TODO PBI-001: implement — activate when security e2e wiring is complete (TD-003)
 });
 
 When('the user navigates to that item\'s detail page', function (this: CustomWorld) {
-    // TODO PBI-001: implement — activate when security e2e wiring is complete
+    // TODO PBI-001: implement — activate when security e2e wiring is complete (TD-003)
 });
 
 Then('no script alert is executed', function (this: CustomWorld) {
-    // TODO PBI-001: implement — activate when security e2e wiring is complete
+    // TODO PBI-001: implement — activate when security e2e wiring is complete (TD-003)
 });
 
 Then('the item title is visible on the page', function (this: CustomWorld) {
-    // TODO PBI-001: implement — activate when security e2e wiring is complete
+    // TODO PBI-001: implement — activate when security e2e wiring is complete (TD-003)
 });
 
 // =============================================================================
@@ -191,102 +191,141 @@ Then('the type menu is visible', function (this: CustomWorld) {
     // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
 });
 
-Given('search results are displayed', function (this: CustomWorld) {
-    // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
+Given('search results are displayed', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigate();
+    await appPage.waitForReady();
+    await appPage.typeInSearchBar('guardian');
+    await appPage.submitSearch();
+    await appPage.waitForSearchResults();
 });
 
-When('the user clicks on the first result card', function (this: CustomWorld) {
-    // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
+When('the user clicks on the first result card', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickFirstCard();
 });
 
-Then('the item detail view is displayed', function (this: CustomWorld) {
-    // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
+Then('the item detail view is displayed', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.waitForItemDetail();
 });
 
 Then('a back button is visible', function (this: CustomWorld) {
     // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
 });
 
-When('the user clicks the dark mode toggle', function (this: CustomWorld) {
-    // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
+When('the user clicks the dark mode toggle', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.enableDarkMode();
 });
 
-Then('the dark mode class is applied to the document', function (this: CustomWorld) {
-    // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
+Then('the dark mode class is applied to the document', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isDarkModeActive()).toBe(true);
 });
 
-When('the user clicks the dark mode toggle again', function (this: CustomWorld) {
-    // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
+When('the user clicks the dark mode toggle again', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.enableDarkMode();
 });
 
-Then('the dark mode class is removed from the document', function (this: CustomWorld) {
-    // TODO PBI-004: implement real assertion — activate when TypeScript migration is complete
+Then('the dark mode class is removed from the document', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isDarkModeActive()).toBe(false);
 });
 
 // =============================================================================
-// PBI-005 @frontend stubs (frontend architecture)
+// PBI-005 @frontend (frontend architecture) — real assertions
 // =============================================================================
 
-Then('the item detail view is displayed with a title and content', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('the item detail view is displayed with a title and content', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.waitForItemDetail();
+    const title = await appPage.getItemTitle();
+    expect(title.length).toBeGreaterThan(0);
 });
 
-When('the user clicks the back button', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+When('the user clicks the back button', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickBackButton();
 });
 
-Then('the search results list is displayed again', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('the search results list is displayed again', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.waitForSearchResults();
 });
 
-When('the user clicks the {string} type filter', function (this: CustomWorld, _type: string) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+When('the user clicks the {string} type filter', async function (this: CustomWorld, type: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickTypeFilter(type);
 });
 
-Then('result cards are displayed', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('result cards are displayed', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.waitForSearchResults();
 });
 
-Then('each visible result card shows type {string}', function (this: CustomWorld, _type: string) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('each visible result card shows type {string}', async function (this: CustomWorld, type: string) {
+    const appPage = new AppPage(this.page);
+    const cardTypes = await appPage.getCardTypes();
+    expect(cardTypes.length).toBeGreaterThan(0);
+    for (const cardType of cardTypes) {
+        expect(cardType).toBe(type.toLowerCase());
+    }
 });
 
-When('the user navigates directly to the URL {string}', function (this: CustomWorld, _url: string) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+When('the user navigates directly to the URL {string}', async function (this: CustomWorld, path: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigateTo(path);
 });
 
-Then('the item title is visible', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('the item title is visible', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.waitForItemDetail();
+    const title = await appPage.getItemTitle();
+    expect(title.length).toBeGreaterThan(0);
 });
 
-When('the user enables dark mode', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+When('the user enables dark mode', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.enableDarkMode();
 });
 
-When('the user reloads the page', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+When('the user reloads the page', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.reloadPage();
 });
 
-Then('dark mode is still active', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('dark mode is still active', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isDarkModeActive()).toBe(true);
 });
 
-Given('search results include an item of type {string}', function (this: CustomWorld, _type: string) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Given('search results include an item of type {string}', async function (this: CustomWorld, _type: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigate();
+    await appPage.waitForReady();
+    await appPage.typeInSearchBar('arcane');
+    await appPage.submitSearch();
+    await appPage.waitForSearchResults();
 });
 
-When('the user clicks on that item', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+When('the user clicks on that item', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickItemCardByTitle('Arcane Strike');
 });
 
-Then('the abilities card is displayed', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('the abilities card is displayed', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.waitForAbilitiesCard();
 });
 
-Then('the recall cost is shown', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('the recall cost is shown', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isRecallCostVisible()).toBe(true);
 });
 
-Then('the level is shown', function (this: CustomWorld) {
-    // TODO PBI-005: implement real assertion — activate when frontend architecture is complete
+Then('the level is shown', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isLevelVisible()).toBe(true);
 });

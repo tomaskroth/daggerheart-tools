@@ -21,7 +21,6 @@ const typeIcons: Record<string, string> = {
 
 interface ItemDetailProps {
   item: SrdItem;
-  icon?: string;
   onBack: () => void;
   darkMode: boolean;
 }

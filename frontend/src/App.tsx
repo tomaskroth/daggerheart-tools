@@ -1,21 +1,49 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import SearchBar from './components/SearchBar';
 import ItemList from './components/ItemList';
 import ItemDetail from './components/ItemDetail';
 import TypeMenu from './components/TypeMenu';
 import { Analytics } from '@vercel/analytics/react';
 import { KofiButton } from 'react-kofi-button';
-import { SrdItem, SearchResponse } from './types';
+import { useSrdTypes } from './hooks/useSrdTypes';
+import { useSrdSearch } from './hooks/useSrdSearch';
+import { fetchItemBySlug } from './services/srdApi';
+import { SrdItem } from './types';
 
 interface AppProps {
   serverUrl: string;
 }
 
+interface DetailRouteProps {
+  serverUrl: string;
+  darkMode: boolean;
+}
+
+function DetailRoute({ serverUrl, darkMode }: DetailRouteProps) {
+  const { filename } = useParams<{ type: string; filename: string }>();
+  const navigate = useNavigate();
+  const slug = decodeURIComponent(filename ?? '').replace('.md', '');
+  const [item, setItem] = useState<SrdItem | null>(null);
+
+  useEffect(() => {
+    if (slug) {
+      fetchItemBySlug(serverUrl, slug)
+        .then(setItem)
+        .catch(() => setItem(null));
+    }
+  }, [slug, serverUrl]);
+
+  if (!item) return null;
+
+  return <ItemDetail item={item} onBack={() => navigate(-1)} darkMode={darkMode} />;
+}
+
 function App({ serverUrl }: AppProps) {
-  const [items, setItems] = useState<SrdItem[]>([]);
-  const [selectedItem, setSelectedItem] = useState<SrdItem | null>(null);
-  const [types, setTypes] = useState<string[]>([]);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const { types } = useSrdTypes(serverUrl);
+  const { items, search, filterByType } = useSrdSearch(serverUrl);
+  const navigate = useNavigate();
+
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const stored = localStorage.getItem('darkMode');
     if (stored !== null) {
@@ -24,66 +52,6 @@ function App({ serverUrl }: AppProps) {
     return window.matchMedia != null &&
       window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
-
-  const location = window.location.pathname;
-
-  useEffect(() => {
-    fetch(serverUrl + '/srd/types')
-      .then(res => res.json())
-      .then(setTypes)
-      .catch(console.error);
-  }, [serverUrl]);
-
-  useEffect(() => {
-    const match = location.match(/^\/([^/]+)\/([^/]+)$/);
-    if (match) {
-      const itemName = decodeURIComponent(match[2].replace('.md', ''));
-      fetch(serverUrl + '/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q: itemName })
-      })
-        .then(res => res.json())
-        .then((data: SearchResponse) => {
-          if (Array.isArray(data.items) && data.items.length > 0) {
-            setSelectedItem(data.items[0]);
-            setItems(data.items);
-          }
-        })
-        .catch(console.error);
-    }
-  }, [location, serverUrl]);
-
-  const handleSearch = async (query: string) => {
-    const response = await fetch(serverUrl + '/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ q: query })
-    });
-    const data: SearchResponse = await response.json();
-    setItems(data.items ?? []);
-    setSelectedType(null);
-    setSelectedItem(null);
-  };
-
-  const handleTypeClick = async (type: string) => {
-    const response = await fetch(serverUrl + '/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ types: [type] })
-    });
-    const data: SearchResponse = await response.json();
-    setItems(Array.isArray(data.items) ? data.items : []);
-    setSelectedType(type);
-    setSelectedItem(null);
-  };
-
-  const toggleDarkMode = () => {
-    setDarkMode(dm => {
-      localStorage.setItem('darkMode', String(!dm));
-      return !dm;
-    });
-  };
 
   useEffect(() => {
     if (darkMode) {
@@ -94,6 +62,23 @@ function App({ serverUrl }: AppProps) {
       document.documentElement.classList.remove('dark-mode');
     }
   }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    setDarkMode(dm => {
+      localStorage.setItem('darkMode', String(!dm));
+      return !dm;
+    });
+  };
+
+  const handleSearch = (query: string) => {
+    search(query);
+    navigate('/');
+  };
+
+  const handleTypeClick = (type: string) => {
+    filterByType(type);
+    navigate('/');
+  };
 
   return (
     <div className={`app${darkMode ? ' dark-mode' : ''}`}>
@@ -115,11 +100,21 @@ function App({ serverUrl }: AppProps) {
         <TypeMenu types={types} onTypeClick={handleTypeClick} />
       </header>
       <main>
-        {selectedItem ? (
-          <ItemDetail item={selectedItem} onBack={() => setSelectedItem(null)} darkMode={darkMode} />
-        ) : (
-          <ItemList items={items} onItemClick={setSelectedItem} />
-        )}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ItemList
+                items={items}
+                onItemClick={(item) => navigate(`/${item.type.toLowerCase()}/${item.slug}.md`)}
+              />
+            }
+          />
+          <Route
+            path="/:type/:filename"
+            element={<DetailRoute serverUrl={serverUrl} darkMode={darkMode} />}
+          />
+        </Routes>
       </main>
       <footer className="app-footer">
         <p>Made by <a href="https://github.com/tomaskroth/daggerheart-tools" title="Tomas Kroth">Tomás Kroth</a> | All content derived from <a href="https://www.daggerheart.com/srd/" title="Daggerheart SRD">Daggerheart SRD</a></p>
