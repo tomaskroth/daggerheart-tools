@@ -4,6 +4,7 @@ import com.dhsrd.model.SrdItem;
 import com.dhsrd.model.SrdType;
 import com.dhsrd.repo.SrdItemRepository;
 import com.dhsrd.search.LuceneService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class SrdServiceTest {
@@ -33,11 +34,13 @@ class SrdServiceTest {
 
     @BeforeEach
     void setUp() {
-        srdService = new SrdService(repository, luceneService);
+        srdService = new SrdService(repository, luceneService, new ObjectMapper());
     }
 
+    // --- bulkUpsert ---
+
     @Test
-    void should_sanitiseScriptTagsFromContent_when_bulkUpsertCalled()  {
+    void should_sanitiseScriptTagsFromContent_when_bulkUpsertCalled() {
         SrdItem item = itemWithContent("Hello <script>alert('xss')</script> World");
         when(repository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -46,14 +49,12 @@ class SrdServiceTest {
         ArgumentCaptor<List<SrdItem>> captor = ArgumentCaptor.forClass(List.class);
         verify(repository).saveAll(captor.capture());
         String sanitised = captor.getValue().get(0).getContent();
-        assertThat(sanitised).doesNotContain("<script>");
-        assertThat(sanitised).doesNotContain("alert");
-        assertThat(sanitised).contains("Hello");
-        assertThat(sanitised).contains("World");
+        assertThat(sanitised).doesNotContain("<script>").doesNotContain("alert")
+                .contains("Hello").contains("World");
     }
 
     @Test
-    void should_preserveSafeHtmlInContent_when_bulkUpsertCalled()  {
+    void should_preserveSafeHtmlInContent_when_bulkUpsertCalled() {
         SrdItem item = itemWithContent("<b>Bold</b> and <i>italic</i> and <a href=\"http://example.com\">link</a>");
         when(repository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -62,9 +63,7 @@ class SrdServiceTest {
         ArgumentCaptor<List<SrdItem>> captor = ArgumentCaptor.forClass(List.class);
         verify(repository).saveAll(captor.capture());
         String sanitised = captor.getValue().get(0).getContent();
-        assertThat(sanitised).contains("<b>Bold</b>");
-        assertThat(sanitised).contains("<i>italic</i>");
-        assertThat(sanitised).contains("<a");
+        assertThat(sanitised).contains("<b>Bold</b>").contains("<i>italic</i>").contains("<a");
     }
 
     @Test
@@ -82,7 +81,7 @@ class SrdServiceTest {
     }
 
     @Test
-    void should_saveAllItems_when_bulkUpsertCalledWithValidList()  {
+    void should_saveAllItems_when_bulkUpsertCalledWithValidList() {
         SrdItem item1 = itemWithContent("<p>Item one</p>");
         SrdItem item2 = itemWithContent("<p>Item two</p>");
         when(repository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
@@ -109,8 +108,7 @@ class SrdServiceTest {
         SrdItem item = itemWithContent(null);
         when(repository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
 
-        org.assertj.core.api.Assertions.assertThatCode(() -> srdService.bulkUpsert(List.of(item)))
-                .doesNotThrowAnyException();
+        assertThatCode(() -> srdService.bulkUpsert(List.of(item))).doesNotThrowAnyException();
 
         ArgumentCaptor<List<SrdItem>> captor = ArgumentCaptor.forClass(List.class);
         verify(repository).saveAll(captor.capture());
@@ -136,6 +134,119 @@ class SrdServiceTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Reindex failed");
     }
+
+    // --- search ---
+
+    @Test
+    void should_delegateToLucene_when_searchCalled() throws Exception {
+        Map<String, Object> expected = Map.of("items", List.of(), "total", 0);
+        when(luceneService.search(any(), any(), any(), any(), anyInt(), anyInt(), anyBoolean()))
+                .thenReturn(expected);
+
+        Map<String, Object> result = srdService.search(new SearchCriteria("guardian", null, null, null, null, null, null));
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void should_applyDefaultPagination_when_searchCriteriaHasNullFromAndSize() throws Exception {
+        when(luceneService.search(any(), any(), any(), any(), anyInt(), anyInt(), anyBoolean()))
+                .thenReturn(Map.of("items", List.of(), "total", 0));
+
+        srdService.search(new SearchCriteria(null, null, null, null, null, null, null));
+
+        verify(luceneService).search(isNull(), isNull(), isNull(), isNull(), eq(0), eq(300), eq(true));
+    }
+
+    @Test
+    void should_forwardTypeFilterToLucene_when_typesProvided() throws Exception {
+        List<SrdType> filter = List.of(SrdType.WEAPONS);
+        when(luceneService.search(any(), any(), any(), any(), anyInt(), anyInt(), anyBoolean()))
+                .thenReturn(Map.of("items", List.of(), "total", 0));
+
+        srdService.search(new SearchCriteria(null, filter, null, null, null, null, null));
+
+        verify(luceneService).search(isNull(), eq(filter), isNull(), isNull(), anyInt(), anyInt(), anyBoolean());
+    }
+
+    @Test
+    void should_throwIllegalStateException_when_luceneSearchFails() throws Exception {
+        when(luceneService.search(any(), any(), any(), any(), anyInt(), anyInt(), anyBoolean()))
+                .thenThrow(new RuntimeException("index corrupt"));
+
+        assertThatThrownBy(() -> srdService.search(new SearchCriteria(null, null, null, null, null, null, null)))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Search failed");
+    }
+
+    // --- findBySlug ---
+
+    @Test
+    void should_returnItem_when_slugExists() {
+        SrdItem item = itemWithContent("<p>Content</p>");
+        when(repository.findBySlug("guardian-warrior")).thenReturn(Optional.of(item));
+
+        Optional<SrdItem> result = srdService.findBySlug("guardian-warrior");
+
+        assertThat(result).contains(item);
+    }
+
+    @Test
+    void should_returnEmpty_when_slugDoesNotExist() {
+        when(repository.findBySlug("nonexistent")).thenReturn(Optional.empty());
+
+        Optional<SrdItem> result = srdService.findBySlug("nonexistent");
+
+        assertThat(result).isEmpty();
+    }
+
+    // --- listTypes ---
+
+    @Test
+    void should_returnAllSrdTypes_when_listTypesCalled() {
+        List<SrdType> types = srdService.listTypes();
+
+        assertThat(types).containsExactlyInAnyOrder(SrdType.values());
+    }
+
+    // --- loadInitialData ---
+
+    @Test
+    void should_skipLoad_when_luceneIndexIsNotEmpty() throws Exception {
+        when(luceneService.isEmpty()).thenReturn(false);
+
+        srdService.loadInitialData();
+
+        verifyNoInteractions(repository);
+        verify(luceneService, never()).indexAll(any());
+    }
+
+    @Test
+    void should_saveAndIndexItems_when_luceneIndexIsEmpty() throws Exception {
+        when(luceneService.isEmpty()).thenReturn(true);
+        when(repository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
+
+        srdService.loadInitialData();
+
+        ArgumentCaptor<List<SrdItem>> saveCaptor = ArgumentCaptor.forClass(List.class);
+        verify(repository).saveAll(saveCaptor.capture());
+        assertThat(saveCaptor.getValue()).isNotEmpty();
+        verify(luceneService).indexAll(anyList());
+    }
+
+    // --- reindex ---
+
+    @Test
+    void should_deleteAndReindexAll_when_reindexCalled() throws Exception {
+        when(repository.findAll()).thenReturn(List.of(itemWithContent("<p>content</p>")));
+
+        srdService.reindex();
+
+        verify(luceneService).deleteAll();
+        verify(luceneService).indexAll(anyList());
+    }
+
+    // --- helpers ---
 
     private SrdItem itemWithContent(String content) {
         SrdItem item = new SrdItem();

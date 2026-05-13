@@ -48,6 +48,26 @@ In these cases, a brief note in the flow descriptor confirming "this follows the
 
 ---
 
+## Bug Fixes and the Architecture Checkpoint
+
+**Most bug fixes do not require an architecture checkpoint.** If the fix:
+- Corrects existing behaviour without introducing new components, patterns, or data model changes
+- Follows an established pattern documented in an accepted ADR
+- Does not change an API contract
+
+...then the Architecture Agent confirms the exemption in a one-paragraph note and implementation proceeds immediately. No flow descriptor is produced and no human review is triggered.
+
+**An ADR and architecture checkpoint are still required for bug fixes that:**
+- Require a new or changed data model
+- Change an API contract (even to fix a bug)
+- Introduce a new external dependency as part of the fix
+- Require a new pattern not present in the codebase
+- Reveal a structural flaw whose correct fix constitutes an architectural change
+
+When the Architecture Agent determines an architecture checkpoint is required for a bug fix, it notes this explicitly: "This bug fix requires architecture review because: [reason]."
+
+---
+
 ## The Flow Descriptor
 
 Every backlog item gets a flow descriptor — a short, human-readable document that describes what will be built and how the pieces fit together. It is produced alongside or instead of an ADR for items that don't trigger a major decision.

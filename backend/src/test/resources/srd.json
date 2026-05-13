@@ -1,0 +1,17 @@
+[
+  {"type": "ABILITIES", "title": "Guardian Warrior", "slug": "guardian-warrior", "excerpt": "A guardian ability.", "content": "<p>The guardian warrior protects allies in combat.</p>"},
+  {"type": "ABILITIES", "title": "Swift Strike", "slug": "swift-strike", "excerpt": "Strike with speed.", "content": "<p>Strike your foe with blinding speed.</p>"},
+  {"type": "ABILITIES", "title": "Iron Will", "slug": "iron-will", "excerpt": "A feat of endurance.", "content": "<p>Resist even the most powerful attacks.</p>"},
+  {"type": "ABILITIES", "title": "Shadow Step", "slug": "shadow-step", "excerpt": "Move through shadows.", "content": "<p>Teleport through shadowy areas unseen.</p>"},
+  {"type": "ABILITIES", "title": "Battle Cry", "slug": "battle-cry", "excerpt": "Rally your allies.", "content": "<p>Inspire your party with a powerful battle cry.</p>"},
+  {"type": "ABILITIES", "title": "Arcane Bolt", "slug": "arcane-bolt", "excerpt": "A bolt of pure magic.", "content": "<p>Hurl a concentrated bolt of arcane energy.</p>"},
+  {"type": "ABILITIES", "title": "Healing Touch", "slug": "healing-touch", "excerpt": "Restore hit points.", "content": "<p>Channel restorative energy to heal wounds.</p>"},
+  {"type": "ABILITIES", "title": "Eagle Eye", "slug": "eagle-eye", "excerpt": "Enhanced perception.", "content": "<p>Gain extraordinary visual acuity and range.</p>"},
+  {"type": "ABILITIES", "title": "Stone Skin", "slug": "stone-skin", "excerpt": "Harden your body.", "content": "<p>Your skin becomes as hard as granite.</p>"},
+  {"type": "ABILITIES", "title": "Wind Sprint", "slug": "wind-sprint", "excerpt": "Move like the wind.", "content": "<p>Double your movement speed for a short burst.</p>"},
+  {"type": "ABILITIES", "title": "Frost Nova", "slug": "frost-nova", "excerpt": "Freeze nearby foes.", "content": "<p>Release a burst of ice that freezes enemies in place.</p>"},
+  {"type": "ABILITIES", "title": "Thunder Clap", "slug": "thunder-clap", "excerpt": "A sonic strike.", "content": "<p>Strike the ground to create a thunderous shockwave.</p>"},
+  {"type": "ABILITIES", "title": "Life Drain", "slug": "life-drain", "excerpt": "Steal vitality.", "content": "<p>Drain the life force of a nearby creature.</p>"},
+  {"type": "ABILITIES", "title": "Blinding Flash", "slug": "blinding-flash", "excerpt": "Blind your enemies.", "content": "<p>Release a burst of light that blinds all who see it.</p>"},
+  {"type": "ABILITIES", "title": "Berserker Rage", "slug": "berserker-rage", "excerpt": "Enter a rage.", "content": "<p>Channel primal fury to greatly increase your damage.</p>"}
+]

@@ -1,7 +1,6 @@
 package com.dhsrd.integration;
 
 import com.dhsrd.domain.SrdService;
-import com.dhsrd.search.LuceneService;
 import com.dhsrd.web.SrdController;
 import com.dhsrd.config.SecurityConfig;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,6 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -28,19 +24,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // Scenarios: PBI-001-security-baseline.feature — @backend @security
 @WebMvcTest(SrdController.class)
 @Import(SecurityConfig.class)
+@org.springframework.test.context.TestPropertySource(properties = "ADMIN_PASSWORD=changeme-dev-only")
 class SecurityIntegrationTest {
+
+    private static final String TEST_ADMIN_USER = "admin";
+    private static final String TEST_ADMIN_PASSWORD = "changeme-dev-only";
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private SrdService srdService;
-
-    @MockBean
-    private LuceneService luceneService;
-
-    @MockBean
-    private com.dhsrd.repo.SrdItemRepository srdItemRepository;
 
     // Scenario: Unauthenticated request to bulk upsert endpoint is rejected
     @Test
@@ -67,8 +61,7 @@ class SecurityIntegrationTest {
 
     @Test
     void should_return200_when_unauthenticatedSearchRequest() throws Exception {
-        when(luceneService.search(any(), any(), any(), any(), anyInt(), anyInt(), anyBoolean()))
-                .thenReturn(Map.of("items", List.of(), "total", 0));
+        when(srdService.search(any())).thenReturn(Map.of("items", List.of(), "total", 0));
 
         mockMvc.perform(post("/api/search")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -96,16 +89,23 @@ class SecurityIntegrationTest {
                 .andExpect(header().string("Access-Control-Allow-Origin", notNullValue()));
     }
 
-    // Positive path: authenticated request to bulk upsert succeeds (missing from feature file —
-    // recommended addition from Security Design Review)
+    // Positive path: authenticated request to bulk upsert succeeds
     @Test
     void should_return200_when_authenticatedBulkUpsert() throws Exception {
         when(srdService.bulkUpsert(any())).thenReturn(List.of());
 
         mockMvc.perform(post("/api/srd/_bulkUpsert")
-                .with(httpBasic("admin", "changeme-dev-only"))
+                .with(httpBasic(TEST_ADMIN_USER, TEST_ADMIN_PASSWORD))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("[]"))
+                .andExpect(status().isOk());
+    }
+
+    // Positive path: authenticated request to reindex succeeds
+    @Test
+    void should_return200_when_authenticatedReindex() throws Exception {
+        mockMvc.perform(get("/api/srd/_reindex")
+                .with(httpBasic(TEST_ADMIN_USER, TEST_ADMIN_PASSWORD)))
                 .andExpect(status().isOk());
     }
 }

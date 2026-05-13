@@ -15,6 +15,47 @@ Everything else — breakdown, prioritisation, implementation, testing, review, 
 
 ---
 
+## Reporting a Bug
+
+Use this when something is broken — a behaviour that used to work doesn't, or a feature behaves in a way it shouldn't.
+
+### Trigger phrase
+
+> "Report a bug: [description]"
+
+### What to include
+
+- **Symptom** — what the user sees or experiences (the broken behaviour)
+- **Expected behaviour** — what should happen instead
+- **Reproduction steps** — the shortest path to trigger the bug reliably
+- **Severity assessment** — your initial read on how bad it is (see below)
+- **Affected area** — which feature or component is involved
+
+### Severity tiers
+
+| Severity | When to use | Flow |
+|---|---|---|
+| **Critical** | Data loss, security breach, system unavailable, core feature completely broken | Fast-track: skip full product planning, produce a minimal regression scenario, fix immediately |
+| **High** | Major feature broken, no workaround | Jumps the feature queue; treated as higher priority than any pending feature work |
+| **Medium** | Feature degraded, workaround exists | Interleaved with feature work (same scheduling as P2 debt) |
+| **Low** | Cosmetic issue, rare edge case, minor inconvenience | Opportunistic scheduling (same as P3 debt) |
+
+### What happens after you report
+
+For **Critical bugs**: the Breakdown Agent produces a minimal Bug PBI immediately, the Acceptance Scenario Agent writes a regression scenario (no scenario approval checkpoint — you confirm verbally), and implementation begins. Architecture review is skipped unless the fix requires a design change.
+
+For **High/Medium/Low bugs**: the bug enters the normal product track alongside any pending feature work. The Breakdown Agent produces a Bug PBI, the Prioritization Agent positions it by severity, and the normal agent sequence runs.
+
+**Every bug fix, regardless of severity, must include a regression test** — the Independent Review Agent will block the submission if one is absent.
+
+### Examples
+
+> "Report a bug: Searching with a type filter selected returns all items instead of filtered items. It should only return items of the selected type. Steps: select 'WEAPONS' from the type menu, observe results. Severity: High."
+
+> "Report a bug: Dark mode toggle is missing on mobile viewport (<640px). The button just doesn't render. Low severity — workaround is desktop. Steps: open on mobile, look for toggle."
+
+---
+
 ## Starting a New Increment
 
 Kick off the product track by describing what you want to build. You don't need to structure it perfectly — the Breakdown Agent will do that. Give it:
@@ -176,6 +217,9 @@ To reject:
 
 ## Other Useful Triggers
 
+### Report a bug
+> "Report a bug: [symptom]. [Expected behaviour]. [Reproduction steps]. Severity: [Critical/High/Medium/Low]."
+
 ### Resume a paused increment
 > "Resume the increment for [feature name]. We're at [stage]."
 
@@ -218,6 +262,7 @@ To keep the flow clean, these things are always handled by agents — you don't 
 
 | What you want to do | What to say |
 |---|---|
+| Report a bug | "Report a bug: [symptom]. [Expected behaviour]. [Repro steps]. Severity: [level]." |
 | Start a new increment | "Start a new increment: [goal]" |
 | Approve scenarios and start engineering | "Scenarios approved, start engineering." |
 | Approve architecture and start implementation | "Architecture approved, proceed to implementation." |

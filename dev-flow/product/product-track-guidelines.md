@@ -36,6 +36,7 @@ Translates a product increment statement — a goal, problem, or feature descrip
 
 - The **product increment statement**: a plain-language description of what needs to be built or changed, and why. This may come from a product owner, a stakeholder, or the carry-forward section of the previous Increment Validation Report.
 - The **existing backlog** (if any), to avoid duplicating items and to identify dependencies.
+- The **technical debt backlog** (`dev-flow/product/technical-debt-backlog.md`) — to avoid creating PBIs that duplicate tracked debt, and to identify whether new work adds to the debt backlog rather than the feature backlog.
 - Accepted **ADRs** — to be aware of existing architectural constraints that affect scope.
 
 ### What It Produces
@@ -66,6 +67,50 @@ Estimated size: XS | S | M | L | XL
 Open questions:
   - [Anything that needs a product decision before scenarios can be written]
 ```
+
+### Bug PBI Format
+
+When the input is a bug report rather than a feature goal, the PBI uses this format instead of the standard user story format:
+
+```
+PBI-XXX: [Title — "Fix: [short description of broken behaviour]"]
+
+Type: Bug
+
+Symptom:
+  [What the user observes — the broken behaviour, exactly as reported]
+
+Expected behaviour:
+  [What should happen instead]
+
+Reproduction steps:
+  1. [Step 1]
+  2. [Step 2]
+  3. [Observed result vs expected result]
+
+Severity: Critical | High | Medium | Low
+  [Brief rationale: why this severity, who is affected, workaround available?]
+
+Affected area:
+  [Component, feature, or endpoint where the bug manifests]
+
+Root cause hypothesis:
+  [Optional — what the agent suspects is causing the bug. "Unknown" is acceptable.]
+
+Scope:
+  IN: [The fix for this specific symptom; the regression test]
+  OUT: [Related refactoring, adjacent improvements, root-cause rewrites that go beyond the fix]
+
+Estimated size: XS | S | M | L | XL
+  [Brief rationale]
+
+Open questions:
+  [Anything that would prevent writing a regression scenario]
+```
+
+**A Bug PBI does not require a user story.** The symptom and expected behaviour replace it.
+
+**The scope OUT section is especially important for bugs.** It prevents the fix from becoming an unplanned refactor. If the root cause points to a deeper structural issue, the structural fix is a separate PBI (likely a Debt item).
 
 ### Breakdown Rules
 
@@ -101,6 +146,7 @@ Orders the backlog produced by the Breakdown Agent into a delivery sequence. The
 
 - The full set of PBIs from the Breakdown Agent for the current increment.
 - The existing ordered backlog (items from previous increments not yet started).
+- The **technical debt backlog** (`dev-flow/product/technical-debt-backlog.md`) — all open P1 and P2 debt items are inputs to every planning session.
 - Accepted ADRs and flow descriptors — to understand technical dependencies.
 - The carry-forward gaps from the most recent Increment Validation Report (if any).
 
@@ -140,13 +186,19 @@ An **ordered backlog** with a rationale entry for each item's position:
 
 The agent weighs the following in order:
 
-1. **Dependencies** — items that block others must be sequenced first, regardless of business value.
-2. **Risk** — high-risk or high-uncertainty items are moved earlier to surface problems while there is time to respond.
-3. **User value** — items that directly deliver the primary goal of the increment are preferred over enablers and enhancements.
-4. **Carry-forward debt** — unresolved gaps from previous validation reports are treated as high priority unless explicitly deprioritised by the human.
-5. **Size** — among equally-valued items, smaller items are preferred to maintain delivery momentum.
+1. **Critical bugs** — Critical-severity Bug PBIs are sequenced before everything else, including P1 debt and features. They are treated as outage-level events.
+2. **Dependencies** — items that block others must be sequenced first, regardless of business value.
+3. **Risk** — high-risk or high-uncertainty items are moved earlier to surface problems while there is time to respond.
+4. **High-severity bugs** — High-severity Bug PBIs are positioned above feature work of equal or lesser value. They are never buried behind new features.
+5. **User value** — items that directly deliver the primary goal of the increment are preferred over enablers and enhancements.
+6. **Technical debt (P1)** — P1 debt items from `technical-debt-backlog.md` are treated as blocking. They must be resolved before or alongside the next feature increment. If no feature work is planned, P1 items form the increment.
+7. **Carry-forward debt** — unresolved gaps from previous validation reports are treated as high priority unless explicitly deprioritised by the human.
+8. **Medium-severity bugs** — interleaved with feature work, at minimum one per increment if any are open.
+9. **Technical debt (P2)** — at least one P2 debt item must be included per increment unless the increment is trivially small. P2 items are interleaved with feature work, not deferred indefinitely.
+10. **Size** — among equally-valued items, smaller items are preferred to maintain delivery momentum.
+11. **Low-severity bugs and Technical debt (P3)** — scheduled opportunistically: when there is no higher-priority work, they fill the increment.
 
-The agent must **not** silently bury carry-forward items at the bottom of the backlog. They must be explicitly positioned and their placement justified.
+The agent must **not** silently bury debt items. Every open P1 and P2 item from `technical-debt-backlog.md` must appear in the ordered backlog with an explicit position and rationale. If a debt item is being deliberately deferred past its priority tier, that decision must be surfaced to the human, not made silently.
 
 ### Escalation
 
@@ -180,6 +232,22 @@ The agent follows all conventions in `product/acceptance-scenarios.md` and addit
 - Each meaningful sad path (invalid input, missing data, not found, permission denied)
 - Edge cases relevant to the stated scope
 - Security cases for any scenario involving authentication, authorisation, or user-provided input
+
+**For Bug PBIs, a regression scenario is mandatory.** The regression scenario must:
+- Reproduce the exact symptom described in the bug report (the `Given` steps set up the broken precondition, the `When` step triggers the action, the `Then` step asserts the correct behaviour — not the buggy behaviour)
+- Be tagged `@regression`
+- Be placed first in the feature file, before any additional correct-behaviour scenarios
+
+Example regression scenario structure:
+```gherkin
+@regression @bug-PBI-XXX
+Scenario: [Broken behaviour is now correct]
+  Given [the precondition that previously triggered the bug]
+  When  [the action that previously triggered the bug]
+  Then  [the correct result — what should happen, not what did happen]
+```
+
+The regression scenario is the contractual proof that the bug is fixed. Implementation is incomplete without it.
 
 **Does not invent scope.** Scenarios must trace to the PBI's IN scope. If writing a complete scenario requires a behaviour that is in the OUT scope or that has no basis in the PBI, the agent flags this rather than writing the scenario silently.
 

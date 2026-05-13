@@ -82,6 +82,13 @@ The review agent checks the submission line by line against `coding-guidelines.m
 - Are Page Objects used correctly in Playwright tests?
 - Are there any tests that make assertions the scenario does not call for (over-specification)?
 
+**For Bug PBI submissions, regression test presence is a mandatory blocker check:**
+- Is there a scenario tagged `@regression` in the `.feature` file?
+- Does the regression scenario reproduce the exact symptom from the bug report (not a generalised related test)?
+- Is the regression scenario executable (step definitions implemented, not stubbed)?
+
+A Bug PBI submission that is missing a regression test is **always a Blocker**, regardless of how complete the rest of the fix is.
+
 ### 5. Security
 - Is authentication checked for all new or modified endpoints?
 - Is authorisation enforced in the domain layer (not only the controller)?

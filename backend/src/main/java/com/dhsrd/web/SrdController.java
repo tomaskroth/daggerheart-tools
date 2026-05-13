@@ -1,13 +1,12 @@
 package com.dhsrd.web;
 
+import com.dhsrd.domain.SearchCriteria;
 import com.dhsrd.domain.SrdService;
 import com.dhsrd.model.SrdType;
-import com.dhsrd.repo.SrdItemRepository;
-import com.dhsrd.search.LuceneService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -15,16 +14,11 @@ import java.util.Map;
 @RequestMapping("/api")
 public class SrdController {
 
-    private final SrdItemRepository repo;
-    private final LuceneService lucene;
     private final SrdService srdService;
 
-    public SrdController(SrdItemRepository repo, LuceneService lucene, SrdService srdService) {
-        this.repo = repo;
-        this.lucene = lucene;
+    public SrdController(SrdService srdService) {
         this.srdService = srdService;
     }
-    // TODO PBI-002: repo and lucene fields remain here temporarily pending full service layer extraction
 
     @GetMapping("")
     public ResponseEntity<String> aliveCheck() {
@@ -32,7 +26,7 @@ public class SrdController {
     }
 
     @PostMapping("/srd/_bulkUpsert")
-    public ResponseEntity<?> bulkUpsert(@RequestBody List<com.dhsrd.model.SrdItem> items) {
+    public ResponseEntity<?> bulkUpsert(@Valid @RequestBody List<com.dhsrd.model.SrdItem> items) {
         try {
             List<com.dhsrd.model.SrdItem> saved = srdService.bulkUpsert(items);
             return ResponseEntity.ok(Map.of("count", saved.size()));
@@ -44,22 +38,19 @@ public class SrdController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) SearchDTO dto) throws Exception {
-        if (dto == null) dto = new SearchDTO(null, null, null, null, 0, 20, true);
-        return ResponseEntity.ok(lucene.search(
-                dto.q(),
-                dto.types(),
-                dto.levelMin(),
-                dto.levelMax(),
-                dto.from() == null ? 0 : dto.from(),
-                dto.size() == null ? 300 : dto.size(),
-                dto.fuzzy() == null || dto.fuzzy()
-        ));
+    public ResponseEntity<?> search(@Valid @RequestBody(required = false) SearchCriteria criteria) {
+        try {
+            SearchCriteria effective = criteria != null ? criteria
+                    : new SearchCriteria(null, null, null, null, null, null, null);
+            return ResponseEntity.ok(srdService.search(effective));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Internal server error"));
+        }
     }
 
     @GetMapping("/srd/{slug}")
     public ResponseEntity<?> bySlug(@PathVariable String slug) {
-        return repo.findBySlug(slug)
+        return srdService.findBySlug(slug)
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -76,6 +67,6 @@ public class SrdController {
 
     @GetMapping("/srd/types")
     public List<SrdType> types() {
-        return Arrays.asList(SrdType.values());
+        return srdService.listTypes();
     }
 }

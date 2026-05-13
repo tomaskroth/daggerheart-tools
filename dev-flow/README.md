@@ -23,8 +23,10 @@ dev-flow/
 
 ## Workflow Overview
 
+### Feature track
+
 ```
-Product Increment
+Product Increment Statement
        │
        ▼
 [Breakdown Agent] → Backlog items + User Stories
@@ -50,9 +52,6 @@ Product Increment
   └── Backend (Java)                    [Security Agent] (inline)
        │
        ▼
-[Test Agent] → Executable tests from .feature files
-       │
-       ▼
 [Independent Review Agent] → Review report
        │
        ▼
@@ -69,6 +68,40 @@ Product Increment
        │
        ▼
 [State Update Agent] → Updates CLAUDE.md (per accepted increment)
+```
+
+### Bug track
+
+```
+Bug Report (symptom + severity)
+       │
+       ├─── Critical ──────────────────────────────────────────┐
+       │                                                        │
+       ▼                                                        ▼
+[Breakdown Agent] → Bug PBI            [Breakdown Agent] → Minimal Bug PBI
+       │            (normal)                    │               (fast-track)
+       ▼                                        ▼
+[Prioritization Agent]        [Acceptance Scenario Agent] → Regression scenario
+  (severity determines                          │
+   queue position)             👤 Verbal confirmation (no formal checkpoint)
+       │                                        │
+       ▼                                        ▼
+[Acceptance Scenario Agent]   [Architecture Agent] only if fix requires design change
+  → Regression scenario +              │
+    correct-behaviour scenarios         └─ otherwise skip to ──┐
+       │                                                        │
+      👤 Human checkpoint: review scenarios                     │
+       │                                                        │
+       └──────────────────────────────┬─────────────────────────┘
+                                      ▼
+                         [Implementation Agents] + [Security Agent] (if security-related)
+                                      │
+                                      ▼
+                         [Independent Review Agent]
+                           (enforces regression test)
+                                      │
+                                      ▼
+                         [State Update Agent] → Updates CLAUDE.md
 ```
 
 ## Human Checkpoints

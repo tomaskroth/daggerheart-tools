@@ -63,35 +63,54 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 **Active increment:** Foundation — establish architectural patterns, test infrastructure, and security baseline.
 
-**Stage:** PBI-001 complete — PBI-002 starting
+**Stage:** PBI-004 complete — PBI-005 next
 
 **PBI status:**
 - `PBI-001` ✅ Complete
-- `PBI-002` 🔄 In progress — Architecture
-- `PBI-003` ⏳ Pending
-- `PBI-006` ⏳ Pending
-- `PBI-004` ⏳ Pending
+- `PBI-002` ✅ Complete
+- `PBI-003` ✅ Complete
+- `PBI-006` ✅ Complete
+- `PBI-004` ✅ Complete
 - `PBI-005` ⏳ Pending
 
 **Feature files:** `dev-flow/product/`
 - `PBI-001-security-baseline.feature` ✅
-- `PBI-002-backend-service-layer.feature` ⏳
-- `PBI-003-backend-test-infrastructure.feature` ⏳
-- `PBI-006-frontend-test-infrastructure.feature` ⏳
-- `PBI-004-frontend-typescript-migration.feature` ⏳
+- `PBI-002-backend-service-layer.feature` ✅
+- `PBI-003-backend-test-infrastructure.feature` ✅
+- `PBI-006-frontend-test-infrastructure.feature` ✅
+- `PBI-004-frontend-typescript-migration.feature` ✅
 - `PBI-005-frontend-architecture.feature` ⏳
 
-**Priority order:** PBI-002 → PBI-003 → PBI-006 → PBI-004 → PBI-005
+**Priority order:** PBI-005
 
 **Key constraints:**
-- `SrdController` still holds direct `SrdItemRepository` and `LuceneService` references for `search()` and `bySlug()` — marked `// TODO PBI-002`. These must be extracted as part of PBI-002 before PBI-002 can be marked complete.
-- The `@frontend @security` scenario ("Item detail page does not execute script tags") is deferred to PBI-006 (Playwright infrastructure). Backend sanitisation is in place; the scenario will be tested end-to-end once the e2e runner exists.
+- The `@frontend @security` scenario ("Item detail page does not execute script tags") has a stub e2e step def — backend sanitisation is in place; the real Playwright assertion is tracked as TD-003.
+- `@regression` scenarios in PBI-004/005/006 are stubs — activated in PBI-005.
+- Step-def method naming convention (`should_/when_`) is established as exempt for BDD step definition methods (applies only to `@Test` JUnit methods).
+- `@SpringBootTest(RANDOM_PORT)` Cucumber context requires `@ActiveProfiles("dev")` to suppress `ProductionStartupGuard`.
+- e2e `cucumber.js` must be run with CWD=`frontend/` (the `test:e2e` script handles this automatically via `start-server-and-test`).
+- `APP_URL` env var overrides the default `http://localhost:3000` in `AppPage.ts`; `VITE_API_URL` overrides the production API base in `world.ts` (renamed from `REACT_APP_API_URL` in PBI-005).
+- PBI-004 left `icon?: string` as a dead prop in `ItemDetailProps` — remove in PBI-005.
+- PBI-004 left test files (`test-setup.js`, `SearchBar.test.js`, `ItemList.test.js`) as `.js` — migrate to `.ts` in PBI-005.
+- Vite migration (CRA → Vite) is deferred to PBI-005 per ADR-007; ADR-009 produced and pending approval.
+
+**Technical debt:** `dev-flow/product/technical-debt-backlog.md`
+- `TD-001` ⚠️ P1 — Vercel production SPA routing rewrite rule (BrowserRouter requires server-side catch-all)
+- `TD-002` P2 — Backend search endpoint Lucene query injection hardening
+- `TD-003` P2 — Playwright assertion for XSS e2e scenario (stub in appSteps.ts)
+- `TD-004` P3 — Migrate data-fetching hooks to React Query
 
 **Accepted ADRs:**
 - `ADR-001-spring-security-admin-protection.md` — Spring Security HTTP Basic for admin endpoints
 - `ADR-002-html-content-sanitisation.md` — Jsoup `Safelist.basic()` sanitisation on ingest
+- `ADR-003-cucumber-acceptance-testing.md` — Cucumber JVM 7.x for backend acceptance tests
+- `ADR-004-vitest-component-testing.md` — Vitest 3.x + React Testing Library for frontend component tests
+- `ADR-005-playwright-cucumber-e2e.md` — Playwright + Cucumber JS for frontend e2e acceptance tests
+- `ADR-006-typescript-compiler-configuration.md` — strict: true tsconfig for frontend TypeScript
+- `ADR-007-cra-typescript-integration.md` — Stay on CRA for PBI-004; Vite migration deferred to PBI-005
+- `ADR-008-type-strategy-third-party-deps.md` — @types/react@^18.3, @types/react-dom@^18.3, @types/react-kofi-button
 
-**Last updated:** 2026-05-13 — PBI-001 completed, passed independent review (two-pass security review ✅, 15/15 tests green)
+**Last updated:** 2026-05-13 — PBI-004 completed, passed independent review (tsc 0 errors, build green, 19/19 e2e scenarios green)
 
 ---
 
