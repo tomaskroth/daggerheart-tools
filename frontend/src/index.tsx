@@ -7,9 +7,12 @@ import './App.css';
 // const SERVER_URL = 'http://localhost:8080/api';
 const SERVER_URL = 'https://daggerheart-tools-4v1t.onrender.com/api';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Root element not found');
+
+const root = ReactDOM.createRoot(rootElement);
 root.render(
   <ServerStatusGate serverUrl={SERVER_URL}>
-    <App serverUrl={SERVER_URL}/>
+    <App serverUrl={SERVER_URL} />
   </ServerStatusGate>
 );

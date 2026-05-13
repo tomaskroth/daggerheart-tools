@@ -1,8 +1,13 @@
 import React from 'react';
-import ItemCard from './ItemCard.js';
+import { SrdItem } from '../types';
+import ItemCard from './ItemCard';
 
-function ItemList({ items = [], onItemClick }) {
-    
+interface ItemListProps {
+  items?: SrdItem[];
+  onItemClick: (item: SrdItem) => void;
+}
+
+function ItemList({ items = [], onItemClick }: ItemListProps) {
   if (!items || !Array.isArray(items)) return null;
   return (
     <div className="item-list" style={{ display: 'flex', flexWrap: 'wrap' }}>

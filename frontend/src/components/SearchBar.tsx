@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 
-function SearchBar({ onSearch }) {
+interface SearchBarProps {
+  onSearch: (query: string) => void;
+}
+
+function SearchBar({ onSearch }: SearchBarProps) {
   const [query, setQuery] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSearch(query);
   };

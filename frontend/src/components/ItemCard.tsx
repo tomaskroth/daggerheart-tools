@@ -1,0 +1,50 @@
+import React from 'react';
+import { SrdItem } from '../types';
+
+const typeIcons: Record<string, string> = {
+  contents: '/icons/contents.png',
+  abilities: '/icons/abilities.png',
+  adversaries: '/icons/monster.png',
+  ancestries: '/icons/ancestry.png',
+  weapons: '/icons/weapon.png',
+  armor: '/icons/armor.png',
+  communities: '/icons/castle.png',
+  consumables: '/icons/consumables.png',
+  domains: '/icons/domain.png',
+  environments: '/icons/biome.png',
+  frames: '/icons/frame.png',
+  items: '/icons/items.png',
+  classes: '/icons/class.png',
+  subclasses: '/icons/class.png',
+};
+
+interface ItemCardProps {
+  item: SrdItem;
+  onClick: () => void;
+}
+
+function ItemCard({ item, onClick }: ItemCardProps) {
+  return (
+    <div
+      className="item-card"
+      onClick={onClick}
+      style={{
+        borderRadius: '8px',
+        padding: '1rem',
+        margin: '0.5rem',
+        cursor: 'pointer',
+        width: '200px',
+        textAlign: 'center'
+      }}
+    >
+      <img
+        src={typeIcons[item.type.toLowerCase()] ?? '/placeholder-icon.png'}
+        alt={item.type}
+        style={{ width: '64px', height: '64px', marginBottom: '0.5rem' }}
+      />
+      <h3>{item.title}</h3>
+    </div>
+  );
+}
+
+export default ItemCard;

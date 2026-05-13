@@ -31,6 +31,9 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "^11.3.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-kofi-button": "*",
     "esbuild": "^0.25.0",
     "@playwright/test": "^1.52.0",
     "@testing-library/jest-dom": "^6.9.1",

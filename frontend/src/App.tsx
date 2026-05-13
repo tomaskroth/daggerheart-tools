@@ -1,51 +1,50 @@
-import React, { useState, useEffect, use } from 'react';
-import { useLocation } from 'react-router-dom'; // Add this import if using react-router
+import React, { useState, useEffect } from 'react';
 import SearchBar from './components/SearchBar';
 import ItemList from './components/ItemList';
 import ItemDetail from './components/ItemDetail';
 import TypeMenu from './components/TypeMenu';
-import { Analytics } from "@vercel/analytics/react"
-import { KofiButton } from "react-kofi-button";
+import { Analytics } from '@vercel/analytics/react';
+import { KofiButton } from 'react-kofi-button';
+import { SrdItem, SearchResponse } from './types';
 
+interface AppProps {
+  serverUrl: string;
+}
 
-function App({serverUrl}) {
-  const [items, setItems] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [types, setTypes] = useState([]);
-  const [selectedType, setSelectedType] = useState(null);
-  const [darkMode, setDarkMode] = useState(() => {
-    const stored = localStorage.getItem("darkMode");
+function App({ serverUrl }: AppProps) {
+  const [items, setItems] = useState<SrdItem[]>([]);
+  const [selectedItem, setSelectedItem] = useState<SrdItem | null>(null);
+  const [types, setTypes] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const stored = localStorage.getItem('darkMode');
     if (stored !== null) {
-      return stored === "true";
+      return stored === 'true';
     }
-    // fallback to system preference
-    return window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return window.matchMedia != null &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
-  // Get current URL path
-  const location = window.location.pathname; // If not using react-router, use this
+  const location = window.location.pathname;
 
-  
   useEffect(() => {
-    fetch(serverUrl+"/srd/types")
+    fetch(serverUrl + '/srd/types')
       .then(res => res.json())
       .then(setTypes)
       .catch(console.error);
-  }, []);
+  }, [serverUrl]);
 
   useEffect(() => {
-  // Check if path matches /type/ItemName.md
     const match = location.match(/^\/([^/]+)\/([^/]+)$/);
     if (match) {
       const itemName = decodeURIComponent(match[2].replace('.md', ''));
-      fetch(serverUrl+'/search', {
+      fetch(serverUrl + '/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ q: itemName })
       })
         .then(res => res.json())
-        .then(data => {
+        .then((data: SearchResponse) => {
           if (Array.isArray(data.items) && data.items.length > 0) {
             setSelectedItem(data.items[0]);
             setItems(data.items);
@@ -53,27 +52,27 @@ function App({serverUrl}) {
         })
         .catch(console.error);
     }
-  }, [location]);
+  }, [location, serverUrl]);
 
-  const handleSearch = async (query) => {
-    const response = await fetch(serverUrl+'/search', {
+  const handleSearch = async (query: string) => {
+    const response = await fetch(serverUrl + '/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ q: query })
     });
-    const data = await response.json();
-    setItems(data.items || []);
+    const data: SearchResponse = await response.json();
+    setItems(data.items ?? []);
     setSelectedType(null);
     setSelectedItem(null);
   };
 
-  const handleTypeClick = async (type) => {
-    const response = await fetch(serverUrl+'/search', {
+  const handleTypeClick = async (type: string) => {
+    const response = await fetch(serverUrl + '/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ types: [type] })
     });
-    const data = await response.json();
+    const data: SearchResponse = await response.json();
     setItems(Array.isArray(data.items) ? data.items : []);
     setSelectedType(type);
     setSelectedItem(null);
@@ -81,7 +80,7 @@ function App({serverUrl}) {
 
   const toggleDarkMode = () => {
     setDarkMode(dm => {
-      localStorage.setItem('darkMode', !dm);
+      localStorage.setItem('darkMode', String(!dm));
       return !dm;
     });
   };
@@ -117,7 +116,7 @@ function App({serverUrl}) {
       </header>
       <main>
         {selectedItem ? (
-          <ItemDetail item={selectedItem} onBack={() => setSelectedItem(null)} darkMode={darkMode}/>
+          <ItemDetail item={selectedItem} onBack={() => setSelectedItem(null)} darkMode={darkMode} />
         ) : (
           <ItemList items={items} onItemClick={setSelectedItem} />
         )}
@@ -125,11 +124,11 @@ function App({serverUrl}) {
       <footer className="app-footer">
         <p>Made by <a href="https://github.com/tomaskroth/daggerheart-tools" title="Tomas Kroth">Tomás Kroth</a> | All content derived from <a href="https://www.daggerheart.com/srd/" title="Daggerheart SRD">Daggerheart SRD</a></p>
         <a href="https://www.flaticon.com" title="frame icons">Icons created by Flaticon</a>
-        <div className="support-button">    
-          <KofiButton username='tomaskroth' label='Support me' backgroundColor='#7e37e0ff' className='.support-button'/>
+        <div className="support-button">
+          <KofiButton username='tomaskroth' label='Support me' backgroundColor='#7e37e0ff' />
         </div>
       </footer>
-      <Analytics/>
+      <Analytics />
     </div>
   );
 }
