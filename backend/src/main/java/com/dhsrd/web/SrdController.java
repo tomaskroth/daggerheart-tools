@@ -1,42 +1,48 @@
 package com.dhsrd.web;
 
-import com.dhsrd.model.SrdItem;
+import com.dhsrd.domain.SrdService;
 import com.dhsrd.model.SrdType;
 import com.dhsrd.repo.SrdItemRepository;
 import com.dhsrd.search.LuceneService;
-import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
 public class SrdController {
+
     private final SrdItemRepository repo;
     private final LuceneService lucene;
+    private final SrdService srdService;
 
-    public SrdController(SrdItemRepository repo, LuceneService lucene) {
+    public SrdController(SrdItemRepository repo, LuceneService lucene, SrdService srdService) {
         this.repo = repo;
         this.lucene = lucene;
+        this.srdService = srdService;
     }
+    // TODO PBI-002: repo and lucene fields remain here temporarily pending full service layer extraction
 
     @GetMapping("")
     public ResponseEntity<String> aliveCheck() {
         return ResponseEntity.ok("SRD API is alive");
     }
 
-    /** Bulk upsert SRD items and (re)index them */
     @PostMapping("/srd/_bulkUpsert")
-    @Transactional
-    public ResponseEntity<?> bulkUpsert(@RequestBody List<SrdItem> items) throws Exception {
-        List<SrdItem> saved = repo.saveAll(items);
-        lucene.indexAll(saved);
-        return ResponseEntity.ok(Map.of("count", saved.size()));
+    public ResponseEntity<?> bulkUpsert(@RequestBody List<com.dhsrd.model.SrdItem> items) {
+        try {
+            List<com.dhsrd.model.SrdItem> saved = srdService.bulkUpsert(items);
+            return ResponseEntity.ok(Map.of("count", saved.size()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Bulk request exceeds maximum item count"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Internal server error"));
+        }
     }
 
-    /** Full-text search */
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) SearchDTO dto) throws Exception {
         if (dto == null) dto = new SearchDTO(null, null, null, null, 0, 20, true);
@@ -51,7 +57,6 @@ public class SrdController {
         ));
     }
 
-    /** Fetch a single item by slug */
     @GetMapping("/srd/{slug}")
     public ResponseEntity<?> bySlug(@PathVariable String slug) {
         return repo.findBySlug(slug)
@@ -59,15 +64,16 @@ public class SrdController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /** Force a full reindex from DB */
     @GetMapping("/srd/_reindex")
-    public ResponseEntity<?> reindex() throws Exception {
-        lucene.deleteAll();
-        lucene.indexAll(repo.findAll());
-        return ResponseEntity.ok(Map.of("status", "ok"));
+    public ResponseEntity<?> reindex() {
+        try {
+            srdService.reindex();
+            return ResponseEntity.ok(Map.of("status", "ok"));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "Internal server error"));
+        }
     }
 
-    /** Enum list for UI filter chips */
     @GetMapping("/srd/types")
     public List<SrdType> types() {
         return Arrays.asList(SrdType.values());
