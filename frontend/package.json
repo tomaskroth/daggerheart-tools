@@ -13,7 +13,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "test": "vitest run",
+    "test:e2e": "TS_NODE_PROJECT=tsconfig.e2e.json start-server-and-test start http://localhost:3000 cucumber-js"
   },
   "browserslist": {
     "production": [
@@ -26,5 +28,21 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "esbuild": "^0.25.0",
+    "@playwright/test": "^1.52.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.15.18",
+    "jsdom": "^29.1.1",
+    "playwright": "^1.52.0",
+    "start-server-and-test": "^2.0.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "vite": "^6.4.2",
+    "vitest": "^3.2.4"
   }
 }
