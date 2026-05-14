@@ -40,6 +40,20 @@ const initialState: CharacterState = {
   ],
 };
 
+/**
+ * Gauge fill helper — clicking slot at `index` (0-based) on an array of booleans:
+ *   - If index >= current filled count → fill all slots 0..index (extend right)
+ *   - If index <  current filled count → fill all slots 0..index-1 (retract from right)
+ *
+ * This matches the physical Daggerheart sheet where trackers fill left→right
+ * and empty right→left. Identical to the gold section pattern.
+ */
+function gaugeToggle(slots: boolean[], index: number): boolean[] {
+  const filled = slots.filter(Boolean).length;
+  const newCount = index + 1 > filled ? index + 1 : index;
+  return slots.map((_, i) => i < newCount);
+}
+
 function characterReducer(state: CharacterState, action: CharacterAction): CharacterState {
   switch (action.type) {
     case 'SET_IDENTITY':
@@ -57,12 +71,8 @@ function characterReducer(state: CharacterState, action: CharacterAction): Chara
     case 'SET_ARMOR_SCORE':
       return { ...state, armorScore: action.payload };
 
-    case 'TOGGLE_ARMOR_SLOT': {
-      const armorSlots = state.armorSlots.map((slot, i) =>
-        i === action.payload ? !slot : slot
-      );
-      return { ...state, armorSlots };
-    }
+    case 'TOGGLE_ARMOR_SLOT':
+      return { ...state, armorSlots: gaugeToggle(state.armorSlots, action.payload) };
 
     case 'SET_DAMAGE_THRESHOLD':
       return {
@@ -70,33 +80,17 @@ function characterReducer(state: CharacterState, action: CharacterAction): Chara
         damageThresholds: { ...state.damageThresholds, [action.payload.key]: action.payload.value },
       };
 
-    case 'TOGGLE_HP_SLOT': {
-      const hpSlots = state.hpSlots.map((slot, i) =>
-        i === action.payload ? !slot : slot
-      );
-      return { ...state, hpSlots };
-    }
+    case 'TOGGLE_HP_SLOT':
+      return { ...state, hpSlots: gaugeToggle(state.hpSlots, action.payload) };
 
-    case 'TOGGLE_STRESS_SLOT': {
-      const stressSlots = state.stressSlots.map((slot, i) =>
-        i === action.payload ? !slot : slot
-      );
-      return { ...state, stressSlots };
-    }
+    case 'TOGGLE_STRESS_SLOT':
+      return { ...state, stressSlots: gaugeToggle(state.stressSlots, action.payload) };
 
-    case 'TOGGLE_HOPE_DIAMOND': {
-      const hopeDiamonds = state.hopeDiamonds.map((diamond, i) =>
-        i === action.payload ? !diamond : diamond
-      );
-      return { ...state, hopeDiamonds };
-    }
+    case 'TOGGLE_HOPE_DIAMOND':
+      return { ...state, hopeDiamonds: gaugeToggle(state.hopeDiamonds, action.payload) };
 
-    case 'TOGGLE_PROFICIENCY_PIP': {
-      const proficiencyPips = state.proficiencyPips.map((pip, i) =>
-        i === action.payload ? !pip : pip
-      );
-      return { ...state, proficiencyPips };
-    }
+    case 'TOGGLE_PROFICIENCY_PIP':
+      return { ...state, proficiencyPips: gaugeToggle(state.proficiencyPips, action.payload) };
 
     case 'SET_EXPERIENCE': {
       const experience = state.experience.map((entry, i) =>
