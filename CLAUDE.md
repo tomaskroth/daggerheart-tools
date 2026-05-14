@@ -56,6 +56,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 | **Independent Review Agent** | `dev-flow/engineering/review/independent-review-guidelines.md` + `dev-flow/engineering/guidelines/coding-guidelines.md` |
 | **Increment Validation Agent** | `dev-flow/engineering/validation/increment-validation-guidelines.md` |
 | **State Update Agent** | `dev-flow/engineering/state/state-update-guidelines.md` |
+| **Any agent making commits** | `dev-flow/engineering/version-control-guidelines.md` |
 
 ---
 
@@ -63,39 +64,39 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 **Active increment:** Foundation — establish architectural patterns, test infrastructure, and security baseline.
 
-**Stage:** PBI-004 complete — PBI-005 next
+**Stage:** All PBIs complete — increment ready for validation
 
 **PBI status:**
 - `PBI-001` ✅ Complete
 - `PBI-002` ✅ Complete
 - `PBI-003` ✅ Complete
-- `PBI-006` ✅ Complete
 - `PBI-004` ✅ Complete
-- `PBI-005` ⏳ Pending
+- `PBI-005` ✅ Complete
+- `PBI-006` ✅ Complete
+- `PBI-007` ✅ Complete (Bug: multi-word item URL navigation — fix in branch `claude/flamboyant-dhawan-be5042`, pending merge)
 
 **Feature files:** `dev-flow/product/`
 - `PBI-001-security-baseline.feature` ✅
 - `PBI-002-backend-service-layer.feature` ✅
 - `PBI-003-backend-test-infrastructure.feature` ✅
-- `PBI-006-frontend-test-infrastructure.feature` ✅
 - `PBI-004-frontend-typescript-migration.feature` ✅
-- `PBI-005-frontend-architecture.feature` ⏳
+- `PBI-005-frontend-architecture.feature` ✅
+- `PBI-006-frontend-test-infrastructure.feature` ✅
+- `PBI-007-multiword-item-navigation.feature` ✅
 
-**Priority order:** PBI-005
+**Priority order:** — all complete, awaiting increment validation
 
 **Key constraints:**
 - The `@frontend @security` scenario ("Item detail page does not execute script tags") has a stub e2e step def — backend sanitisation is in place; the real Playwright assertion is tracked as TD-003.
-- `@regression` scenarios in PBI-004/005/006 are stubs — activated in PBI-005.
 - Step-def method naming convention (`should_/when_`) is established as exempt for BDD step definition methods (applies only to `@Test` JUnit methods).
 - `@SpringBootTest(RANDOM_PORT)` Cucumber context requires `@ActiveProfiles("dev")` to suppress `ProductionStartupGuard`.
 - e2e `cucumber.js` must be run with CWD=`frontend/` (the `test:e2e` script handles this automatically via `start-server-and-test`).
-- `APP_URL` env var overrides the default `http://localhost:3000` in `AppPage.ts`; `VITE_API_URL` overrides the production API base in `world.ts` (renamed from `REACT_APP_API_URL` in PBI-005).
-- PBI-004 left `icon?: string` as a dead prop in `ItemDetailProps` — remove in PBI-005.
-- PBI-004 left test files (`test-setup.js`, `SearchBar.test.js`, `ItemList.test.js`) as `.js` — migrate to `.ts` in PBI-005.
-- Vite migration (CRA → Vite) is deferred to PBI-005 per ADR-007; ADR-009 produced and pending approval.
+- `APP_URL` env var overrides the default `http://localhost:3000` in `AppPage.ts`; `VITE_API_URL` overrides the production API base in `world.ts`.
+- PBI-005 code is on branch `claude/flamboyant-dhawan-be5042` — push/merge to main pending GitHub authentication setup.
+- Playwright routes are LIFO (last registered = highest priority). `srd/types` must be registered after `srd/**` in `world.ts` to prevent the wildcard intercepting it.
 
 **Technical debt:** `dev-flow/product/technical-debt-backlog.md`
-- `TD-001` ⚠️ P1 — Vercel production SPA routing rewrite rule (BrowserRouter requires server-side catch-all)
+- `TD-001` ✅ Resolved — `frontend/vercel.json` SPA rewrite rule created in PBI-005
 - `TD-002` P2 — Backend search endpoint Lucene query injection hardening
 - `TD-003` P2 — Playwright assertion for XSS e2e scenario (stub in appSteps.ts)
 - `TD-004` P3 — Migrate data-fetching hooks to React Query
@@ -107,10 +108,13 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `ADR-004-vitest-component-testing.md` — Vitest 3.x + React Testing Library for frontend component tests
 - `ADR-005-playwright-cucumber-e2e.md` — Playwright + Cucumber JS for frontend e2e acceptance tests
 - `ADR-006-typescript-compiler-configuration.md` — strict: true tsconfig for frontend TypeScript
-- `ADR-007-cra-typescript-integration.md` — Stay on CRA for PBI-004; Vite migration deferred to PBI-005
-- `ADR-008-type-strategy-third-party-deps.md` — @types/react@^18.3, @types/react-dom@^18.3, @types/react-kofi-button
+- `ADR-007-cra-typescript-integration.md` — CRA used for PBI-004; superseded by ADR-009
+- `ADR-008-type-strategy-third-party-deps.md` — @types/react@^18.3, @types/react-dom@^18.3
+- `ADR-009-vite-migration.md` — Vite replaces CRA; custom SCSS tilde-fix plugin; `server.port: 3000`
+- `ADR-010-api-service-layer-and-hooks.md` — srdApi.ts service layer; useSrdTypes + useSrdSearch hooks; zero fetch calls in components
+- `ADR-011-react-router-url-navigation.md` — BrowserRouter in index.tsx; /:type/:filename route; DetailRoute uses fetchItemBySlug (GET /api/srd/{slug}) not search
 
-**Last updated:** 2026-05-13 — PBI-004 completed, passed independent review (tsc 0 errors, build green, 19/19 e2e scenarios green)
+**Last updated:** 2026-05-14 — PBI-005 completed (21/21 e2e, 4/4 Vitest, 0 tsc errors, build green); PBI-007 bug fix completed (multi-word item navigation via fetchItemBySlug); TD-001 resolved
 
 ---
 
@@ -127,3 +131,4 @@ These apply regardless of what you've been asked to do:
 7. **ADRs before implementation.** Any decision that meets the ADR trigger criteria in `dev-flow/engineering/architecture/architecture-guidelines.md` must be documented and acknowledged before the implementation begins.
 8. **Security agent runs twice.** Once at design time (after architecture, before implementation) and once after implementation (before independent review). Both passes are required for any PBI touching auth, endpoints, user input, or data persistence.
 9. **State Update Agent runs automatically.** After every PBI passes independent review, and after every accepted increment, the State Update Agent must update the `Current State` section of this file. Do not skip this step — it is how the next session knows where to start.
+10. **Nothing is ever committed directly to `main`.** All changes — code, ADRs, feature files, `CLAUDE.md`, dev-flow documentation — reach `main` through a branch and a pull request. See `dev-flow/engineering/version-control-guidelines.md` for branch naming conventions and the full branching model.
