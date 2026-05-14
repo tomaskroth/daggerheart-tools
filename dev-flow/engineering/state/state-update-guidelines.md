@@ -6,20 +6,23 @@ The State Update Agent runs automatically at two points in the workflow and has 
 
 ## When It Runs
 
-### Trigger 1: After a PBI is completed
+### Trigger 1: After a PBI is completed (on the increment branch)
 
 A PBI is complete when:
 - The Independent Review Agent has passed it (no remaining Blockers)
 - All `@backend` and `@frontend` acceptance scenarios for that PBI are passing in CI
 
-At this point the State Update Agent runs and updates `CLAUDE.md` to reflect that the PBI is done and the next one is active.
+At this point the State Update Agent runs, updates `CLAUDE.md`, and **commits the change to the current increment branch**. This update is included in the PR and reaches `main` when the branch merges — it is not committed to `main` directly.
 
-### Trigger 2: After an increment is accepted
+### Trigger 2: After an increment is accepted (docs branch)
 
-When the human accepts the Increment Validation Report, the State Update Agent runs and updates `CLAUDE.md` to reflect:
-- The completed increment is done
-- The next increment (if known) is now active, or the project is awaiting a new increment statement
-- The feature files from the completed increment are marked as done
+When the human accepts the Increment Validation Report, the increment branch has already been merged to `main`. The State Update Agent:
+
+1. Creates a `docs/state-update-<increment-slug>` branch from `main`
+2. Updates `CLAUDE.md` to reflect the accepted increment and the awaiting-next-increment state
+3. Commits to that branch and opens a PR
+
+This keeps the no-direct-commits-to-main rule intact. The PR for a post-acceptance state update is a single-file change and should be reviewed and merged promptly.
 
 ---
 

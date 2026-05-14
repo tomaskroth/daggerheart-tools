@@ -104,6 +104,31 @@ Bug Report (symptom + severity)
                          [State Update Agent] → Updates CLAUDE.md
 ```
 
+## Branch Model
+
+Every increment or bug fix lives on its own branch. Nothing is committed directly to `main`.
+
+```
+main (protected — no direct commits)
+  │
+  ├── increment/<slug>         All PBI work: code + ADRs + .feature files + CLAUDE.md
+  │     └── PR → merge commit → main
+  │
+  ├── fix/PBI-XXX-<slug>       Bug fix: code + regression test + CLAUDE.md
+  │     └── PR → merge commit → main
+  │
+  └── docs/<slug>              Doc-only changes (guidelines, post-acceptance state update)
+        └── PR → merge commit → main
+```
+
+**What goes on the branch:** everything. Code, ADRs, flow descriptors, `.feature` files, `CLAUDE.md` updates, and any dev-flow guideline changes triggered by work in the increment. The branch is the single source of truth until it merges.
+
+**When to open the PR:** after the Independent Review Agent passes the submission — not before.
+
+See `dev-flow/engineering/version-control-guidelines.md` for full naming conventions and commit rules.
+
+---
+
 ## Human Checkpoints
 
 You review three things — and only these three:

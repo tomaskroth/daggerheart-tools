@@ -215,6 +215,42 @@ To reject:
 
 ---
 
+## Managing Branches
+
+Every increment and bug fix lives on its own branch. Nothing commits directly to `main`.
+
+### Starting the branch
+
+When architecture is approved and engineering begins, the branch is created:
+
+```
+git checkout -b increment/<slug>        # for a new increment
+git checkout -b fix/PBI-XXX-<slug>      # for a bug fix
+```
+
+The first commit on the branch includes the ADRs and flow descriptors from the Architecture Agent.
+
+### During implementation
+
+All commits go to the branch — code, documentation, and everything else. The main working tree and `main` branch are not touched.
+
+### After Independent Review passes
+
+Create the PR:
+> "Create a PR for this branch."
+
+The PR is not opened earlier. Opening it before review passes creates noise.
+
+### Merging
+
+The human reviews and merges the PR. Merge commits (not squash) are preferred to preserve history. After merge, the increment branch is deleted.
+
+### Post-acceptance state update
+
+After the Increment Validation Report is accepted, the State Update Agent creates a `docs/state-update-<slug>` branch, updates `CLAUDE.md`, and opens a small PR. This is the only follow-up commit after an increment merges.
+
+---
+
 ## Other Useful Triggers
 
 ### Report a bug

@@ -99,6 +99,10 @@ dev-flow/engineering/architecture/
 └── PBI-XXX-<short-slug>-flow.md
 ```
 
+### Where ADRs and flow descriptors are committed
+
+ADRs and flow descriptors are committed to the **increment branch**, not directly to `main`. They are the first commit on the branch (created after the human approves the architecture checkpoint) and reach `main` as part of the PR. See `dev-flow/engineering/version-control-guidelines.md`.
+
 ---
 
 ## ADR Numbering and Filing
