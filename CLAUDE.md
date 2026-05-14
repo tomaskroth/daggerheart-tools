@@ -1,0 +1,129 @@
+# Daggerheart Tools — Claude Instructions
+
+This project uses a structured agentic dev flow. **Before doing any work, read this file in full.** It tells you what to read next depending on what you've been asked to do.
+
+---
+
+## What This Project Is
+
+A Daggerheart SRD compendium — React frontend + Spring Boot Java backend. Users browse and search tabletop RPG reference content. The backend uses H2 + Lucene for storage and full-text search.
+
+```
+daggerheart-tools/
+├── CLAUDE.md               ← You are here
+├── dev-flow/               ← The dev process (read before acting)
+├── frontend/               ← React app (JavaScript → TypeScript migration in progress)
+└── backend/                ← Spring Boot Java app
+```
+
+---
+
+## The Dev Flow
+
+All work on this project follows the process defined in `dev-flow/`. The short version:
+
+1. **Product track** — increment is broken into PBIs → prioritised → acceptance scenarios written (`.feature` files in `dev-flow/product/`)
+2. **Human checkpoint** — human approves scenarios
+3. **Architecture** — ADRs and flow descriptors produced for each PBI
+4. **Human checkpoint** — human approves architecture
+5. **Implementation** — Frontend and backend agents implement against the approved design
+6. **Security review** — inline, two passes (design + implementation)
+7. **Testing** — Test agent writes step definitions from `.feature` files
+8. **Independent review** — separate agent reviews code against guidelines
+9. **Human checkpoint** — human reviews escalations only
+10. **State update** — State Update Agent rewrites `Current State` in this file
+11. **Validation** — increment validated against original intent
+12. **State update** — State Update Agent rewrites `Current State` in this file again after increment is accepted
+
+**Read `dev-flow/HOW-TO-USE.md` if you need to understand how to trigger or navigate any stage.**
+
+---
+
+## Your Role in Each Session
+
+Determine what you're being asked to do, then read the corresponding guideline file before proceeding. Do not act without reading the relevant file first.
+
+| You are acting as… | Read this before starting |
+|---|---|
+| **Breakdown Agent** | `dev-flow/product/product-track-guidelines.md` |
+| **Prioritization Agent** | `dev-flow/product/product-track-guidelines.md` |
+| **Acceptance Scenario Agent** | `dev-flow/product/product-track-guidelines.md` + `dev-flow/product/acceptance-scenarios.md` |
+| **Architecture Agent** | `dev-flow/engineering/architecture/architecture-guidelines.md` |
+| **Implementation Agent (backend)** | `dev-flow/engineering/guidelines/coding-guidelines.md` + relevant accepted ADRs in `dev-flow/engineering/architecture/` |
+| **Implementation Agent (frontend)** | `dev-flow/engineering/guidelines/coding-guidelines.md` + relevant accepted ADRs in `dev-flow/engineering/architecture/` |
+| **Security Agent** | `dev-flow/engineering/security/security-agent-guidelines.md` |
+| **Test Implementation Agent** | `dev-flow/engineering/testing/testing-strategy.md` + the `.feature` file(s) for the PBI |
+| **Independent Review Agent** | `dev-flow/engineering/review/independent-review-guidelines.md` + `dev-flow/engineering/guidelines/coding-guidelines.md` |
+| **Increment Validation Agent** | `dev-flow/engineering/validation/increment-validation-guidelines.md` |
+| **State Update Agent** | `dev-flow/engineering/state/state-update-guidelines.md` |
+
+---
+
+## Current State
+
+**Active increment:** Foundation — establish architectural patterns, test infrastructure, and security baseline.
+
+**Stage:** PBI-004 complete — PBI-005 next
+
+**PBI status:**
+- `PBI-001` ✅ Complete
+- `PBI-002` ✅ Complete
+- `PBI-003` ✅ Complete
+- `PBI-006` ✅ Complete
+- `PBI-004` ✅ Complete
+- `PBI-005` ⏳ Pending
+
+**Feature files:** `dev-flow/product/`
+- `PBI-001-security-baseline.feature` ✅
+- `PBI-002-backend-service-layer.feature` ✅
+- `PBI-003-backend-test-infrastructure.feature` ✅
+- `PBI-006-frontend-test-infrastructure.feature` ✅
+- `PBI-004-frontend-typescript-migration.feature` ✅
+- `PBI-005-frontend-architecture.feature` ⏳
+
+**Priority order:** PBI-005
+
+**Key constraints:**
+- The `@frontend @security` scenario ("Item detail page does not execute script tags") has a stub e2e step def — backend sanitisation is in place; the real Playwright assertion is tracked as TD-003.
+- `@regression` scenarios in PBI-004/005/006 are stubs — activated in PBI-005.
+- Step-def method naming convention (`should_/when_`) is established as exempt for BDD step definition methods (applies only to `@Test` JUnit methods).
+- `@SpringBootTest(RANDOM_PORT)` Cucumber context requires `@ActiveProfiles("dev")` to suppress `ProductionStartupGuard`.
+- e2e `cucumber.js` must be run with CWD=`frontend/` (the `test:e2e` script handles this automatically via `start-server-and-test`).
+- `APP_URL` env var overrides the default `http://localhost:3000` in `AppPage.ts`; `VITE_API_URL` overrides the production API base in `world.ts` (renamed from `REACT_APP_API_URL` in PBI-005).
+- PBI-004 left `icon?: string` as a dead prop in `ItemDetailProps` — remove in PBI-005.
+- PBI-004 left test files (`test-setup.js`, `SearchBar.test.js`, `ItemList.test.js`) as `.js` — migrate to `.ts` in PBI-005.
+- Vite migration (CRA → Vite) is deferred to PBI-005 per ADR-007; ADR-009 produced and pending approval.
+
+**Technical debt:** `dev-flow/product/technical-debt-backlog.md`
+- `TD-001` ⚠️ P1 — Vercel production SPA routing rewrite rule (BrowserRouter requires server-side catch-all)
+- `TD-002` P2 — Backend search endpoint Lucene query injection hardening
+- `TD-003` P2 — Playwright assertion for XSS e2e scenario (stub in appSteps.ts)
+- `TD-004` P3 — Migrate data-fetching hooks to React Query
+
+**Accepted ADRs:**
+- `ADR-001-spring-security-admin-protection.md` — Spring Security HTTP Basic for admin endpoints
+- `ADR-002-html-content-sanitisation.md` — Jsoup `Safelist.basic()` sanitisation on ingest
+- `ADR-003-cucumber-acceptance-testing.md` — Cucumber JVM 7.x for backend acceptance tests
+- `ADR-004-vitest-component-testing.md` — Vitest 3.x + React Testing Library for frontend component tests
+- `ADR-005-playwright-cucumber-e2e.md` — Playwright + Cucumber JS for frontend e2e acceptance tests
+- `ADR-006-typescript-compiler-configuration.md` — strict: true tsconfig for frontend TypeScript
+- `ADR-007-cra-typescript-integration.md` — Stay on CRA for PBI-004; Vite migration deferred to PBI-005
+- `ADR-008-type-strategy-third-party-deps.md` — @types/react@^18.3, @types/react-dom@^18.3, @types/react-kofi-button
+
+**Last updated:** 2026-05-13 — PBI-004 completed, passed independent review (tsc 0 errors, build green, 19/19 e2e scenarios green)
+
+---
+
+## Hard Rules
+
+These apply regardless of what you've been asked to do:
+
+1. **Read before acting.** Always read the relevant guideline file for your role before writing any code or producing any document.
+2. **The independent review agent is isolated.** If acting as the review agent, do not carry over context from the implementation session. Review cold against the guidelines and the feature files only.
+3. **No business logic in controllers.** Backend controllers parse requests, delegate to services, format responses. Nothing else.
+4. **No API calls in components.** Frontend components render. Hooks fetch. Services call the API.
+5. **TypeScript only.** No new `.js` or `.jsx` files. All new frontend code is `.ts` or `.tsx`.
+6. **Tests are not optional.** Every PBI must have passing step definitions for all its `@backend` and `@frontend` scenarios before it is considered done.
+7. **ADRs before implementation.** Any decision that meets the ADR trigger criteria in `dev-flow/engineering/architecture/architecture-guidelines.md` must be documented and acknowledged before the implementation begins.
+8. **Security agent runs twice.** Once at design time (after architecture, before implementation) and once after implementation (before independent review). Both passes are required for any PBI touching auth, endpoints, user input, or data persistence.
+9. **State Update Agent runs automatically.** After every PBI passes independent review, and after every accepted increment, the State Update Agent must update the `Current State` section of this file. Do not skip this step — it is how the next session knows where to start.
