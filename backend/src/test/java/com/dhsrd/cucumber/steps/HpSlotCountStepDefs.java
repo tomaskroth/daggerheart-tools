@@ -30,9 +30,10 @@ public class HpSlotCountStepDefs {
     }
 
     @Then("the response includes a field {string} with value {int}")
+    @SuppressWarnings("unchecked")
     public void should_have_field_with_value(String field, int expectedValue) {
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        Map<?, ?> body = response.getBody();
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
         assertThat(body).isNotNull();
         assertThat(body).containsKey(field);
         assertThat(((Number) body.get(field)).intValue()).isEqualTo(expectedValue);
@@ -49,10 +50,11 @@ public class HpSlotCountStepDefs {
     }
 
     @Then("every response includes a field {string} with a value greater than 0")
+    @SuppressWarnings("unchecked")
     public void should_all_have_field_greater_than_zero(String field) {
         for (ResponseEntity<Map> r : allClassResponses) {
             assertThat(r.getStatusCode().is2xxSuccessful()).isTrue();
-            Map<?, ?> body = r.getBody();
+            Map<String, Object> body = (Map<String, Object>) r.getBody();
             assertThat(body).isNotNull();
             assertThat(body).containsKey(field);
             assertThat(((Number) body.get(field)).intValue()).isGreaterThan(0);
