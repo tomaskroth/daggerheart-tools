@@ -42,6 +42,7 @@ public class LuceneService {
             d.add(new IntPoint("level", it.getLevel()));
             d.add(new StoredField("level_store", it.getLevel()));
         }
+        if (it.getHpSlotCount() != null) d.add(new StoredField("hpSlotCount", it.getHpSlotCount()));
         return d;
     }
 
@@ -124,6 +125,7 @@ public class LuceneService {
                 m.put("type", d.get("type"));
                 m.put("subtype", d.get("subtype"));
                 m.put("level", d.get("level_store") == null ? null : Integer.valueOf(d.get("level_store")));
+                m.put("hpSlotCount", d.get("hpSlotCount") == null ? null : Integer.valueOf(d.get("hpSlotCount")));
                 m.put("tags", Arrays.asList(d.getValues("tag")));
                 m.put("score", sd[i].score);
                 hits.add(m);
