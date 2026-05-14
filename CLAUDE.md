@@ -65,9 +65,9 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 ## Current State
 
-**Active increment:** Foundation — establish architectural patterns, test infrastructure, and security baseline.
+**Active increment:** Character Sheet — five-section character sheet with SRD-backed pickers.
 
-**Stage:** All PBIs complete — increment ready for validation
+**Stage:** PBI-012 complete — character sheet increment done; all foundation PBIs also complete
 
 **PBI status:**
 - `PBI-001` ✅ Complete
@@ -77,6 +77,11 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `PBI-005` ✅ Complete
 - `PBI-006` ✅ Complete
 - `PBI-007` ✅ Complete (Bug: multi-word item URL navigation — fix in branch `claude/flamboyant-dhawan-be5042`, pending merge)
+- `PBI-008` ✅ Complete
+- `PBI-009` ✅ Complete
+- `PBI-010` ✅ Complete
+- `PBI-011` ✅ Complete
+- `PBI-012` ✅ Complete
 
 **Feature files:** `dev-flow/product/`
 - `PBI-001-security-baseline.feature` ✅
@@ -86,22 +91,31 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `PBI-005-frontend-architecture.feature` ✅
 - `PBI-006-frontend-test-infrastructure.feature` ✅
 - `PBI-007-multiword-item-navigation.feature` ✅
+- `PBI-008-character-sheet-foundation.feature` ✅
+- `PBI-009-character-sheet-class-identity.feature` ✅
+- `PBI-010-character-sheet-traits-defence.feature` ✅
+- `PBI-011-character-sheet-health-hope-gold.feature` ✅
+- `PBI-012-character-sheet-weapons-armor.feature` ✅
 
 **Priority order:** — all complete, awaiting increment validation
 
 **Key constraints:**
-- The `@frontend @security` scenario ("Item detail page does not execute script tags") has a stub e2e step def — backend sanitisation is in place; the real Playwright assertion is tracked as TD-003.
 - Step-def method naming convention (`should_/when_`) is established as exempt for BDD step definition methods (applies only to `@Test` JUnit methods).
 - `@SpringBootTest(RANDOM_PORT)` Cucumber context requires `@ActiveProfiles("dev")` to suppress `ProductionStartupGuard`.
 - e2e `cucumber.js` must be run with CWD=`frontend/` (the `test:e2e` script handles this automatically via `start-server-and-test`).
 - `APP_URL` env var overrides the default `http://localhost:3000` in `AppPage.ts`; `VITE_API_URL` overrides the production API base in `world.ts`.
-- PBI-005 code is on branch `claude/flamboyant-dhawan-be5042` — push/merge to main pending GitHub authentication setup.
+- PBI-005/007 code is on branch `claude/flamboyant-dhawan-be5042` — push/merge to main pending GitHub authentication setup.
 - Playwright routes are LIFO (last registered = highest priority). `srd/types` must be registered after `srd/**` in `world.ts` to prevent the wildcard intercepting it.
+- Character sheet: all 18 SUBCLASSES items in `srd.json` are tagged `["class:<slug>"]`; client-side filtering in `useSrdSubclasses` by `classSlug`.
+- Character sheet: WEAPONS and ARMOR SRD items use HTML content (not JSON strings as originally specified in ADR-013 draft); `useSrdWeapons` and `useSrdArmor` parse via regex. ADR-013 amended and approved.
+- Character sheet: `dangerouslySetInnerHTML` used only in `ClassFeatureSection` and `HopeSection` for backend-sanitised SRD content (ADR-002). The `extractHopeFeatureHtml` util carries a `⚠️ SECURITY` JSDoc.
+- Character sheet: shared API URL constant lives in `src/features/character-sheet/constants.ts` — all five SRD hooks import `CHARACTER_SHEET_API_URL` from there.
+- XSS e2e scenario (PBI-009 `@security @frontend`): real Playwright `page.on('dialog', ...)` assertion in place — TD-003 resolved.
 
 **Technical debt:** `dev-flow/product/technical-debt-backlog.md`
 - `TD-001` ✅ Resolved — `frontend/vercel.json` SPA rewrite rule created in PBI-005
 - `TD-002` P2 — Backend search endpoint Lucene query injection hardening
-- `TD-003` P2 — Playwright assertion for XSS e2e scenario (stub in appSteps.ts)
+- `TD-003` ✅ Resolved — Playwright XSS assertion implemented in PBI-009 step defs (`page.on('dialog', ...)`)
 - `TD-004` P3 — Migrate data-fetching hooks to React Query
 
 **Accepted ADRs:**
@@ -116,8 +130,10 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `ADR-009-vite-migration.md` — Vite replaces CRA; custom SCSS tilde-fix plugin; `server.port: 3000`
 - `ADR-010-api-service-layer-and-hooks.md` — srdApi.ts service layer; useSrdTypes + useSrdSearch hooks; zero fetch calls in components
 - `ADR-011-react-router-url-navigation.md` — BrowserRouter in index.tsx; /:type/:filename route; DetailRoute uses fetchItemBySlug (GET /api/srd/{slug}) not search
+- `ADR-012-character-sheet-state-management.md` — React Context + useReducer scoped to character-sheet feature; approved 2026-05-14
+- `ADR-013-weapon-armor-srd-item-types.md` — WEAPONS/ARMOR as structured SrdItem types in srd.json; HTML-parsing amendment approved 2026-05-14
 
-**Last updated:** 2026-05-14 — PBI-005 completed (21/21 e2e, 4/4 Vitest, 0 tsc errors, build green); PBI-007 bug fix completed (multi-word item navigation via fetchItemBySlug); TD-001 resolved
+**Last updated:** 2026-05-14 — PBI-008 through PBI-012 completed, passed independent review; tsc 0 errors; all @frontend and @security step definitions in place; ADR-012 and ADR-013 accepted
 
 ---
 

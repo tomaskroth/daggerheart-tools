@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@fontsource/quicksand": "^5.2.10",
     "@vercel/analytics": "^1.5.0",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-kofi-button": "^0.7.1",

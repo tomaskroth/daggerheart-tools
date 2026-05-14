@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+import { CharacterSheetPage } from './features/character-sheet';
 import SearchBar from './components/SearchBar';
 import ItemList from './components/ItemList';
 import ItemDetail from './components/ItemDetail';
@@ -98,6 +99,9 @@ function App({ serverUrl }: AppProps) {
         </button>
         <SearchBar onSearch={handleSearch} />
         <TypeMenu types={types} onTypeClick={handleTypeClick} />
+        <nav className="app-nav">
+          <Link to="/character-sheet" className="app-nav__link">Character Sheet</Link>
+        </nav>
       </header>
       <main>
         <Routes>
@@ -114,6 +118,10 @@ function App({ serverUrl }: AppProps) {
             path="/:type/:filename"
             element={<DetailRoute serverUrl={serverUrl} darkMode={darkMode} />}
           />
+          <Route
+            path="/character-sheet"
+            element={<CharacterSheetPage />}
+          />
         </Routes>
       </main>
       <footer className="app-footer">
@@ -127,5 +135,8 @@ function App({ serverUrl }: AppProps) {
     </div>
   );
 }
+
+App.displayName = 'App';
+DetailRoute.displayName = 'DetailRoute';
 
 export default App;
