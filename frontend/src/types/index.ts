@@ -8,6 +8,7 @@ export interface SrdItem {
   level?: string | number;
   recallCost?: string | number;
   subtype?: string;
+  tags?: string[];
 }
 
 export interface SearchResponse {

@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import ServerStatusGate from './components/ServerStatusGate';
 import './App.css';
+import '@fontsource/quicksand/700.css';
 
 const SERVER_URL = import.meta.env.VITE_API_URL ?? 'https://daggerheart-tools-4v1t.onrender.com/api';
 
