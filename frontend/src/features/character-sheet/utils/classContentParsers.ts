@@ -2,23 +2,26 @@
  * Extracts the two domain names from a CLASSES SrdItem content HTML string.
  *
  * The domain line appears inside a blockquote as:
- *   <strong>• DOMAINS:</strong> Domain1 &amp; Domain2
+ *   <strong>• DOMAINS:</strong> <a href="...">Domain1</a> &amp; <a href="...">Domain2</a>
  *
  * Returns an array of (up to two) domain name strings, or an empty array
  * if the pattern is not found.
  */
 export function extractDomains(contentHtml: string): string[] {
-  // Match the text following "DOMAINS:" up to the next <br or <strong or </p
-  const match = contentHtml.match(/DOMAINS:<\/strong>\s*([^<]+)/i);
-  if (!match) return [];
+  // Capture everything between DOMAINS:</strong> and the next <br
+  const sectionMatch = contentHtml.match(/DOMAINS:<\/strong>\s*([\s\S]*?)<br/i);
+  if (!sectionMatch) return [];
 
-  const raw = match[1];
-  // Decode HTML entity for ampersand and split on " & "
-  const decoded = raw.replace(/&amp;/g, '&');
-  return decoded
-    .split('&')
-    .map((name) => name.trim())
-    .filter((name) => name.length > 0);
+  const sectionHtml = sectionMatch[1];
+  // Extract the visible text from each <a> tag
+  const domains: string[] = [];
+  const linkPattern = /<a[^>]*>([^<]+)<\/a>/gi;
+  let linkMatch;
+  while ((linkMatch = linkPattern.exec(sectionHtml)) !== null) {
+    const name = linkMatch[1].trim();
+    if (name.length > 0) domains.push(name);
+  }
+  return domains;
 }
 
 /**

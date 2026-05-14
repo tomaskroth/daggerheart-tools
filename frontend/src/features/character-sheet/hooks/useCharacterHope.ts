@@ -1,15 +1,16 @@
 import { useCallback } from 'react';
 import { useCharacterContext } from '../context/CharacterContext';
-import type { CharacterState } from '../types/character';
+import type { CharacterState, ExperienceEntry } from '../types/character';
 
 interface UseCharacterHopeResult {
   hopeDiamonds: boolean[];
   proficiencyPips: boolean[];
-  experience: string[];
+  experience: ExperienceEntry[];
   gold: CharacterState['gold'];
   toggleHopeDiamond: (index: number) => void;
   toggleProficiencyPip: (index: number) => void;
-  setExperience: (index: number, value: string) => void;
+  setExperienceName: (index: number, value: string) => void;
+  setExperienceModifier: (index: number, value: number | null) => void;
   setGold: (patch: Partial<CharacterState['gold']>) => void;
 }
 
@@ -30,9 +31,16 @@ export function useCharacterHope(): UseCharacterHopeResult {
     [dispatch]
   );
 
-  const setExperience = useCallback(
+  const setExperienceName = useCallback(
     (index: number, value: string) => {
-      dispatch({ type: 'SET_EXPERIENCE', payload: { index, value } });
+      dispatch({ type: 'SET_EXPERIENCE_NAME', payload: { index, value } });
+    },
+    [dispatch]
+  );
+
+  const setExperienceModifier = useCallback(
+    (index: number, value: number | null) => {
+      dispatch({ type: 'SET_EXPERIENCE_MODIFIER', payload: { index, value } });
     },
     [dispatch]
   );
@@ -51,7 +59,8 @@ export function useCharacterHope(): UseCharacterHopeResult {
     gold: state.gold,
     toggleHopeDiamond,
     toggleProficiencyPip,
-    setExperience,
+    setExperienceName,
+    setExperienceModifier,
     setGold,
   };
 }

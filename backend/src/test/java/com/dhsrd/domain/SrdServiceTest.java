@@ -246,6 +246,50 @@ class SrdServiceTest {
         verify(luceneService).indexAll(anyList());
     }
 
+    // --- loadInitialData / enrichClassItem (PBI-017) ---
+
+    @Test
+    void should_setHpSlotCount_when_classContentContainsStartingHitPoints() throws Exception {
+        when(luceneService.isEmpty()).thenReturn(true);
+        when(repository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
+
+        srdService.loadInitialData();
+
+        ArgumentCaptor<List<SrdItem>> captor = ArgumentCaptor.forClass(List.class);
+        verify(repository).saveAll(captor.capture());
+        List<SrdItem> saved = captor.getValue();
+        List<SrdItem> classes = saved.stream()
+                .filter(i -> i.getType() == SrdType.CLASSES)
+                .toList();
+        assertThat(classes).isNotEmpty();
+        for (SrdItem cls : classes) {
+            assertThat(cls.getHpSlotCount())
+                    .as("hpSlotCount must be set for class '%s'", cls.getSlug())
+                    .isNotNull()
+                    .isGreaterThan(0);
+        }
+    }
+
+    @Test
+    void should_notSetHpSlotCount_when_itemTypeIsNotClasses() throws Exception {
+        when(luceneService.isEmpty()).thenReturn(true);
+        when(repository.saveAll(anyList())).thenAnswer(inv -> inv.getArgument(0));
+
+        srdService.loadInitialData();
+
+        ArgumentCaptor<List<SrdItem>> captor = ArgumentCaptor.forClass(List.class);
+        verify(repository).saveAll(captor.capture());
+        List<SrdItem> nonClasses = captor.getValue().stream()
+                .filter(i -> i.getType() != SrdType.CLASSES)
+                .toList();
+        assertThat(nonClasses).isNotEmpty();
+        for (SrdItem item : nonClasses) {
+            assertThat(item.getHpSlotCount())
+                    .as("hpSlotCount should remain null for non-class item '%s'", item.getSlug())
+                    .isNull();
+        }
+    }
+
     // --- helpers ---
 
     private SrdItem itemWithContent(String content) {

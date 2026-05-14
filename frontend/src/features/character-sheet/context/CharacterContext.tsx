@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer } from 'react';
-import type { CharacterState, CharacterAction } from '../types/character';
+import type { CharacterState, CharacterAction, ExperienceEntry } from '../types/character';
 
 const initialState: CharacterState = {
   name: '',
@@ -21,13 +21,14 @@ const initialState: CharacterState = {
   armorScore: null,
   armorSlots: Array(6).fill(false) as boolean[],
 
+  hpSolidCount: 6,
   damageThresholds: { minor: null, major: null, severe: null },
   hpSlots: Array(10).fill(false) as boolean[],
   stressSlots: Array(8).fill(false) as boolean[],
 
   hopeDiamonds: Array(6).fill(false) as boolean[],
   proficiencyPips: [true, false, false, false, false, false],
-  experience: Array(5).fill('') as string[],
+  experience: Array(5).fill(null).map((): ExperienceEntry => ({ name: '', modifier: null })),
   gold: { handfuls: 0, bags: 0, chest: 0 },
 
   primaryWeapon: null,
@@ -92,9 +93,16 @@ function characterReducer(state: CharacterState, action: CharacterAction): Chara
     case 'TOGGLE_PROFICIENCY_PIP':
       return { ...state, proficiencyPips: gaugeToggle(state.proficiencyPips, action.payload) };
 
-    case 'SET_EXPERIENCE': {
+    case 'SET_EXPERIENCE_NAME': {
       const experience = state.experience.map((entry, i) =>
-        i === action.payload.index ? action.payload.value : entry
+        i === action.payload.index ? { ...entry, name: action.payload.value } : entry
+      );
+      return { ...state, experience };
+    }
+
+    case 'SET_EXPERIENCE_MODIFIER': {
+      const experience = state.experience.map((entry, i) =>
+        i === action.payload.index ? { ...entry, modifier: action.payload.value } : entry
       );
       return { ...state, experience };
     }

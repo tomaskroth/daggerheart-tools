@@ -1,11 +1,11 @@
 import React from 'react';
 import { useCharacterHealth } from '../hooks/useCharacterHealth';
 
-const HP_SOLID_COUNT = 6;
 const STRESS_SOLID_COUNT = 4;
 
 function DamageHealthSection(): React.ReactElement {
   const {
+    hpSolidCount,
     damageThresholds,
     hpSlots,
     stressSlots,
@@ -98,7 +98,7 @@ function DamageHealthSection(): React.ReactElement {
         <span className="damage-health-section__tracker-label">HP</span>
         <div className="damage-health-section__slots">
           {hpSlots.map((isMarked, index) => {
-            const isDashed = index >= HP_SOLID_COUNT;
+            const isDashed = index >= hpSolidCount;
             return (
               <button
                 key={index}

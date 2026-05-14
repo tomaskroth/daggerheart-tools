@@ -1369,3 +1369,124 @@ Then('the Class Feature section spans both columns', async function (this: Custo
     const appPage = new AppPage(this.page);
     expect(await appPage.classFeatureSectionSpansBothColumns()).toBe(true);
 });
+
+// =============================================================================
+// Shared background step (PBI-017, PBI-018, PBI-019)
+// =============================================================================
+
+Given('the character sheet is open', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigateToCharacterSheet();
+    await appPage.waitForCharacterSheet();
+});
+
+When('the user selects {string} from the class dropdown', async function (this: CustomWorld, className: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.selectDropdownOption('Class', className);
+});
+
+Given('the user has selected {string} from the class dropdown', async function (this: CustomWorld, className: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.selectDropdownOption('Class', className);
+});
+
+// =============================================================================
+// PBI-017 — Class HP slot count
+// =============================================================================
+
+Then('exactly {int} HP boxes have a solid border', async function (this: CustomWorld, expectedCount: number) {
+    const appPage = new AppPage(this.page);
+    const count = await appPage.countHpBoxesByType('solid');
+    expect(count).toBe(expectedCount);
+});
+
+Then('the remaining {int} HP boxes have a dashed border', async function (this: CustomWorld, expectedCount: number) {
+    const appPage = new AppPage(this.page);
+    const count = await appPage.countHpBoxesByType('dashed');
+    expect(count).toBe(expectedCount);
+});
+
+// =============================================================================
+// PBI-018 — Domain badges display
+// =============================================================================
+
+Then('two domain badges are displayed: {string} and {string}', async function (this: CustomWorld, domain1: string, domain2: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.domainBadgesContain(domain1, domain2)).toBe(true);
+});
+
+Then('the placeholder text {string} is no longer visible', async function (this: CustomWorld, text: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isPlaceholderTextVisible(text)).toBe(false);
+});
+
+Then('the placeholder text {string} is displayed', async function (this: CustomWorld, text: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isPlaceholderTextVisible(text)).toBe(true);
+});
+
+Then('no domain badges are visible', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.noDomainBadgesVisible()).toBe(true);
+});
+
+Then('no badges for {string} or {string} are visible', async function (this: CustomWorld, domain1: string, domain2: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.noBadgesForDomains(domain1, domain2)).toBe(true);
+});
+
+// =============================================================================
+// PBI-019 — Experience name and modifier fields
+// =============================================================================
+
+Then('the experience section displays {int} rows', async function (this: CustomWorld, expectedCount: number) {
+    const appPage = new AppPage(this.page);
+    const count = await appPage.getExperienceLineCount();
+    expect(count).toBe(expectedCount);
+});
+
+Then('each row has a name input field', async function (this: CustomWorld) {
+    for (let i = 1; i <= 5; i++) {
+        const input = this.page.locator(`[data-testid="experience-line-${i}-name"]`);
+        expect(await input.count()).toBe(1);
+    }
+});
+
+Then('each row has a modifier input field', async function (this: CustomWorld) {
+    for (let i = 1; i <= 5; i++) {
+        const input = this.page.locator(`[data-testid="experience-line-${i}-modifier"]`);
+        expect(await input.count()).toBe(1);
+    }
+});
+
+When('the user enters {string} in the name field of experience line {int}', async function (this: CustomWorld, value: string, lineNumber: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.fillExperienceNameField(lineNumber, value);
+});
+
+When('the user enters {int} in the modifier field of experience line {int}', async function (this: CustomWorld, value: number, lineNumber: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.fillExperienceModifierField(lineNumber, String(value));
+});
+
+Then('the name field of experience line {int} shows {string}', async function (this: CustomWorld, lineNumber: number, expectedValue: string) {
+    const appPage = new AppPage(this.page);
+    const actual = await appPage.getExperienceNameValue(lineNumber);
+    expect(actual).toBe(expectedValue);
+});
+
+Then('the modifier field of experience line {int} shows {int}', async function (this: CustomWorld, lineNumber: number, expectedValue: number) {
+    const appPage = new AppPage(this.page);
+    const actual = await appPage.getExperienceModifierValue(lineNumber);
+    expect(actual).toBe(String(expectedValue));
+});
+
+Then('all experience name fields are empty', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allExperienceNameFieldsEmpty()).toBe(true);
+});
+
+Then('all experience modifier fields are empty', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allExperienceModifierFieldsEmpty()).toBe(true);
+});

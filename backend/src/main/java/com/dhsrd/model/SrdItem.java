@@ -1,9 +1,11 @@
 package com.dhsrd.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "srd_items", indexes = {
         @Index(name="idx_srd_slug", columnList = "slug", unique = true),
@@ -34,7 +36,8 @@ public class SrdItem {
     private String subtype;
 
     private Integer recallCost;
-    private Integer level;   // optional
+    private Integer level;
+    private Integer hpSlotCount;
     private String sourceRef;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -74,6 +77,9 @@ public class SrdItem {
 
     public Integer getRecallCost() { return recallCost; }
     public void setRecallCost(Integer recallCost) { this.recallCost = recallCost; }
+
+    public Integer getHpSlotCount() { return hpSlotCount; }
+    public void setHpSlotCount(Integer hpSlotCount) { this.hpSlotCount = hpSlotCount; }
 
     public String getSourceRef() { return sourceRef; }
     public void setSourceRef(String sourceRef) { this.sourceRef = sourceRef; }

@@ -9,6 +9,7 @@ export interface SrdItem {
   recallCost?: string | number;
   subtype?: string;
   tags?: string[];
+  hpSlotCount?: number;
 }
 
 export interface SearchResponse {
