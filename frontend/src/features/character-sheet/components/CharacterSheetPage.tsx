@@ -26,7 +26,6 @@ function CharacterSheetPageInner(): React.ReactElement {
           <HopeSection />
           <ExperienceSection />
           <GoldSection />
-          <ClassFeatureSection />
         </div>
         <div className="character-sheet__column character-sheet__column--right" data-testid="right-column">
           <ActiveWeaponsSection />
@@ -34,6 +33,8 @@ function CharacterSheetPageInner(): React.ReactElement {
           <InventorySection />
         </div>
       </div>
+      {/* Class Feature spans full width below the two-column grid (PBI-016) */}
+      <ClassFeatureSection />
     </div>
   );
 }
