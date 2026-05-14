@@ -1197,6 +1197,16 @@ main {
   gap: 0.5rem;
 }
 
+.experience-section__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.experience-section__row .experience-section__line-input {
+  flex: 1;
+}
+
 /* ============================================================
    Gold Section
    ============================================================ */

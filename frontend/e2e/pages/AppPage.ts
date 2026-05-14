@@ -408,20 +408,60 @@ export class AppPage {
     }
 
     async getExperienceLineCount(): Promise<number> {
-        await this.page.waitForSelector('[data-testid^="experience-line-"]', { timeout: 5000 });
-        return this.page.$$eval('[data-testid^="experience-line-"]', (els) => els.length);
+        await this.page.waitForSelector('.experience-section__row', { timeout: 5000 });
+        return this.page.$$eval('.experience-section__row', (els) => els.length);
     }
 
     async fillExperienceLine(lineNumber: number, value: string): Promise<void> {
-        const input = this.page.locator(`[data-testid="experience-line-${lineNumber}"]`);
+        const input = this.page.locator(`[data-testid="experience-line-${lineNumber}-name"]`);
         await input.waitFor({ timeout: 5000 });
         await input.fill(value);
     }
 
     async getExperienceLineValue(lineNumber: number): Promise<string> {
-        const input = this.page.locator(`[data-testid="experience-line-${lineNumber}"]`);
+        const input = this.page.locator(`[data-testid="experience-line-${lineNumber}-name"]`);
         await input.waitFor({ timeout: 5000 });
         return input.inputValue();
+    }
+
+    async fillExperienceNameField(lineNumber: number, value: string): Promise<void> {
+        const input = this.page.locator(`[data-testid="experience-line-${lineNumber}-name"]`);
+        await input.waitFor({ timeout: 5000 });
+        await input.fill(value);
+    }
+
+    async fillExperienceModifierField(lineNumber: number, value: string): Promise<void> {
+        const input = this.page.locator(`[data-testid="experience-line-${lineNumber}-modifier"]`);
+        await input.waitFor({ timeout: 5000 });
+        await input.fill(value);
+    }
+
+    async getExperienceNameValue(lineNumber: number): Promise<string> {
+        const input = this.page.locator(`[data-testid="experience-line-${lineNumber}-name"]`);
+        await input.waitFor({ timeout: 5000 });
+        return input.inputValue();
+    }
+
+    async getExperienceModifierValue(lineNumber: number): Promise<string> {
+        const input = this.page.locator(`[data-testid="experience-line-${lineNumber}-modifier"]`);
+        await input.waitFor({ timeout: 5000 });
+        return input.inputValue();
+    }
+
+    async allExperienceNameFieldsEmpty(): Promise<boolean> {
+        for (let i = 1; i <= 5; i++) {
+            const val = await this.getExperienceNameValue(i);
+            if (val !== '') return false;
+        }
+        return true;
+    }
+
+    async allExperienceModifierFieldsEmpty(): Promise<boolean> {
+        for (let i = 1; i <= 5; i++) {
+            const val = await this.getExperienceModifierValue(i);
+            if (val !== '') return false;
+        }
+        return true;
     }
 
     async getGoldSlotCount(groupLabel: string): Promise<number> {
@@ -707,5 +747,46 @@ export class AppPage {
             '.character-sheet__section h2',
             (el) => window.getComputedStyle(el).color,
         );
+    }
+
+    // =============================================================================
+    // Domain badge helpers (PBI-018)
+    // =============================================================================
+
+    async domainBadgesContain(domain1: string, domain2: string): Promise<boolean> {
+        await this.page.waitForSelector('[data-testid="class-badges"]', { timeout: 10000 });
+        const badges = await this.getDomainBadgeTexts();
+        return badges.includes(domain1) && badges.includes(domain2);
+    }
+
+    async isPlaceholderTextVisible(text: string): Promise<boolean> {
+        await this.page.waitForSelector('[data-testid="class-badges"]', { timeout: 10000 });
+        const placeholder = this.page.locator('.class-header__badge--placeholder');
+        const count = await placeholder.count();
+        if (count === 0) return false;
+        const content = await placeholder.textContent();
+        return (content ?? '').includes(text);
+    }
+
+    async noDomainBadgesVisible(): Promise<boolean> {
+        await this.page.waitForSelector('[data-testid="class-badges"]', { timeout: 10000 });
+        const count = await this.page.$$eval(
+            '[data-testid="class-badges"] .class-header__badge--domain',
+            (els) => els.length,
+        );
+        return count === 0;
+    }
+
+    async noBadgesForDomains(domain1: string, domain2: string): Promise<boolean> {
+        const badges = await this.getDomainBadgeTexts();
+        return !badges.includes(domain1) && !badges.includes(domain2);
+    }
+
+    // =============================================================================
+    // HP box type helpers (PBI-017)
+    // =============================================================================
+
+    async countHpBoxesByType(slotType: 'solid' | 'dashed'): Promise<number> {
+        return this.countSlotsByType('hp-tracker', slotType);
     }
 }

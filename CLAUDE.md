@@ -65,9 +65,9 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 ## Current State
 
-**Active increment:** Character Sheet — visual improvements increment (PBI-013–016).
+**Active increment:** Character Sheet — class HP count, domain badges fix, experience fields (PBI-017–019).
 
-**Stage:** PBI-013–016 complete — implementation, CSS, reducer logic, layout, and full e2e step definitions done; tsc 0 errors; pending PR merge.
+**Stage:** PBI-017–019 complete — implementation, tests, and e2e step definitions done; pending PR merge.
 
 **PBI status:**
 - `PBI-001` ✅ Complete
@@ -82,10 +82,13 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `PBI-010` ✅ Complete
 - `PBI-011` ✅ Complete
 - `PBI-012` ✅ Complete
-- `PBI-013` ✅ Complete — character sheet styles and styled nav link (branch `increment/character-sheet-improvements`, merged into increment)
+- `PBI-013` ✅ Complete — character sheet styles and styled nav link
 - `PBI-014` ✅ Complete — trait score input width widened to prevent clipping
 - `PBI-015` ✅ Complete — slot trackers fill/empty as sequential gauges via `gaugeToggle`
 - `PBI-016` ✅ Complete — Class Feature section moved below two-column grid for full width
+- `PBI-017` ✅ Complete — backend parses `STARTING HIT POINTS` at ingestion into `hpSlotCount`; frontend wires `hpSolidCount` through context into `DamageHealthSection`
+- `PBI-018` ✅ Complete — `extractDomains` fixed to capture `<a>` link text instead of stopping at first HTML tag
+- `PBI-019` ✅ Complete — experience lines split into separate name (text) and modifier (number) fields; `ExperienceEntry` type, reducer, hook, component, and CSS updated
 
 **Feature files:** `dev-flow/product/`
 - `PBI-001-security-baseline.feature` ✅
@@ -104,6 +107,9 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `PBI-014-trait-input-width.feature` ✅
 - `PBI-015-slot-tracker-gauge-behaviour.feature` ✅
 - `PBI-016-class-feature-full-width.feature` ✅
+- `PBI-017-class-hp-slot-count.feature` ✅
+- `PBI-018-domain-badges-fix.feature` ✅
+- `PBI-019-experience-name-and-modifier.feature` ✅
 
 **Priority order:** — awaiting increment validation
 
@@ -120,6 +126,9 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - XSS e2e scenario (PBI-009 `@security @frontend`): real Playwright `page.on('dialog', ...)` assertion in place — TD-003 resolved.
 - Slot gauges: `gaugeToggle(slots, index)` in `CharacterContext.tsx` handles fill-right/empty-right for HP, stress, hope, armor, and proficiency. Clicking slot N fills 0..N; clicking the last-filled slot empties it.
 - AppPage.ts `clickSlot(testId)` takes a full test ID string; `areSlotsMarkedInRange(prefix, from, to)` builds IDs as `${prefix}-${i}`. Armor slots are 0-indexed in the DOM (`armor-slot-0` = slot 1); use `clickArmorSlot(n)` / `isArmorSlotMarked(n)` which handle the offset.
+- Experience lines (PBI-019): each row has `data-testid="experience-line-{N}-name"` and `data-testid="experience-line-{N}-modifier"`. `AppPage.getExperienceLineCount()` counts `.experience-section__row` elements; `fillExperienceLine` / `getExperienceLineValue` target the `-name` input.
+- HP solid/dashed split (PBI-017): `hpSolidCount` lives in `CharacterState` (default 6); set via `SET_IDENTITY` when class changes in `ClassHeader`. `useCharacterHealth` exposes it; `DamageHealthSection` uses it directly.
+- Domain badges (PBI-018): `extractDomains` in `classContentParsers.ts` parses `<a>` tags from the HTML section between `DOMAINS:</strong>` and `<br`. Domain names come from link text, not plain text nodes.
 - Version control: all work happens on `increment/<slug>` or `fix/PBI-XXX-<slug>` branches in the main working tree. No git worktrees (removed from guidelines 2026-05-14).
 
 **Technical debt:** `dev-flow/product/technical-debt-backlog.md`
@@ -142,8 +151,9 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `ADR-011-react-router-url-navigation.md` — BrowserRouter in index.tsx; /:type/:filename route; DetailRoute uses fetchItemBySlug (GET /api/srd/{slug}) not search
 - `ADR-012-character-sheet-state-management.md` — React Context + useReducer scoped to character-sheet feature; approved 2026-05-14
 - `ADR-013-weapon-armor-srd-item-types.md` — WEAPONS/ARMOR as structured SrdItem types in srd.json; HTML-parsing amendment approved 2026-05-14
+- `ADR-014-class-hp-slot-count.md` — `hpSlotCount` parsed from CLASSES content at ingestion, stored as nullable `Integer` on `SrdItem`; approved 2026-05-14
 
-**Last updated:** 2026-05-14 — PBI-013–016 implemented and tested; tsc 0 errors; all @frontend step definitions in place; increment on `increment/character-sheet-improvements`, PR pending merge
+**Last updated:** 2026-05-14 — PBI-017–019 implemented and tested; all @frontend and @backend step definitions in place; increment on `increment/character-sheet-hp-domains-experience`, PR pending merge
 
 ---
 

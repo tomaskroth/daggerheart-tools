@@ -16,13 +16,19 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class SrdService {
 
+    private static final Logger log = Logger.getLogger(SrdService.class.getName());
     private static final int MAX_BULK_ITEMS = 2000;
     private static final int DEFAULT_FROM = 0;
     private static final int DEFAULT_SIZE = 300;
+    private static final Pattern HP_SLOT_PATTERN =
+            Pattern.compile("STARTING HIT POINTS[^>]*>\\s*(\\d+)", Pattern.CASE_INSENSITIVE);
 
     private final SrdItemRepository repository;
     private final LuceneService luceneService;
@@ -66,6 +72,7 @@ public class SrdService {
             try (InputStream is = getClass().getResourceAsStream("/srd.json")) {
                 if (is == null) return;
                 List<SrdItem> items = objectMapper.readValue(is, new TypeReference<>() {});
+                items.forEach(this::enrichClassItem);
                 List<SrdItem> saved = repository.saveAll(items);
                 luceneService.indexAll(saved);
             }
@@ -109,5 +116,17 @@ public class SrdService {
             item.setContent(Jsoup.clean(item.getContent(), Safelist.basic()));
         }
         return item;
+    }
+
+    private void enrichClassItem(SrdItem item) {
+        if (item.getType() != SrdType.CLASSES || item.getContent() == null) {
+            return;
+        }
+        Matcher matcher = HP_SLOT_PATTERN.matcher(item.getContent());
+        if (matcher.find()) {
+            item.setHpSlotCount(Integer.parseInt(matcher.group(1)));
+        } else {
+            log.warning("No STARTING HIT POINTS found in CLASSES item: " + item.getSlug());
+        }
     }
 }

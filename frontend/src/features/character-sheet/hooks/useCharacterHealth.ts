@@ -3,6 +3,7 @@ import { useCharacterContext } from '../context/CharacterContext';
 import type { CharacterState } from '../types/character';
 
 interface UseCharacterHealthResult {
+  hpSolidCount: number;
   damageThresholds: CharacterState['damageThresholds'];
   hpSlots: boolean[];
   stressSlots: boolean[];
@@ -36,6 +37,7 @@ export function useCharacterHealth(): UseCharacterHealthResult {
   );
 
   return {
+    hpSolidCount: state.hpSolidCount,
     damageThresholds: state.damageThresholds,
     hpSlots: state.hpSlots,
     stressSlots: state.stressSlots,

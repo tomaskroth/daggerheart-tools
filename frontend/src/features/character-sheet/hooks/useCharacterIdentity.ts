@@ -1,7 +1,7 @@
 import { useCharacterContext } from '../context/CharacterContext';
 import type { CharacterState } from '../types/character';
 
-type IdentityFields = Pick<CharacterState, 'name' | 'pronouns' | 'classSlug' | 'heritageSlug' | 'subclassSlug' | 'level'>;
+type IdentityFields = Pick<CharacterState, 'name' | 'pronouns' | 'classSlug' | 'heritageSlug' | 'subclassSlug' | 'level' | 'hpSolidCount'>;
 
 interface UseCharacterIdentityResult extends IdentityFields {
   setName: (value: string) => void;
@@ -27,6 +27,7 @@ export function useCharacterIdentity(): UseCharacterIdentityResult {
     heritageSlug: state.heritageSlug,
     subclassSlug: state.subclassSlug,
     level: state.level,
+    hpSolidCount: state.hpSolidCount,
     setName: (value) => setIdentity({ name: value }),
     setPronouns: (value) => setIdentity({ pronouns: value }),
     setClassSlug: (value) => setIdentity({ classSlug: value }),

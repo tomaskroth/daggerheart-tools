@@ -1,3 +1,8 @@
+export interface ExperienceEntry {
+  name: string;
+  modifier: number | null;
+}
+
 export interface WeaponEntry {
   slug: string;
   name: string;
@@ -42,15 +47,16 @@ export interface CharacterState {
   armorScore: number | null;
   armorSlots: boolean[];
 
-  // Health (PBI-011)
+  // Health (PBI-011, PBI-017)
+  hpSolidCount: number;
   damageThresholds: { minor: number | null; major: number | null; severe: number | null };
   hpSlots: boolean[];
   stressSlots: boolean[];
 
-  // Hope & Gold (PBI-011)
+  // Hope & Gold (PBI-011, PBI-019)
   hopeDiamonds: boolean[];
   proficiencyPips: boolean[];
-  experience: string[];
+  experience: ExperienceEntry[];
   gold: { handfuls: number; bags: number; chest: number };
 
   // Equipment (PBI-012)
@@ -62,7 +68,7 @@ export interface CharacterState {
 }
 
 export type CharacterAction =
-  | { type: 'SET_IDENTITY'; payload: Partial<Pick<CharacterState, 'name' | 'pronouns' | 'classSlug' | 'heritageSlug' | 'subclassSlug' | 'level'>> }
+  | { type: 'SET_IDENTITY'; payload: Partial<Pick<CharacterState, 'name' | 'pronouns' | 'classSlug' | 'heritageSlug' | 'subclassSlug' | 'level' | 'hpSolidCount'>> }
   | { type: 'SET_TRAIT'; payload: { trait: keyof CharacterState['traits']; value: number | null } }
   | { type: 'SET_EVASION'; payload: number }
   | { type: 'SET_ARMOR_SCORE'; payload: number | null }
@@ -72,7 +78,8 @@ export type CharacterAction =
   | { type: 'TOGGLE_STRESS_SLOT'; payload: number }
   | { type: 'TOGGLE_HOPE_DIAMOND'; payload: number }
   | { type: 'TOGGLE_PROFICIENCY_PIP'; payload: number }
-  | { type: 'SET_EXPERIENCE'; payload: { index: number; value: string } }
+  | { type: 'SET_EXPERIENCE_NAME'; payload: { index: number; value: string } }
+  | { type: 'SET_EXPERIENCE_MODIFIER'; payload: { index: number; value: number | null } }
   | { type: 'SET_GOLD'; payload: Partial<CharacterState['gold']> }
   | { type: 'SET_PRIMARY_WEAPON'; payload: WeaponEntry | null }
   | { type: 'SET_SECONDARY_WEAPON'; payload: WeaponEntry | null }

@@ -33,8 +33,12 @@ function ClassHeader(): React.ReactElement {
 
   const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    // When class changes, clear subclass to prevent stale selection.
-    setIdentity({ classSlug: value !== '' ? value : null, subclassSlug: null });
+    const cls = value !== '' ? classes.find((c) => c.slug === value) : undefined;
+    setIdentity({
+      classSlug: value !== '' ? value : null,
+      subclassSlug: null,
+      hpSolidCount: cls?.hpSlotCount ?? 6,
+    });
   };
 
   const handleHeritageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
