@@ -185,15 +185,33 @@ This keeps the no-direct-commits rule intact even for post-acceptance housekeepi
 
 ---
 
-## Worktrees
+## Working on a Branch
 
-Claude Code uses git worktrees to isolate branch work from the main working tree. When working in a worktree:
+All file edits happen directly on the increment or fix branch in the main working tree. Do **not** use git worktrees — they introduce a second checkout of the repository that agents consistently confuse with the main working tree, leading to edits landing in the wrong place.
 
-- The worktree's branch is the increment or fix branch — all file edits happen there
-- Dev-flow documents (ADRs, feature files, guidelines) are edited **in the worktree**, not in the main working tree
-- The main working tree's `dev-flow/` folder is read-only context for the current session unless you are explicitly on a docs branch in the main working tree
+### Starting work on an increment
 
-If you are in a worktree and need to edit a dev-flow file (e.g., to add a new ADR), edit it in the worktree. It will be committed to the increment branch and reach `main` via the PR.
+```bash
+git checkout main
+git pull
+git checkout -b increment/<slug>
+```
+
+All subsequent edits — code, ADRs, feature files, `CLAUDE.md` — are made in this checkout and committed to the branch.
+
+### Switching context mid-session
+
+If you need to pause increment work and make a docs-only change, finish and commit what you have on the increment branch first, then:
+
+```bash
+git stash        # if there are in-progress edits that aren't ready to commit
+git checkout -b docs/<slug>
+# make the docs change, commit, push, open PR
+git checkout increment/<slug>
+git stash pop    # restore in-progress work if stashed
+```
+
+Never leave uncommitted changes in the working tree when switching branches.
 
 ---
 
