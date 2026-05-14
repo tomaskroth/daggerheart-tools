@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 
-function ServerStatusGate({ serverUrl, children }) {
+interface ServerStatusGateProps {
+  serverUrl: string;
+  children: React.ReactNode;
+}
+
+function ServerStatusGate({ serverUrl, children }: ServerStatusGateProps) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    let interval;
+    let interval: ReturnType<typeof setInterval>;
     const checkServer = async () => {
       try {
         const res = await fetch(serverUrl, { method: 'GET' });
         if (res.status === 200) {
           setReady(true);
-          clearInterval(interval); // Stop checking once server is ready
+          clearInterval(interval);
         } else {
           setReady(false);
         }
@@ -21,7 +26,6 @@ function ServerStatusGate({ serverUrl, children }) {
     checkServer();
     interval = setInterval(checkServer, 10000);
     return () => clearInterval(interval);
-        
   }, [serverUrl]);
 
   if (!ready) {
@@ -35,7 +39,7 @@ function ServerStatusGate({ serverUrl, children }) {
       </div>
     );
   }
-  return children;
+  return <>{children}</>;
 }
 
 export default ServerStatusGate;

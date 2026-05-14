@@ -1,6 +1,11 @@
 import React from 'react';
 
-function TypeMenu({ types, onTypeClick }) {
+interface TypeMenuProps {
+  types: string[];
+  onTypeClick: (type: string) => void;
+}
+
+function TypeMenu({ types, onTypeClick }: TypeMenuProps) {
   types.sort((a, b) => a.localeCompare(b));
   return (
     <div className="type-menu">
