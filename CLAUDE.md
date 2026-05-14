@@ -24,16 +24,18 @@ All work on this project follows the process defined in `dev-flow/`. The short v
 
 1. **Product track** — increment is broken into PBIs → prioritised → acceptance scenarios written (`.feature` files in `dev-flow/product/`)
 2. **Human checkpoint** — human approves scenarios
-3. **Architecture** — ADRs and flow descriptors produced for each PBI
-4. **Human checkpoint** — human approves architecture
-5. **Implementation** — Frontend and backend agents implement against the approved design
-6. **Security review** — inline, two passes (design + implementation)
-7. **Testing** — Test agent writes step definitions from `.feature` files
-8. **Independent review** — separate agent reviews code against guidelines
-9. **Human checkpoint** — human reviews escalations only
-10. **State update** — State Update Agent rewrites `Current State` in this file
-11. **Validation** — increment validated against original intent
-12. **State update** — State Update Agent rewrites `Current State` in this file again after increment is accepted
+3. **Design** — Design Agent produces a Design Specification for any PBI with frontend scope (skipped for backend-only PBIs)
+4. **Human checkpoint** — human approves design before engineering begins
+5. **Architecture** — ADRs and flow descriptors produced for each PBI
+6. **Human checkpoint** — human approves architecture
+7. **Implementation** — Frontend and backend agents implement against the approved design and architecture
+8. **Security review** — inline, two passes (design + implementation)
+9. **Testing** — Test agent writes step definitions from `.feature` files
+10. **Independent review** — separate agent reviews code against guidelines
+11. **Human checkpoint** — human reviews escalations only
+12. **State update** — State Update Agent rewrites `Current State` in this file
+13. **Validation** — increment validated against original intent
+14. **State update** — State Update Agent rewrites `Current State` in this file again after increment is accepted
 
 **Read `dev-flow/HOW-TO-USE.md` if you need to understand how to trigger or navigate any stage.**
 
@@ -48,9 +50,10 @@ Determine what you're being asked to do, then read the corresponding guideline f
 | **Breakdown Agent** | `dev-flow/product/product-track-guidelines.md` |
 | **Prioritization Agent** | `dev-flow/product/product-track-guidelines.md` |
 | **Acceptance Scenario Agent** | `dev-flow/product/product-track-guidelines.md` + `dev-flow/product/acceptance-scenarios.md` |
+| **UX/Design Agent** | `dev-flow/design/ux-design-guidelines.md` |
 | **Architecture Agent** | `dev-flow/engineering/architecture/architecture-guidelines.md` |
 | **Implementation Agent (backend)** | `dev-flow/engineering/guidelines/coding-guidelines.md` + relevant accepted ADRs in `dev-flow/engineering/architecture/` |
-| **Implementation Agent (frontend)** | `dev-flow/engineering/guidelines/coding-guidelines.md` + relevant accepted ADRs in `dev-flow/engineering/architecture/` |
+| **Implementation Agent (frontend)** | `dev-flow/engineering/guidelines/coding-guidelines.md` + relevant accepted ADRs in `dev-flow/engineering/architecture/` + approved Design Specification in `dev-flow/design/` |
 | **Security Agent** | `dev-flow/engineering/security/security-agent-guidelines.md` |
 | **Test Implementation Agent** | `dev-flow/engineering/testing/testing-strategy.md` + the `.feature` file(s) for the PBI |
 | **Independent Review Agent** | `dev-flow/engineering/review/independent-review-guidelines.md` + `dev-flow/engineering/guidelines/coding-guidelines.md` |

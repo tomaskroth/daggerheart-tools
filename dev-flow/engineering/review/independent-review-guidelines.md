@@ -97,7 +97,17 @@ A Bug PBI submission that is missing a regression test is **always a Blocker**, 
 - Is no sensitive data logged, serialised into responses, or stored in insecure locations?
 - Does the submission introduce new attack surface (endpoints, integrations, trust boundaries) that is not documented and mitigated in an ADR?
 
-### 6. Architectural Consistency
+### 6. Design Specification Adherence (frontend PBIs only)
+
+For any PBI with `@frontend` or `@e2e` scenarios:
+- Is there an approved Design Specification in `dev-flow/design/PBI-XXX-*-design.md`?
+- Does the implementation match the layout, component inventory, and interaction specification in that document?
+- Are all states (loading, error, empty, success) implemented as specified?
+- Does the user-visible copy match what was approved (button labels, headings, error messages)?
+
+**Missing or unapproved Design Specification for a frontend PBI is a Blocker.** The implementation cannot be considered reviewable without it.
+
+### 7. Architectural Consistency
 - Does the submission introduce a new pattern not covered by an existing ADR?
 - Does the layer structure hold (controller → service → repository, component → hook → service)?
 - Are new dependencies (libraries, external services) introduced without an ADR?
@@ -167,6 +177,7 @@ Optional improvements — good engineering practice, not violations.
 | Scenarios covered by tests | ✅ All / ⚠ Partial / ❌ Missing |
 | Coding guidelines (Java) | ✅ Pass / ⚠ Warnings / ❌ Blockers |
 | Coding guidelines (React) | ✅ Pass / ⚠ Warnings / ❌ Blockers |
+| Design specification adherence | ✅ Pass / ⚠ Warnings / ❌ Blockers / N/A (backend-only) |
 | ADR adherence | ✅ Pass / ⚠ Warnings / ❌ Blockers |
 | Security | ✅ Pass / ⚠ Warnings / ❌ Blockers |
 | Architectural consistency | ✅ Pass / ⚠ Warnings / ❌ Blockers |

@@ -6,10 +6,11 @@ This is the practical guide for triggering and navigating the workflow day-to-da
 
 ## The Short Version
 
-You provide a goal. The agents handle the rest. You review three things:
+You provide a goal. The agents handle the rest. You review four things:
 1. The acceptance scenarios (before engineering starts)
-2. The architecture decisions (before implementation starts)
-3. The validation report (after delivery)
+2. The design specification (before architecture starts, frontend PBIs only)
+3. The architecture decisions (before implementation starts)
+4. The validation report (after delivery)
 
 Everything else — breakdown, prioritisation, implementation, testing, review, security — happens without you unless something needs a human decision.
 
@@ -149,9 +150,38 @@ To answer scenario gap questions:
 
 ## Navigating the Engineering Track
 
-Once scenarios are approved, engineering begins automatically. The Architecture Agent runs first, then implementation, then testing and review. You only re-enter at the architecture checkpoint.
+Once scenarios are approved, the Design Agent runs first (for any PBI with frontend scope), then architecture, then implementation, testing and review. You re-enter at the design checkpoint and the architecture checkpoint.
 
-### After the Architecture Agent — **Your second checkpoint**
+### After the Design Agent — **Your second checkpoint**
+
+You'll receive one Design Specification per PBI that has frontend scope. This is your chance to shape the user experience before any code is written.
+
+**What to look for:**
+- Does the layout and interaction model match what you intended?
+- Is the copy (button labels, error messages, headings) what you want users to see?
+- Are the loading, error, and empty states handled appropriately?
+- Do the design decisions and their rationale make sense to you?
+- Are there open design questions in the gap list you can answer now?
+
+**What to say:**
+
+To approve and proceed to architecture:
+> "Design approved, proceed to architecture."
+
+To request changes:
+> "On PBI-XXX: the search results should use a card layout, not a list. The empty state should mention the active type filter."
+
+To answer an open design question:
+> "On the gap list: use a spinner for loading states. The error message should include the search query."
+
+To request a change to copy:
+> "The 'Submit' button should say 'Search'. The empty state message should read 'No results for \"{query}\"'."
+
+Engineering does not begin until you approve the design for each frontend PBI. If you approve a partial design and ask the agent to hold on certain decisions, those open items must be resolved before the implementation agent picks up that PBI.
+
+---
+
+### After the Architecture Agent — **Your third checkpoint**
 
 You'll receive one or more ADRs and/or flow descriptors. Review these before implementation begins.
 
@@ -193,7 +223,7 @@ To override:
 
 ---
 
-### After the Increment Validation Agent — **Your third checkpoint**
+### After the Increment Validation Agent — **Your fourth checkpoint**
 
 You'll receive the validation report after the increment is deployed to staging. This is your product-level quality gate.
 
