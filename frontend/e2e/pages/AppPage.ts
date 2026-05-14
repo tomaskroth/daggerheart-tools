@@ -588,4 +588,69 @@ export class AppPage {
         await radio.waitFor({ timeout: 5000 });
         return radio.isChecked();
     }
+
+    // =============================================================================
+    // Style assertion helpers (PBI-013)
+    // =============================================================================
+
+    async getNavLinkComputedColor(linkText: string): Promise<string> {
+        return this.page.$eval(
+            `nav a:has-text("${linkText}")`,
+            (el) => window.getComputedStyle(el).color,
+        );
+    }
+
+    async getNavLinkComputedBackground(linkText: string): Promise<string> {
+        return this.page.$eval(
+            `nav a:has-text("${linkText}")`,
+            (el) => window.getComputedStyle(el).backgroundColor,
+        );
+    }
+
+    async getSectionComputedBackground(): Promise<string> {
+        return this.page.$eval(
+            '.character-sheet__section',
+            (el) => window.getComputedStyle(el).backgroundColor,
+        );
+    }
+
+    async getSectionComputedBorderLeftColor(): Promise<string> {
+        return this.page.$eval(
+            '.character-sheet__section',
+            (el) => window.getComputedStyle(el).borderLeftColor,
+        );
+    }
+
+    async getSectionInputBorderColor(): Promise<string> {
+        // Find the first visible text or number input inside a section
+        return this.page.$eval(
+            '.character-sheet__section input[type="text"], .character-sheet__section input[type="number"]',
+            (el) => window.getComputedStyle(el).borderColor,
+        );
+    }
+
+    async getSectionSelectBorderColor(): Promise<string> {
+        return this.page.$eval(
+            '.character-sheet__section select',
+            (el) => window.getComputedStyle(el).borderColor,
+        );
+    }
+
+    async columnsAreDisplayedSideBySide(): Promise<boolean> {
+        const left = await this.page.$('[data-testid="left-column"]');
+        const right = await this.page.$('[data-testid="right-column"]');
+        if (left === null || right === null) return false;
+        const leftBox = await left.boundingBox();
+        const rightBox = await right.boundingBox();
+        if (leftBox === null || rightBox === null) return false;
+        // Side-by-side: right column starts to the right of the left column
+        return rightBox.x > leftBox.x;
+    }
+
+    async getSectionHeadingComputedColor(): Promise<string> {
+        return this.page.$eval(
+            '.character-sheet__section h2',
+            (el) => window.getComputedStyle(el).color,
+        );
+    }
 }

@@ -1091,3 +1091,75 @@ Then('the {string} weapon panel displays the manually entered values', async fun
     const nameValue = await appPage.getWeaponFieldValue(roleKey, 'Name');
     expect(nameValue.length).toBeGreaterThan(0);
 });
+
+// =============================================================================
+// PBI-013 — Character Sheet Styles (regression scenarios)
+// =============================================================================
+
+Then('the {string} navigation link has a gold text colour', async function (this: CustomWorld, linkText: string) {
+    const appPage = new AppPage(this.page);
+    const color = await appPage.getNavLinkComputedColor(linkText);
+    // #ffd166 → rgb(255, 209, 102)
+    expect(color).toBe('rgb(255, 209, 102)');
+});
+
+Then('the {string} navigation link has a purple background', async function (this: CustomWorld, linkText: string) {
+    const appPage = new AppPage(this.page);
+    const bg = await appPage.getNavLinkComputedBackground(linkText);
+    // #4a2a99 → rgb(74, 42, 153)
+    expect(bg).toBe('rgb(74, 42, 153)');
+});
+
+Then('the page sections have a visible background colour distinct from the page background', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const bg = await appPage.getSectionComputedBackground();
+    // Sections are white (rgb(255,255,255)) in light mode — not the page purple
+    expect(bg).not.toBe('rgba(0, 0, 0, 0)');
+    expect(bg).not.toBe('');
+});
+
+Then('the page sections have a coloured left border accent', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const borderColor = await appPage.getSectionComputedBorderLeftColor();
+    // #6b4cd6 → rgb(107, 76, 214)
+    expect(borderColor).toBe('rgb(107, 76, 214)');
+});
+
+Then('the text inputs have a gold border', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const borderColor = await appPage.getSectionInputBorderColor();
+    // #d4b04f → rgb(212, 176, 79)
+    expect(borderColor).toBe('rgb(212, 176, 79)');
+});
+
+Then('the select dropdowns have a gold border', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const borderColor = await appPage.getSectionSelectBorderColor();
+    expect(borderColor).toBe('rgb(212, 176, 79)');
+});
+
+Then('the left column and right column are displayed side by side', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.columnsAreDisplayedSideBySide()).toBe(true);
+});
+
+Then('the section headings have a purple text colour', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const color = await appPage.getSectionHeadingComputedColor();
+    // #5b3cb3 → rgb(91, 60, 179)
+    expect(color).toBe('rgb(91, 60, 179)');
+});
+
+Then('the page sections have a dark background colour', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const bg = await appPage.getSectionComputedBackground();
+    // #231942 → rgb(35, 25, 66)
+    expect(bg).toBe('rgb(35, 25, 66)');
+});
+
+Then('the section headings have a gold text colour', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const color = await appPage.getSectionHeadingComputedColor();
+    // #ffd166 → rgb(255, 209, 102)
+    expect(color).toBe('rgb(255, 209, 102)');
+});
