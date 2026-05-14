@@ -65,9 +65,9 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 ## Current State
 
-**Active increment:** Character Sheet — five-section character sheet with SRD-backed pickers.
+**Active increment:** Character Sheet — visual improvements increment (PBI-013–016).
 
-**Stage:** PBI-012 complete — character sheet increment done; all foundation PBIs also complete
+**Stage:** PBI-013–016 complete — implementation, CSS, reducer logic, layout, and full e2e step definitions done; tsc 0 errors; pending PR merge.
 
 **PBI status:**
 - `PBI-001` ✅ Complete
@@ -76,12 +76,16 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `PBI-004` ✅ Complete
 - `PBI-005` ✅ Complete
 - `PBI-006` ✅ Complete
-- `PBI-007` ✅ Complete (Bug: multi-word item URL navigation — fix in branch `claude/flamboyant-dhawan-be5042`, pending merge)
+- `PBI-007` ✅ Complete
 - `PBI-008` ✅ Complete
 - `PBI-009` ✅ Complete
 - `PBI-010` ✅ Complete
 - `PBI-011` ✅ Complete
 - `PBI-012` ✅ Complete
+- `PBI-013` ✅ Complete — character sheet styles and styled nav link (branch `increment/character-sheet-improvements`, merged into increment)
+- `PBI-014` ✅ Complete — trait score input width widened to prevent clipping
+- `PBI-015` ✅ Complete — slot trackers fill/empty as sequential gauges via `gaugeToggle`
+- `PBI-016` ✅ Complete — Class Feature section moved below two-column grid for full width
 
 **Feature files:** `dev-flow/product/`
 - `PBI-001-security-baseline.feature` ✅
@@ -96,21 +100,27 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `PBI-010-character-sheet-traits-defence.feature` ✅
 - `PBI-011-character-sheet-health-hope-gold.feature` ✅
 - `PBI-012-character-sheet-weapons-armor.feature` ✅
+- `PBI-013-character-sheet-styles.feature` ✅
+- `PBI-014-trait-input-width.feature` ✅
+- `PBI-015-slot-tracker-gauge-behaviour.feature` ✅
+- `PBI-016-class-feature-full-width.feature` ✅
 
-**Priority order:** — all complete, awaiting increment validation
+**Priority order:** — awaiting increment validation
 
 **Key constraints:**
 - Step-def method naming convention (`should_/when_`) is established as exempt for BDD step definition methods (applies only to `@Test` JUnit methods).
 - `@SpringBootTest(RANDOM_PORT)` Cucumber context requires `@ActiveProfiles("dev")` to suppress `ProductionStartupGuard`.
 - e2e `cucumber.js` must be run with CWD=`frontend/` (the `test:e2e` script handles this automatically via `start-server-and-test`).
 - `APP_URL` env var overrides the default `http://localhost:3000` in `AppPage.ts`; `VITE_API_URL` overrides the production API base in `world.ts`.
-- PBI-005/007 code is on branch `claude/flamboyant-dhawan-be5042` — push/merge to main pending GitHub authentication setup.
 - Playwright routes are LIFO (last registered = highest priority). `srd/types` must be registered after `srd/**` in `world.ts` to prevent the wildcard intercepting it.
 - Character sheet: all 18 SUBCLASSES items in `srd.json` are tagged `["class:<slug>"]`; client-side filtering in `useSrdSubclasses` by `classSlug`.
 - Character sheet: WEAPONS and ARMOR SRD items use HTML content (not JSON strings as originally specified in ADR-013 draft); `useSrdWeapons` and `useSrdArmor` parse via regex. ADR-013 amended and approved.
 - Character sheet: `dangerouslySetInnerHTML` used only in `ClassFeatureSection` and `HopeSection` for backend-sanitised SRD content (ADR-002). The `extractHopeFeatureHtml` util carries a `⚠️ SECURITY` JSDoc.
 - Character sheet: shared API URL constant lives in `src/features/character-sheet/constants.ts` — all five SRD hooks import `CHARACTER_SHEET_API_URL` from there.
 - XSS e2e scenario (PBI-009 `@security @frontend`): real Playwright `page.on('dialog', ...)` assertion in place — TD-003 resolved.
+- Slot gauges: `gaugeToggle(slots, index)` in `CharacterContext.tsx` handles fill-right/empty-right for HP, stress, hope, armor, and proficiency. Clicking slot N fills 0..N; clicking the last-filled slot empties it.
+- AppPage.ts `clickSlot(testId)` takes a full test ID string; `areSlotsMarkedInRange(prefix, from, to)` builds IDs as `${prefix}-${i}`. Armor slots are 0-indexed in the DOM (`armor-slot-0` = slot 1); use `clickArmorSlot(n)` / `isArmorSlotMarked(n)` which handle the offset.
+- Version control: all work happens on `increment/<slug>` or `fix/PBI-XXX-<slug>` branches in the main working tree. No git worktrees (removed from guidelines 2026-05-14).
 
 **Technical debt:** `dev-flow/product/technical-debt-backlog.md`
 - `TD-001` ✅ Resolved — `frontend/vercel.json` SPA rewrite rule created in PBI-005
@@ -133,7 +143,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `ADR-012-character-sheet-state-management.md` — React Context + useReducer scoped to character-sheet feature; approved 2026-05-14
 - `ADR-013-weapon-armor-srd-item-types.md` — WEAPONS/ARMOR as structured SrdItem types in srd.json; HTML-parsing amendment approved 2026-05-14
 
-**Last updated:** 2026-05-14 — PBI-008 through PBI-012 completed, passed independent review; tsc 0 errors; all @frontend and @security step definitions in place; ADR-012 and ADR-013 accepted
+**Last updated:** 2026-05-14 — PBI-013–016 implemented and tested; tsc 0 errors; all @frontend step definitions in place; increment on `increment/character-sheet-improvements`, PR pending merge
 
 ---
 
