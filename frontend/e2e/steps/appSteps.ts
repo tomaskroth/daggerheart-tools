@@ -1163,3 +1163,209 @@ Then('the section headings have a gold text colour', async function (this: Custo
     // #ffd166 → rgb(255, 209, 102)
     expect(color).toBe('rgb(255, 209, 102)');
 });
+
+// =============================================================================
+// Shared background step (PBI-014, PBI-015, PBI-016)
+// =============================================================================
+
+Given('the user navigates to the character sheet page', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigateToCharacterSheet();
+    await appPage.waitForCharacterSheet();
+});
+
+// =============================================================================
+// PBI-014 — Trait Score Input Width (regression)
+// =============================================================================
+
+Then('the {string} trait score field displays the value {string} without truncation', async function (
+    this: CustomWorld,
+    traitLabel: string,
+    expectedValue: string,
+) {
+    const appPage = new AppPage(this.page);
+    const traitKey = traitLabel.toLowerCase();
+    const actual = await appPage.getTraitScoreValue(traitKey);
+    expect(actual).toBe(expectedValue);
+    const truncated = await appPage.isTraitScoreInputTruncated(traitKey);
+    expect(truncated).toBe(false);
+});
+
+// =============================================================================
+// PBI-015 — Slot Tracker Gauge Behaviour
+// =============================================================================
+
+// ── Given: pre-fill gauge to a range ──────────────────────────────────────
+
+Given('HP slots {int} through {int} are marked', async function (this: CustomWorld, _from: number, to: number) {
+    // Gauge fill: clicking slot `to` fills all slots 1..to
+    const appPage = new AppPage(this.page);
+    await appPage.clickSlot(`hp-slot-${to}`);
+});
+
+Given('stress slots {int} through {int} are marked', async function (this: CustomWorld, _from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickSlot(`stress-slot-${to}`);
+});
+
+Given('hope diamonds {int} through {int} are marked', async function (this: CustomWorld, _from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickHopeDiamond(to);
+});
+
+Given('armor slots {int} through {int} are marked', async function (this: CustomWorld, _from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickArmorSlot(to);
+});
+
+Given('proficiency pips {int} through {int} are filled', async function (this: CustomWorld, _from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickProficiencyPip(to);
+});
+
+// ── When: click a specific slot ────────────────────────────────────────────
+
+When('the user clicks HP slot {int}', async function (this: CustomWorld, slotNumber: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickSlot(`hp-slot-${slotNumber}`);
+});
+
+When('the user clicks stress slot {int}', async function (this: CustomWorld, slotNumber: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickSlot(`stress-slot-${slotNumber}`);
+});
+
+When('the user clicks hope diamond {int}', async function (this: CustomWorld, diamondNumber: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickHopeDiamond(diamondNumber);
+});
+
+When('the user clicks armor slot {int}', async function (this: CustomWorld, slotNumber: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickArmorSlot(slotNumber);
+});
+
+When('the user clicks proficiency pip {int}', async function (this: CustomWorld, pipNumber: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickProficiencyPip(pipNumber);
+});
+
+// ── Then: HP range assertions ──────────────────────────────────────────────
+
+Then('HP slots {int} through {int} are marked', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.areSlotsMarkedInRange('hp-slot', from, to)).toBe(true);
+});
+
+Then('HP slots {int} through {int} are unmarked', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.areSlotsUnmarkedInRange('hp-slot', from, to)).toBe(true);
+});
+
+Then('HP slot {int} is unmarked', async function (this: CustomWorld, slotNumber: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isSlotMarked(`hp-slot-${slotNumber}`)).toBe(false);
+});
+
+// ── Then: Stress range assertions ──────────────────────────────────────────
+
+Then('stress slots {int} through {int} are marked', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.areSlotsMarkedInRange('stress-slot', from, to)).toBe(true);
+});
+
+Then('stress slots {int} through {int} are unmarked', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.areSlotsUnmarkedInRange('stress-slot', from, to)).toBe(true);
+});
+
+Then('stress slot {int} is unmarked', async function (this: CustomWorld, slotNumber: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isSlotMarked(`stress-slot-${slotNumber}`)).toBe(false);
+});
+
+// ── Then: Hope diamond range assertions ────────────────────────────────────
+
+Then('hope diamonds {int} through {int} are marked', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.areSlotsMarkedInRange('hope-diamond', from, to)).toBe(true);
+});
+
+Then('hope diamonds {int} through {int} are unmarked', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.areSlotsUnmarkedInRange('hope-diamond', from, to)).toBe(true);
+});
+
+Then('hope diamond {int} is unmarked', async function (this: CustomWorld, diamondNumber: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isHopeDiamondMarked(diamondNumber)).toBe(false);
+});
+
+// ── Then: Armor slot range assertions ──────────────────────────────────────
+
+Then('armor slots {int} through {int} are marked', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    for (let i = from; i <= to; i++) {
+        expect(await appPage.isArmorSlotMarked(i)).toBe(true);
+    }
+});
+
+Then('armor slots {int} through {int} are unmarked', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    for (let i = from; i <= to; i++) {
+        expect(await appPage.isArmorSlotMarked(i)).toBe(false);
+    }
+});
+
+Then('armor slot {int} is unmarked', async function (this: CustomWorld, slotNumber: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isArmorSlotMarked(slotNumber)).toBe(false);
+});
+
+// ── Then: Proficiency pip range assertions ─────────────────────────────────
+
+Then('proficiency pips {int} through {int} are filled', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    for (let i = from; i <= to; i++) {
+        expect(await appPage.isProficiencyPipFilled(i)).toBe(true);
+    }
+});
+
+Then('proficiency pips {int} through {int} are unfilled', async function (this: CustomWorld, from: number, to: number) {
+    const appPage = new AppPage(this.page);
+    for (let i = from; i <= to; i++) {
+        expect(await appPage.isProficiencyPipFilled(i)).toBe(false);
+    }
+});
+
+Then('proficiency pip {int} is unfilled', async function (this: CustomWorld, pipNumber: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.isProficiencyPipFilled(pipNumber)).toBe(false);
+});
+
+// =============================================================================
+// PBI-016 — Class Feature Section Full Width
+// =============================================================================
+
+When('the user views the character sheet page', async function (this: CustomWorld) {
+    // No-op: already on the character sheet page from the Background step
+});
+
+Given('the user has enabled dark mode', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const isDark = await appPage.isDarkModeActive();
+    if (!isDark) {
+        await appPage.enableDarkMode();
+    }
+});
+
+When('they navigate to the character sheet page', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigateToCharacterSheet();
+    await appPage.waitForCharacterSheet();
+});
+
+Then('the Class Feature section spans both columns', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.classFeatureSectionSpansBothColumns()).toBe(true);
+});

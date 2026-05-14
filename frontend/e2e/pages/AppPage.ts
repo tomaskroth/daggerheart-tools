@@ -590,6 +590,61 @@ export class AppPage {
     }
 
     // =============================================================================
+    // Slot gauge helpers (PBI-015)
+    // =============================================================================
+
+    /** Returns true if every slot in [from, to] has aria-pressed="true". Uses testId prefix, e.g. 'hp-slot'. */
+    async areSlotsMarkedInRange(testIdPrefix: string, from: number, to: number): Promise<boolean> {
+        for (let i = from; i <= to; i++) {
+            if (!(await this.isSlotMarked(`${testIdPrefix}-${i}`))) return false;
+        }
+        return true;
+    }
+
+    /** Returns true if every slot in [from, to] has aria-pressed != "true". Uses testId prefix. */
+    async areSlotsUnmarkedInRange(testIdPrefix: string, from: number, to: number): Promise<boolean> {
+        for (let i = from; i <= to; i++) {
+            if (await this.isSlotMarked(`${testIdPrefix}-${i}`)) return false;
+        }
+        return true;
+    }
+
+    /** Fill all slots up to slotNumber using gauge behaviour (clicking slot N fills 0..N). */
+    async fillSlotsUpTo(testIdPrefix: string, slotNumber: number): Promise<void> {
+        await this.clickSlot(`${testIdPrefix}-${slotNumber}`);
+    }
+
+    // =============================================================================
+    // Trait input helpers (PBI-014)
+    // =============================================================================
+
+    /** Returns true if the trait score input content is horizontally clipped. */
+    async isTraitScoreInputTruncated(traitKey: string): Promise<boolean> {
+        const input = this.page.locator(`[data-testid="trait-score-${traitKey}"]`);
+        await input.waitFor({ timeout: 5000 });
+        return input.evaluate((el: Element) => {
+            const inp = el as HTMLInputElement;
+            return inp.scrollWidth > inp.clientWidth;
+        });
+    }
+
+    // =============================================================================
+    // Layout helpers (PBI-016)
+    // =============================================================================
+
+    async classFeatureSectionSpansBothColumns(): Promise<boolean> {
+        const sheet = await this.page.$('[data-testid="character-sheet"]');
+        const section = await this.page.$('[data-testid="class-feature-section"]');
+        if (sheet === null || section === null) return false;
+        const sheetBox = await sheet.boundingBox();
+        const sectionBox = await section.boundingBox();
+        if (sheetBox === null || sectionBox === null) return false;
+        // The section width should be close to the sheet container width
+        // (within 60px to account for padding)
+        return Math.abs(sectionBox.width - sheetBox.width) < 60;
+    }
+
+    // =============================================================================
     // Style assertion helpers (PBI-013)
     // =============================================================================
 
