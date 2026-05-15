@@ -15,7 +15,7 @@ function DamageHealthSection(): React.ReactElement {
   } = useCharacterHealth();
 
   function handleThresholdChange(
-    key: 'minor' | 'major' | 'severe',
+    key: 'minor' | 'major',
     rawValue: string
   ): void {
     const parsed = parseInt(rawValue, 10);
@@ -30,63 +30,41 @@ function DamageHealthSection(): React.ReactElement {
     >
       <h2>Damage &amp; Health</h2>
 
-      <div className="damage-health-section__thresholds">
+      <div className="damage-health-section__thresholds" data-testid="damage-thresholds">
         <p className="damage-health-section__hint" data-testid="damage-threshold-hint">
           Add your current level
         </p>
 
-        <div className="damage-health-section__threshold-row">
-          <label
-            className="damage-health-section__threshold-label"
-            htmlFor="threshold-minor"
-          >
+        <div className="damage-health-section__thresholds-inline" data-testid="damage-thresholds-inline">
+          <span className="damage-health-section__threshold-label" data-testid="threshold-label-minor">
             Minor Damage
-          </label>
+          </span>
           <input
             id="threshold-minor"
             className="damage-health-section__threshold-input"
             type="number"
-            aria-label="Minor Damage threshold"
+            min={0}
+            aria-label="Minor to Major damage threshold"
             data-testid="threshold-minor"
             value={damageThresholds.minor ?? ''}
             onChange={(e) => handleThresholdChange('minor', e.target.value)}
           />
-        </div>
-
-        <div className="damage-health-section__threshold-row">
-          <label
-            className="damage-health-section__threshold-label"
-            htmlFor="threshold-major"
-          >
+          <span className="damage-health-section__threshold-label" data-testid="threshold-label-major">
             Major Damage
-          </label>
+          </span>
           <input
             id="threshold-major"
             className="damage-health-section__threshold-input"
             type="number"
-            aria-label="Major Damage threshold"
+            min={0}
+            aria-label="Major to Severe damage threshold"
             data-testid="threshold-major"
             value={damageThresholds.major ?? ''}
             onChange={(e) => handleThresholdChange('major', e.target.value)}
           />
-        </div>
-
-        <div className="damage-health-section__threshold-row">
-          <label
-            className="damage-health-section__threshold-label"
-            htmlFor="threshold-severe"
-          >
+          <span className="damage-health-section__threshold-label" data-testid="threshold-label-severe">
             Severe Damage
-          </label>
-          <input
-            id="threshold-severe"
-            className="damage-health-section__threshold-input"
-            type="number"
-            aria-label="Severe Damage threshold"
-            data-testid="threshold-severe"
-            value={damageThresholds.severe ?? ''}
-            onChange={(e) => handleThresholdChange('severe', e.target.value)}
-          />
+          </span>
         </div>
       </div>
 

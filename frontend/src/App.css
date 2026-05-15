@@ -631,14 +631,25 @@ main {
 }
 
 /* ============================================================
-   App Navigation (Character Sheet link)
+   App Navigation — primary and secondary rows
    ============================================================ */
 
-.app-nav {
+.app-nav-primary {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
   margin-top: 0.5rem;
+  padding-bottom: 0.25rem;
 }
 
-.app-nav__link {
+.app-nav-secondary {
+  border-top: 1px solid rgba(212, 176, 79, 0.3);
+  padding-top: 0.25rem;
+}
+
+.app-nav__btn {
+  position: relative;
   display: inline-block;
   padding: 0.5rem 1.2rem;
   border: 2px solid #d4b04f;
@@ -646,23 +657,50 @@ main {
   color: #ffd166;
   font-weight: bold;
   border-radius: 0.3rem;
+  cursor: pointer;
   text-decoration: none;
+  font-size: inherit;
+  font-family: inherit;
   transition: all 0.2s ease-in-out;
 }
 
-.app-nav__link:hover {
+.app-nav__btn::before,
+.app-nav__btn::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #d4b04f;
+  transform: rotate(45deg);
+}
+
+.app-nav__btn::before {
+  top: -5px;
+  left: -5px;
+}
+
+.app-nav__btn::after {
+  bottom: -5px;
+  right: -5px;
+}
+
+.app-nav__btn:hover {
   background-color: #6b4cd6;
   color: white;
   border-color: #ffd166;
 }
 
-.dark-mode .app-nav__link {
+.app-nav__btn--open {
+  opacity: 0.85;
+}
+
+.dark-mode .app-nav__btn {
   background-color: #2d1950;
   color: #ffd166;
   border-color: #a88b32;
 }
 
-.dark-mode .app-nav__link:hover {
+.dark-mode .app-nav__btn:hover {
   background-color: #3a2472;
   color: white;
   border-color: #ffd166;
@@ -689,6 +727,11 @@ main {
   color: #ffd166;
 }
 
+.character-sheet__identity-row,
+.character-sheet__traits-row {
+  margin-bottom: 1rem;
+}
+
 .character-sheet__columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -699,6 +742,16 @@ main {
 @media (max-width: 768px) {
   .character-sheet__columns {
     grid-template-columns: 1fr;
+  }
+
+  .traits-section__columns {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .traits-section__columns {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -905,7 +958,7 @@ main {
 
 .traits-section__columns {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 0.75rem;
 }
 
@@ -1046,6 +1099,14 @@ main {
 
 .damage-health-section__thresholds {
   margin-bottom: 1rem;
+}
+
+.damage-health-section__thresholds-inline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .damage-health-section__threshold-row {

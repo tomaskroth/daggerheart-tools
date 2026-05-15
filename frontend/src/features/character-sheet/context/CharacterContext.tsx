@@ -22,7 +22,7 @@ const initialState: CharacterState = {
   armorSlots: Array(6).fill(false) as boolean[],
 
   hpSolidCount: 6,
-  damageThresholds: { minor: null, major: null, severe: null },
+  damageThresholds: { minor: null, major: null },
   hpSlots: Array(10).fill(false) as boolean[],
   stressSlots: Array(8).fill(false) as boolean[],
 

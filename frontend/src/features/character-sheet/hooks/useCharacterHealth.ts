@@ -7,7 +7,7 @@ interface UseCharacterHealthResult {
   damageThresholds: CharacterState['damageThresholds'];
   hpSlots: boolean[];
   stressSlots: boolean[];
-  setDamageThreshold: (key: 'minor' | 'major' | 'severe', value: number | null) => void;
+  setDamageThreshold: (key: 'minor' | 'major', value: number | null) => void;
   toggleHpSlot: (index: number) => void;
   toggleStressSlot: (index: number) => void;
 }
@@ -16,7 +16,7 @@ export function useCharacterHealth(): UseCharacterHealthResult {
   const { state, dispatch } = useCharacterContext();
 
   const setDamageThreshold = useCallback(
-    (key: 'minor' | 'major' | 'severe', value: number | null) => {
+    (key: 'minor' | 'major', value: number | null) => {
       dispatch({ type: 'SET_DAMAGE_THRESHOLD', payload: { key, value } });
     },
     [dispatch]

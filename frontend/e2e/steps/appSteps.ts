@@ -1490,3 +1490,197 @@ Then('all experience modifier fields are empty', async function (this: CustomWor
     const appPage = new AppPage(this.page);
     expect(await appPage.allExperienceModifierFieldsEmpty()).toBe(true);
 });
+
+// =============================================================================
+// PBI-020 @frontend — Nav restructure with Compendium dropdown
+// =============================================================================
+
+When('the user views any page', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigate();
+    await appPage.waitForReady();
+});
+
+When('the user navigates to the homepage', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigate();
+    await appPage.waitForReady();
+});
+
+When('the user views the homepage', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigate();
+    await appPage.waitForReady();
+});
+
+When('the user views the primary navigation row', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigate();
+    await appPage.waitForReady();
+});
+
+Given('the user is on the homepage', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigate();
+    await appPage.waitForReady();
+});
+
+
+When('the user navigates directly to a compendium item page', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigateToCompendiumItem();
+});
+
+When('they click the {string} button', async function (this: CustomWorld, buttonText: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.clickPrimaryNavItem(buttonText);
+});
+
+Then('the primary navigation row contains a {string} button', async function (this: CustomWorld, text: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.primaryNavContainsButton(text)).toBe(true);
+});
+
+Then('the primary navigation row does not contain individual SRD category links', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.primaryNavHasNoSrdCategoryLinks()).toBe(true);
+});
+
+Then('the secondary navigation row is visible', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.secondaryNavIsVisible()).toBe(true);
+});
+
+Then('it contains links for all SRD categories', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.secondaryNavContainsSrdLinks()).toBe(true);
+});
+
+Then('the secondary navigation row contains links for all SRD categories', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.secondaryNavContainsSrdLinks()).toBe(true);
+});
+
+Then('the secondary navigation row is hidden', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.secondaryNavIsHidden()).toBe(true);
+});
+
+Then('the character sheet page is displayed', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.waitForCharacterSheet();
+});
+
+Then('the {string} button has the diamond corner decoration style', async function (this: CustomWorld, buttonText: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.navButtonHasDiamondDecoration(buttonText)).toBe(true);
+});
+
+Then('the search bar is visible in the navigation area', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.searchBarIsVisible()).toBe(true);
+});
+
+// =============================================================================
+// PBI-021 @frontend — Character sheet identity row full-width and traits layout
+// =============================================================================
+
+Then('the identity row containing the Name, Pronouns, and Class fields spans the full width of the sheet', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.identityRowSpansFullWidth()).toBe(true);
+});
+
+Then('the traits section is displayed as a full-width inline row below the identity row', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.traitsRowExistsOutsideColumnsGrid()).toBe(true);
+});
+
+Then('the identity row appears above the traits section on the character sheet', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.identityRowIsAboveTraitsRow()).toBe(true);
+});
+
+Then('the Damage and Health section appears below the traits section', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.damageHealthSectionExistsInColumnsGrid()).toBe(true);
+});
+
+Then('it is displayed in the 2-column layout', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.columnsAreDisplayedSideBySide()).toBe(true);
+});
+
+When('the user enters {string} in the Name field', async function (this: CustomWorld, value: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.fillCharacterNameField(value);
+});
+
+Then('the Name field displays {string}', async function (this: CustomWorld, expected: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.getCharacterNameFieldValue()).toBe(expected);
+});
+
+When('the user enters {string} in the Agility trait input', async function (this: CustomWorld, value: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.fillTraitScore('agility', value);
+});
+
+Then('the Agility trait input displays {string}', async function (this: CustomWorld, expected: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.getTraitScoreValue('agility')).toBe(expected);
+});
+
+// =============================================================================
+// PBI-022 @frontend — Damage thresholds inline 2-input row
+// =============================================================================
+
+Then('the damage threshold row displays {string} followed by an input field', async function (this: CustomWorld, labelText: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.damageThresholdsInlineRowExists()).toBe(true);
+    expect(await appPage.damageThresholdRowHasLabel(labelText)).toBe(true);
+});
+
+Then('then {string} followed by an input field', async function (this: CustomWorld, labelText: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.damageThresholdRowHasLabel(labelText)).toBe(true);
+});
+
+Then('then {string} as a trailing label', async function (this: CustomWorld, labelText: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.damageThresholdRowHasLabel(labelText)).toBe(true);
+});
+
+Then('the damage threshold section contains exactly {int} input fields', async function (this: CustomWorld, count: number) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.getDamageThresholdInputCount()).toBe(count);
+});
+
+When('the user enters {string} in the first damage threshold input', async function (this: CustomWorld, value: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.fillDamageThresholdInput(1, value);
+});
+
+When('the user enters {string} in the second damage threshold input', async function (this: CustomWorld, value: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.fillDamageThresholdInput(2, value);
+});
+
+Then('the first damage threshold input displays {string}', async function (this: CustomWorld, expected: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.getDamageThresholdInputValue(1)).toBe(expected);
+});
+
+Then('the second damage threshold input displays {string}', async function (this: CustomWorld, expected: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.getDamageThresholdInputValue(2)).toBe(expected);
+});
+
+Then('the first damage threshold input still displays {string}', async function (this: CustomWorld, expected: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.getDamageThresholdInputValue(1)).toBe(expected);
+});
+
+Then('the second damage threshold input still displays {string}', async function (this: CustomWorld, expected: string) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.getDamageThresholdInputValue(2)).toBe(expected);
+});
