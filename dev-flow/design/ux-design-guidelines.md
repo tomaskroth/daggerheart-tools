@@ -46,8 +46,9 @@ A PBI triggers the Design Agent if it has **any** of the following:
 - Pure backend PBIs (all scenarios tagged `@backend` only)
 - Infrastructure PBIs with no user-visible surface
 - Bug fixes that restore a previously approved design (the original spec is already the reference)
+- **`minor` tier PBIs** — CSS/layout-only changes with no new components, no new interactions, and no new copy. The complexity tier is declared in the feature file's `# Complexity:` comment.
 
-When skipping, the Design Agent notes: `"Design stage skipped — no frontend scope in PBI-XXX."` and the Architecture Agent proceeds.
+When skipping, the Design Agent notes: `"Design stage skipped — [reason: no frontend scope / minor tier / bug fix restoring prior design] in PBI-XXX."` and the Architecture Agent proceeds.
 
 ---
 

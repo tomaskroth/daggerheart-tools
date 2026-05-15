@@ -11,10 +11,9 @@ This is distinct from code review (was it built correctly?) and test coverage (d
 The Increment Validation Agent runs after:
 
 1. All Blockers from the Independent Review Agent have been resolved.
-2. All acceptance tests pass in CI.
-3. The increment has been deployed to a representative environment (staging or equivalent).
+2. All acceptance tests pass (locally or in CI — wherever the full test suite can be run against the assembled application).
 
-Validation does **not** run against local or developer environments. It requires the assembled, deployed product.
+Validation does **not** require a deployed staging environment. The test suite is the primary validation mechanism. Step 3 (exploratory walkthrough) is optional — it should only be performed when there is a specific concern that automated tests do not cover, and the human has explicitly requested it or the agent has identified a gap.
 
 ---
 
@@ -48,9 +47,11 @@ The agent reads the CI test results for all scenarios tagged to this increment. 
 - **Some scenarios fail** → these represent undelivered functionality. Each failure is described in plain language (not as a test error — as a product behaviour that is missing or broken).
 - **Scenarios skipped (`@wip`)** → these represent known gaps. Each is assessed against the increment intent: is this gap acceptable for this increment, or does it leave the stated goal partially unmet?
 
-### Step 3: Exploratory validation
+### Step 3: Exploratory validation (optional)
 
-For each backlog item in the increment, the agent performs a structured walkthrough of the primary user flow against the deployed application. This is not a test re-run — it is a product-perspective check that goes beyond what automated tests assert:
+This step is only performed when the agent has identified a specific concern that automated tests do not cover, or when the human has explicitly requested it. It is not a default step.
+
+When performed, the agent conducts a structured walkthrough of the primary user flow:
 
 - Does the feature feel complete? Are there obvious missing pieces a scenario didn't capture?
 - Are error states handled gracefully from the user's perspective (not just technically correct)?
@@ -59,6 +60,8 @@ For each backlog item in the increment, the agent performs a structured walkthro
 - Are there UI states that are broken, confusing, or incomplete that are not covered by a scenario?
 
 Findings from this step are reported as **Observations** — they are not pass/fail, but they inform the human's decision and feed into the next increment's backlog.
+
+If this step is skipped, the Validation Report notes: `"Exploratory walkthrough: not performed — no specific concerns identified beyond automated test coverage."`
 
 ### Step 4: Produce the validation report
 
@@ -71,7 +74,7 @@ Findings from this step are reported as **Observations** — they are not pass/f
 
 **Increment:** [Increment name / goal statement]
 **Date:** YYYY-MM-DD
-**Environment:** [Staging URL or environment name]
+**Test run:** [local / CI — where the acceptance suite was run]
 **Backlog items:** PBI-XXX, PBI-YYY, ...
 
 ---

@@ -111,6 +111,7 @@ Use tags to classify scenarios. The test runner uses these to select what to exe
 | `@frontend` | Executed by Playwright + Cucumber (React) |
 | `@backend` | Executed by Cucumber + JUnit 5 (Java) |
 | `@security` | Security-relevant scenario — always included in security review |
+| `@performance` | Non-functional scenario asserting a timing or responsiveness constraint (e.g. render time, search debounce). Optional — use only when a measurable acceptance criterion exists. |
 | `@wip` | Work in progress — excluded from CI until ready |
 
 A scenario can carry multiple tags:
@@ -118,6 +119,28 @@ A scenario can carry multiple tags:
 @smoke @frontend
 Scenario: Successful login redirects to dashboard
 ```
+
+---
+
+## Complexity Tier Comment
+
+Every feature file must declare the PBI's complexity tier at the top, before the `Feature:` block. This tells all downstream engineering agents which stages to run.
+
+```gherkin
+# Complexity: minor | standard | significant
+
+Feature: ...
+```
+
+If the Acceptance Scenario Agent upgrades the tier from what was assigned at breakdown, it appends the reason:
+
+```gherkin
+# Complexity: standard — upgraded from minor: introduces new ExperienceEntry type
+
+Feature: ...
+```
+
+See `dev-flow/product/product-track-guidelines.md` for tier definitions and the stages each tier skips.
 
 ---
 
@@ -210,3 +233,4 @@ Before engineering begins, confirm the scenarios for each backlog item:
 - [ ] Scenario steps are written in user/product language (no implementation leakage)
 - [ ] Concrete values are used (no abstract placeholders)
 - [ ] The scope feels right — nothing missing, nothing out of scope
+- [ ] The complexity tier comment is present at the top of the file and feels right — `minor` is only appropriate for pure CSS/layout changes with no new types, patterns, or dependencies

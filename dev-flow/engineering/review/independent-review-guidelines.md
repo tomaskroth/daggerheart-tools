@@ -4,6 +4,24 @@ This document defines how the Independent Review Agent operates — its context 
 
 ---
 
+## Minor Tier: Combined Security + Review Pass
+
+For PBIs classified as `minor` (declared in the `# Complexity:` comment at the top of the feature file), the Security Agent Pass 2 and the Independent Review are combined into a single pass. The same agent performs both the security check and the code review in one report.
+
+The combined pass uses the standard review report format but adds a **Security Check** section between Summary and Blockers:
+
+```
+## Security Check (combined pass — minor tier)
+
+[Brief assessment: does this change introduce any new security surface? For a genuine minor-tier change this should be short: "No new endpoints, no user input, no auth surface — no security concerns." If a concern exists, promote it to a Blocker.]
+```
+
+All other checks are identical to a standard review. The isolation principle still applies — the combined pass agent must not carry over implementation session context.
+
+**If the combined pass agent finds that the PBI is not actually `minor`** (e.g., the implementation introduced a new type, a new pattern, or a new dependency not declared in the feature file), it escalates immediately: the tier must be upgraded, a Security Pass 1 review conducted, and the independent review re-run at the correct tier.
+
+---
+
 ## The Isolation Principle
 
 The Independent Review Agent is deliberately isolated from the Implementation Agents. It does not share context, conversation history, or reasoning with the agents that produced the code. This is not a limitation — it is the point.

@@ -48,6 +48,9 @@ PBI-XXX: [Title — imperative, concrete, user-facing]
 
 Type: Feature | Bug | Tech enabler | Security | Debt
 
+Complexity: minor | standard | significant
+  [Brief rationale — see tier definitions below]
+
 User story:
   As a [role],
   I want to [do something specific],
@@ -67,6 +70,20 @@ Estimated size: XS | S | M | L | XL
 Open questions:
   - [Anything that needs a product decision before scenarios can be written]
 ```
+
+### Complexity Tier Definitions
+
+Every PBI is assigned a complexity tier at breakdown time. The tier determines which engineering stages run. When in doubt, choose the higher tier — it is always safe to do more; it is not always safe to do less.
+
+| Tier | Criteria | Stages skipped |
+|---|---|---|
+| `minor` | CSS/layout-only changes; no new types; no new patterns; no backend changes; no new dependencies; all changes confined to existing components | Design Specification; flow descriptor; Security Pass 1 (design-time); Security Pass 2 and Independent Review merged into a single combined pass |
+| `standard` | New components or hooks following existing patterns; minor backend changes; changes within an existing feature | Nothing skipped — full flow |
+| `significant` | New architectural patterns; new dependencies; backend data model changes; new endpoints; auth/authz surface; cross-feature changes | Nothing skipped — full flow with heightened security attention |
+
+**The `minor` tier is not a shortcut for "small".** A small change that introduces a new type, a new pattern, or a new dependency is `standard`. The test: could this change cause a regression in untouched code? If yes, it is not `minor`.
+
+**The Acceptance Scenario Agent may upgrade the tier.** If writing complete scenarios reveals complexity not apparent at breakdown time, the agent upgrades the tier and notes the reason. Engineering stages follow the final tier assigned by the Acceptance Scenario Agent.
 
 ### Bug PBI Format
 
@@ -271,6 +288,15 @@ open questions. These must be answered before the feature file is complete.
 The scenario gap list is escalated to the human before engineering begins.
 
 **Tags are applied correctly.** Every scenario carries the appropriate tags from the tagging scheme in `product/acceptance-scenarios.md`. The agent does not omit security tags for scenarios that involve auth, permissions, or user input.
+
+**Confirms or upgrades the complexity tier.** The agent reviews the tier assigned at breakdown and confirms it or upgrades it based on what the scenarios reveal. It documents the final tier and any upgrade rationale at the top of the feature file as a comment:
+
+```gherkin
+# Complexity: minor
+# (or: Complexity: standard — upgraded from minor: introduces new ExperienceEntry type)
+```
+
+This comment is the signal to all downstream engineering agents about which stages to run.
 
 ### Human Checkpoint
 
