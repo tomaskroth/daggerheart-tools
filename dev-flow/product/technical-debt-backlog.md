@@ -41,6 +41,7 @@ If not, add it. Verify by deploying and visiting a direct item URL.
 **Source:** ADR-011 (React Router URL Navigation), Security Considerations section
 **Type:** Security
 **Priority: P2**
+**Deferral policy:** This is a backend-only item. It will not be picked up during frontend-only increments. It must be scheduled as the first item in the next increment that includes backend scope.
 
 **Problem:**
 The `q` field accepted by `POST /search` is passed to a Lucene query parser. A user-supplied value from the browser address bar (via `/:type/:filename` URL parameters) is decoded and sent as the `q` value. Lucene query syntax includes operators (`AND`, `OR`, `NOT`, wildcards, field specifiers, range queries) that could produce unexpected results or expose unintended index fields. This risk pre-dates PBI-005 — the URL now makes it more visible.
