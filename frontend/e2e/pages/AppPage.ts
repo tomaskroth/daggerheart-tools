@@ -789,4 +789,122 @@ export class AppPage {
     async countHpBoxesByType(slotType: 'solid' | 'dashed'): Promise<number> {
         return this.countSlotsByType('hp-tracker', slotType);
     }
+
+    // =============================================================================
+    // Navigation structure helpers (PBI-020)
+    // =============================================================================
+
+    async primaryNavContainsButton(text: string): Promise<boolean> {
+        const count = await this.page.locator('.app-nav-primary :is(button, a)').filter({ hasText: text }).count();
+        return count > 0;
+    }
+
+    async primaryNavHasNoSrdCategoryLinks(): Promise<boolean> {
+        const count = await this.page.locator('.app-nav-primary .type-menu').count();
+        return count === 0;
+    }
+
+    async secondaryNavIsVisible(): Promise<boolean> {
+        const count = await this.page.locator('#compendium-nav').count();
+        return count > 0;
+    }
+
+    async secondaryNavIsHidden(): Promise<boolean> {
+        const count = await this.page.locator('#compendium-nav').count();
+        return count === 0;
+    }
+
+    async secondaryNavContainsSrdLinks(): Promise<boolean> {
+        const count = await this.page.locator('#compendium-nav .type-menu button').count();
+        return count > 0;
+    }
+
+    async clickPrimaryNavItem(text: string): Promise<void> {
+        await this.page.locator('.app-nav-primary :is(button, a)').filter({ hasText: text }).click();
+        await this.page.waitForTimeout(300);
+    }
+
+    async navButtonHasDiamondDecoration(text: string): Promise<boolean> {
+        const count = await this.page.locator('.app-nav__btn').filter({ hasText: text }).count();
+        return count > 0;
+    }
+
+    async searchBarIsVisible(): Promise<boolean> {
+        return this.page.locator('form.search-bar').isVisible();
+    }
+
+    async navigateToCompendiumItem(): Promise<void> {
+        await this.page.goto(`${APP_URL}/weapons/Iron-Sword.md`);
+        await this.page.waitForTimeout(500);
+    }
+
+    // =============================================================================
+    // Character sheet layout helpers (PBI-021)
+    // =============================================================================
+
+    async identityRowSpansFullWidth(): Promise<boolean> {
+        const exists = await this.page.locator('[data-testid="identity-row"]').count();
+        const insideColumns = await this.page.locator(
+            '.character-sheet__columns [data-testid="identity-row"]'
+        ).count();
+        return exists > 0 && insideColumns === 0;
+    }
+
+    async traitsRowExistsOutsideColumnsGrid(): Promise<boolean> {
+        const exists = await this.page.locator('[data-testid="traits-row"]').count();
+        const insideColumns = await this.page.locator(
+            '.character-sheet__columns [data-testid="traits-row"]'
+        ).count();
+        return exists > 0 && insideColumns === 0;
+    }
+
+    async identityRowIsAboveTraitsRow(): Promise<boolean> {
+        const identityBox = await this.page.locator('[data-testid="identity-row"]').boundingBox();
+        const traitsBox = await this.page.locator('[data-testid="traits-row"]').boundingBox();
+        if (!identityBox || !traitsBox) return false;
+        return identityBox.y < traitsBox.y;
+    }
+
+    async damageHealthSectionExistsInColumnsGrid(): Promise<boolean> {
+        const count = await this.page.locator(
+            '.character-sheet__columns [data-testid="damage-health-section"]'
+        ).count();
+        return count > 0;
+    }
+
+    async fillCharacterNameField(value: string): Promise<void> {
+        await this.page.locator('#character-name').fill(value);
+    }
+
+    async getCharacterNameFieldValue(): Promise<string> {
+        return this.page.locator('#character-name').inputValue();
+    }
+
+    // =============================================================================
+    // Damage threshold inline helpers (PBI-022)
+    // =============================================================================
+
+    async damageThresholdsInlineRowExists(): Promise<boolean> {
+        const count = await this.page.locator('[data-testid="damage-thresholds-inline"]').count();
+        return count > 0;
+    }
+
+    async getDamageThresholdInputCount(): Promise<number> {
+        return this.page.locator('[data-testid="damage-thresholds-inline"] input[type="number"]').count();
+    }
+
+    async damageThresholdRowHasLabel(labelText: string): Promise<boolean> {
+        const text = await this.page.locator('[data-testid="damage-thresholds-inline"]').textContent();
+        return (text ?? '').includes(labelText);
+    }
+
+    async fillDamageThresholdInput(position: 1 | 2, value: string): Promise<void> {
+        const testId = position === 1 ? 'threshold-minor' : 'threshold-major';
+        await this.page.locator(`[data-testid="${testId}"]`).fill(value);
+    }
+
+    async getDamageThresholdInputValue(position: 1 | 2): Promise<string> {
+        const testId = position === 1 ? 'threshold-minor' : 'threshold-major';
+        return this.page.locator(`[data-testid="${testId}"]`).inputValue();
+    }
 }
