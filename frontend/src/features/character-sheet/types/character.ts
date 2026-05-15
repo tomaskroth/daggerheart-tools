@@ -49,7 +49,7 @@ export interface CharacterState {
 
   // Health (PBI-011, PBI-017)
   hpSolidCount: number;
-  damageThresholds: { minor: number | null; major: number | null; severe: number | null };
+  damageThresholds: { minor: number | null; major: number | null };
   hpSlots: boolean[];
   stressSlots: boolean[];
 
@@ -73,7 +73,7 @@ export type CharacterAction =
   | { type: 'SET_EVASION'; payload: number }
   | { type: 'SET_ARMOR_SCORE'; payload: number | null }
   | { type: 'TOGGLE_ARMOR_SLOT'; payload: number }
-  | { type: 'SET_DAMAGE_THRESHOLD'; payload: { key: 'minor' | 'major' | 'severe'; value: number | null } }
+  | { type: 'SET_DAMAGE_THRESHOLD'; payload: { key: 'minor' | 'major'; value: number | null } }
   | { type: 'TOGGLE_HP_SLOT'; payload: number }
   | { type: 'TOGGLE_STRESS_SLOT'; payload: number }
   | { type: 'TOGGLE_HOPE_DIAMOND'; payload: number }
