@@ -65,9 +65,15 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 ## Current State
 
-**Active increment:** UI consolidation — nav dropdown, identity/traits layout, inline thresholds (PBI-020–022) — all PBIs complete.
+**Active increment:** None — awaiting next increment statement
 
-**Stage:** All PBIs complete — Increment validation in progress
+**Stage:** Increment accepted — awaiting next increment statement
+
+**Completed increments:**
+- Foundation & compendium (PBI-001–012) ✅
+- Character sheet polish (PBI-013–016) ✅
+- Character sheet data (PBI-017–019) ✅
+- UI consolidation (PBI-020–022) ✅ — accepted 2026-05-15
 
 **PBI status:**
 - `PBI-001` ✅ Complete
