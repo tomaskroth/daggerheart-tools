@@ -821,12 +821,23 @@ export class AppPage {
 
     async clickPrimaryNavItem(text: string): Promise<void> {
         await this.page.locator('.app-nav-primary :is(button, a)').filter({ hasText: text }).click();
-        await this.page.waitForTimeout(300);
     }
 
     async navButtonHasDiamondDecoration(text: string): Promise<boolean> {
-        const count = await this.page.locator('.app-nav__btn').filter({ hasText: text }).count();
-        return count > 0;
+        if (await this.page.locator('.app-nav__btn').filter({ hasText: text }).count() === 0) return false;
+        return this.page.evaluate((btnText) => {
+            const btns = Array.from(document.querySelectorAll('.app-nav__btn'));
+            const btn = btns.find(el => el.textContent?.trim().includes(btnText));
+            if (!btn) return false;
+            const before = window.getComputedStyle(btn, '::before');
+            const after = window.getComputedStyle(btn, '::after');
+            return (
+                before.getPropertyValue('content') !== 'none' &&
+                before.getPropertyValue('transform').includes('matrix') &&
+                after.getPropertyValue('content') !== 'none' &&
+                after.getPropertyValue('transform').includes('matrix')
+            );
+        }, text);
     }
 
     async searchBarIsVisible(): Promise<boolean> {

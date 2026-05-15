@@ -118,6 +118,7 @@ function App({ serverUrl }: AppProps) {
             Character Sheet
           </Link>
         </nav>
+        {/* Conditional render (DOM removal) rather than display:none — stronger than aria-hidden for AT */}
         {isCompendiumOpen && (
           <nav
             id="compendium-nav"

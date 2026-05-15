@@ -1525,20 +1525,6 @@ Given('the user is on the homepage', async function (this: CustomWorld) {
     await appPage.waitForReady();
 });
 
-Given('the user is on the homepage with the secondary navigation row visible', async function (this: CustomWorld) {
-    const appPage = new AppPage(this.page);
-    await appPage.navigate();
-    await appPage.waitForReady();
-    expect(await appPage.secondaryNavIsVisible()).toBe(true);
-});
-
-Given('the user is on the homepage with the secondary navigation row hidden', async function (this: CustomWorld) {
-    const appPage = new AppPage(this.page);
-    await appPage.navigate();
-    await appPage.waitForReady();
-    await appPage.clickPrimaryNavItem('Compendium');
-    expect(await appPage.secondaryNavIsHidden()).toBe(true);
-});
 
 When('the user navigates directly to a compendium item page', async function (this: CustomWorld) {
     const appPage = new AppPage(this.page);
@@ -1604,7 +1590,7 @@ Then('the identity row containing the Name, Pronouns, and Class fields spans the
     expect(await appPage.identityRowSpansFullWidth()).toBe(true);
 });
 
-Then('the traits section is displayed in a 2-column layout below the identity row', async function (this: CustomWorld) {
+Then('the traits section is displayed as a full-width inline row below the identity row', async function (this: CustomWorld) {
     const appPage = new AppPage(this.page);
     expect(await appPage.traitsRowExistsOutsideColumnsGrid()).toBe(true);
 });
