@@ -65,9 +65,9 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 ## Current State
 
-**Active increment:** None — awaiting next increment statement
+**Active increment:** Identity bar compact layout — PBI-023 complete, awaiting validation
 
-**Stage:** Increment accepted — awaiting next increment statement
+**Stage:** All PBIs complete — Increment validation in progress
 
 **Completed increments:**
 - Foundation & compendium (PBI-001–012) ✅
@@ -98,6 +98,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `PBI-020` ✅ Complete — nav restructured into primary row (Compendium + Character Sheet buttons with diamond decorations) and secondary row (SRD category links); route-aware open/closed state
 - `PBI-021` ✅ Complete — character sheet identity row (`ClassHeader`) and traits row (`TraitsSection`) moved to full-width rows above the two-column grid; traits grid changed to `repeat(6, 1fr)`
 - `PBI-022` ✅ Complete — damage thresholds rendered as inline single row with two inputs; `severe` field removed from `DamageThresholds` state
+- `PBI-023` ✅ Complete — identity bar grid changed from `1fr 1fr` to `repeat(3, 1fr)`; responsive overrides: 2 cols at ≤768px, 1 col at ≤480px
 
 **Feature files:** All complete ✅ (`dev-flow/product/`)
 - `PBI-001-security-baseline.feature` ✅
@@ -122,6 +123,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `PBI-020-nav-compendium-dropdown.feature` ✅
 - `PBI-021-character-sheet-identity-traits-layout.feature` ✅
 - `PBI-022-damage-thresholds-inline.feature` ✅
+- `PBI-023-identity-bar-three-column.feature` ✅
 
 **Key constraints:**
 - Step-def method naming convention (`should_/when_`) is established as exempt for BDD step definition methods (applies only to `@Test` JUnit methods).
@@ -142,6 +144,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - Nav (PBI-020): `isCompendiumOpen` state in `App.tsx`; open on all routes except `/character-sheet`; implemented via conditional rendering (DOM removal) rather than `display:none` — intentional deviation from design spec, documented in code comment.
 - Character sheet layout (PBI-021): `ClassHeader` renders in `.character-sheet__identity-row`; `TraitsSection` renders in `.character-sheet__traits-row` — both are full-width wrapper divs above `.character-sheet__columns`, not inside the column grid. Traits internal grid is `repeat(6, 1fr)`; collapses to `repeat(3, 1fr)` at ≤768px and `repeat(2, 1fr)` at ≤480px.
 - Damage thresholds (PBI-022): `DamageThresholds` type is `{ minor: number | null; major: number | null }` — `severe` field removed. Inline row has `data-testid="damage-thresholds-inline"`; inputs are `data-testid="threshold-minor"` and `data-testid="threshold-major"`.
+- Identity bar (PBI-023): `.class-header__identity` grid is `repeat(3, 1fr)` at >768px, `repeat(2, 1fr)` at ≤768px, `1fr` at ≤480px. `AppPage.getIdentityGridColumnCount()` uses bounding-box row grouping (5px tolerance). `AppPage.getIdentityFieldsOnRow(n)` groups fields by y-position and returns labels for row n (1-indexed).
 - Version control: all work happens on `increment/<slug>` or `fix/PBI-XXX-<slug>` branches in the main working tree. No git worktrees (removed from guidelines 2026-05-14).
 
 **Technical debt:** `dev-flow/product/technical-debt-backlog.md`
@@ -166,7 +169,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `ADR-013-weapon-armor-srd-item-types.md` — WEAPONS/ARMOR as structured SrdItem types in srd.json; HTML-parsing amendment approved 2026-05-14
 - `ADR-014-class-hp-slot-count.md` — `hpSlotCount` parsed from CLASSES content at ingestion, stored as nullable `Integer` on `SrdItem`; approved 2026-05-14
 
-**Last updated:** 2026-05-15 — PBI-020, 021, 022 completed and passed independent review; UI consolidation increment on `increment/ui-consolidation`, PR #12 open for merge
+**Last updated:** 2026-05-15 — PBI-023 completed and passed independent review; identity bar compact layout increment on `increment/identity-bar-compact`
 
 ---
 
