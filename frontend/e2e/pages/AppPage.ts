@@ -1155,7 +1155,7 @@ export class AppPage {
             const isDisabled = await el.evaluate((s) => (s as HTMLSelectElement).disabled);
             if (isDisabled) disabledSelects.push(el);
         }
-        if (disabledSelects.length === 0) return true; // no disabled selects; trivially satisfied
+        if (disabledSelects.length === 0) return false; // no disabled selects found — assertion cannot be satisfied
         for (const el of disabledSelects) {
             const opacity = await el.evaluate((s) => window.getComputedStyle(s).opacity);
             if (parseFloat(opacity) >= 1.0) return false;
