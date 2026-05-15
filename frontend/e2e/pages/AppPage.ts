@@ -1001,4 +1001,178 @@ export class AppPage {
         }
         await this.page.waitForTimeout(300);
     }
+
+    // =========================================================================
+    // PBI-024 — Styled select elements
+    // =========================================================================
+
+    private readonly ALL_SHEET_SELECTS =
+        '.class-header__field select, .character-sheet__section select, .weapon-panel__select';
+
+    async ensureLightMode(): Promise<void> {
+        if (await this.isDarkModeActive()) {
+            await this.enableDarkMode();
+        }
+    }
+
+    async ensureDarkMode(): Promise<void> {
+        if (!(await this.isDarkModeActive())) {
+            await this.enableDarkMode();
+        }
+    }
+
+    async deactivateDarkMode(): Promise<void> {
+        if (await this.isDarkModeActive()) {
+            await this.enableDarkMode();
+        }
+    }
+
+    async allSelectsHaveLightBackground(): Promise<boolean> {
+        const selects = await this.page.$$(this.ALL_SHEET_SELECTS);
+        if (selects.length === 0) return false;
+        for (const el of selects) {
+            const bg = await el.evaluate((s) => window.getComputedStyle(s).backgroundColor);
+            if (bg !== 'rgb(255, 255, 255)') return false;
+        }
+        return true;
+    }
+
+    async allSelectsHaveDarkBackground(): Promise<boolean> {
+        const selects = await this.page.$$(this.ALL_SHEET_SELECTS);
+        if (selects.length === 0) return false;
+        for (const el of selects) {
+            const bg = await el.evaluate((s) => window.getComputedStyle(s).backgroundColor);
+            if (bg !== 'rgb(24, 18, 43)') return false;
+        }
+        return true;
+    }
+
+    async noSelectHasNativeAppearance(): Promise<boolean> {
+        const selects = await this.page.$$(this.ALL_SHEET_SELECTS);
+        if (selects.length === 0) return false;
+        for (const el of selects) {
+            const appearance = await el.evaluate((s) => {
+                const style = window.getComputedStyle(s);
+                // Chromium exposes both; either returning 'none' confirms suppression
+                return (style as unknown as Record<string, string>)['appearance'] ??
+                    (style as unknown as Record<string, string>)['webkitAppearance'] ?? '';
+            });
+            if (appearance !== 'none') return false;
+        }
+        return true;
+    }
+
+    async allSelectsHaveDarkCharcoalText(): Promise<boolean> {
+        const selects = await this.page.$$(this.ALL_SHEET_SELECTS);
+        if (selects.length === 0) return false;
+        for (const el of selects) {
+            const color = await el.evaluate((s) => window.getComputedStyle(s).color);
+            if (color !== 'rgb(44, 42, 51)') return false;
+        }
+        return true;
+    }
+
+    async allSelectsHaveLightPurpleText(): Promise<boolean> {
+        const selects = await this.page.$$(this.ALL_SHEET_SELECTS);
+        if (selects.length === 0) return false;
+        for (const el of selects) {
+            const color = await el.evaluate((s) => window.getComputedStyle(s).color);
+            if (color !== 'rgb(243, 233, 255)') return false;
+        }
+        return true;
+    }
+
+    async allSelectsHaveGoldBorder(): Promise<boolean> {
+        const selects = await this.page.$$(this.ALL_SHEET_SELECTS);
+        if (selects.length === 0) return false;
+        for (const el of selects) {
+            const border = await el.evaluate((s) => window.getComputedStyle(s).borderColor);
+            if (border !== 'rgb(212, 176, 79)') return false;
+        }
+        return true;
+    }
+
+    async allSelectsHaveMutedGoldBorder(): Promise<boolean> {
+        const selects = await this.page.$$(this.ALL_SHEET_SELECTS);
+        if (selects.length === 0) return false;
+        for (const el of selects) {
+            const border = await el.evaluate((s) => window.getComputedStyle(s).borderColor);
+            if (border !== 'rgb(168, 139, 50)') return false;
+        }
+        return true;
+    }
+
+    async allSelectsHaveCustomArrow(): Promise<boolean> {
+        const selects = await this.page.$$(this.ALL_SHEET_SELECTS);
+        if (selects.length === 0) return false;
+        for (const el of selects) {
+            const bgImage = await el.evaluate((s) => window.getComputedStyle(s).backgroundImage);
+            if (bgImage === 'none' || bgImage === '') return false;
+        }
+        return true;
+    }
+
+    async getNamedSelectStyles(ariaLabel: string): Promise<{ bg: string; color: string; border: string }> {
+        const select = this.page.locator(`select[aria-label="${ariaLabel}"]`);
+        await select.waitFor({ timeout: 10000 });
+        return select.evaluate((el) => {
+            const s = window.getComputedStyle(el);
+            return { bg: s.backgroundColor, color: s.color, border: s.borderColor };
+        });
+    }
+
+    async getWeaponSelectStyles(): Promise<{ bg: string; color: string; border: string }> {
+        return this.page.$eval('.weapon-panel__select', (el) => {
+            const s = window.getComputedStyle(el);
+            return { bg: s.backgroundColor, color: s.color, border: s.borderColor };
+        });
+    }
+
+    async getArmorSelectStyles(): Promise<{ bg: string; color: string; border: string }> {
+        return this.page.$eval('[data-testid="armor-select"]', (el) => {
+            const s = window.getComputedStyle(el);
+            return { bg: s.backgroundColor, color: s.color, border: s.borderColor };
+        });
+    }
+
+    async focusSelectByLabel(ariaLabel: string): Promise<void> {
+        const select = this.page.locator(`select[aria-label="${ariaLabel}"]`);
+        await select.waitFor({ timeout: 10000 });
+        await select.focus();
+    }
+
+    async getSelectOutlineColor(ariaLabel: string): Promise<string> {
+        const select = this.page.locator(`select[aria-label="${ariaLabel}"]`);
+        await select.waitFor({ timeout: 10000 });
+        await select.focus();
+        return select.evaluate((el) => window.getComputedStyle(el).outlineColor);
+    }
+
+    async disabledSelectsAreVisuallyMuted(): Promise<boolean> {
+        const selects = await this.page.$$(`${this.ALL_SHEET_SELECTS}`);
+        const disabledSelects = [];
+        for (const el of selects) {
+            const isDisabled = await el.evaluate((s) => (s as HTMLSelectElement).disabled);
+            if (isDisabled) disabledSelects.push(el);
+        }
+        if (disabledSelects.length === 0) return false; // no disabled selects found — assertion cannot be satisfied
+        for (const el of disabledSelects) {
+            const opacity = await el.evaluate((s) => window.getComputedStyle(s).opacity);
+            if (parseFloat(opacity) >= 1.0) return false;
+        }
+        return true;
+    }
+
+    async selectFirstSubclassOption(): Promise<void> {
+        const select = this.page.locator('select[aria-label="Subclass"]');
+        await select.waitFor({ timeout: 10000 });
+        const options = await select.locator('option').all();
+        if (options.length > 1) {
+            const firstOptionValue = await options[1].getAttribute('value');
+            if (firstOptionValue) {
+                await select.selectOption({ value: firstOptionValue });
+            }
+        }
+        await this.page.waitForTimeout(300);
+    }
 }

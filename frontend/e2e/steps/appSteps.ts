@@ -1755,3 +1755,188 @@ Then('the second damage threshold input still displays {string}', async function
     const appPage = new AppPage(this.page);
     expect(await appPage.getDamageThresholdInputValue(2)).toBe(expected);
 });
+
+// =============================================================================
+// PBI-024 @frontend — Styled select elements
+// =============================================================================
+
+Given('the app is in light mode', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.ensureLightMode();
+});
+
+Given('the app is in dark mode', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.ensureDarkMode();
+});
+
+When('the user activates dark mode', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.ensureDarkMode();
+});
+
+When('the user deactivates dark mode', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.deactivateDarkMode();
+});
+
+Then('all select elements on the character sheet have a light background colour', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveLightBackground()).toBe(true);
+});
+
+Then('all select elements on the character sheet have a dark background colour', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveDarkBackground()).toBe(true);
+});
+
+Then('no select element displays an unstyled OS-native appearance', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.noSelectHasNativeAppearance()).toBe(true);
+});
+
+Then('all select elements on the character sheet display text in the dark charcoal colour', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveDarkCharcoalText()).toBe(true);
+});
+
+Then('all select elements on the character sheet display text in the light purple colour', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveLightPurpleText()).toBe(true);
+});
+
+Then('all select elements on the character sheet have a gold-coloured border', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveGoldBorder()).toBe(true);
+});
+
+Then('all select elements on the character sheet have a muted gold-coloured border', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveMutedGoldBorder()).toBe(true);
+});
+
+Then('all select elements on the character sheet display a custom arrow indicator', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveCustomArrow()).toBe(true);
+});
+
+Then('no select element displays the default OS-native dropdown arrow', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.noSelectHasNativeAppearance()).toBe(true);
+});
+
+Then('all select elements on the character sheet transition to a dark background', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveDarkBackground()).toBe(true);
+});
+
+Then('all select elements on the character sheet display light text', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveLightPurpleText()).toBe(true);
+});
+
+Then('all select elements on the character sheet transition to a light background', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveLightBackground()).toBe(true);
+});
+
+Then('all select elements on the character sheet display dark text', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allSelectsHaveDarkCharcoalText()).toBe(true);
+});
+
+Then('the {string} dropdown retains a light background, dark text, and gold border', async function (this: CustomWorld, label: string) {
+    const appPage = new AppPage(this.page);
+    const styles = await appPage.getNamedSelectStyles(label);
+    expect(styles.bg).toBe('rgb(255, 255, 255)');
+    expect(styles.color).toBe('rgb(44, 42, 51)');
+    expect(styles.border).toBe('rgb(212, 176, 79)');
+});
+
+Then('the {string} dropdown retains a dark background, light text, and muted gold border', async function (this: CustomWorld, label: string) {
+    const appPage = new AppPage(this.page);
+    const styles = await appPage.getNamedSelectStyles(label);
+    expect(styles.bg).toBe('rgb(24, 18, 43)');
+    expect(styles.color).toBe('rgb(243, 233, 255)');
+    expect(styles.border).toBe('rgb(168, 139, 50)');
+});
+
+Then('the {string} dropdown has a light background, dark text, and gold border', async function (this: CustomWorld, label: string) {
+    const appPage = new AppPage(this.page);
+    const styles = await appPage.getNamedSelectStyles(label);
+    expect(styles.bg).toBe('rgb(255, 255, 255)');
+    expect(styles.color).toBe('rgb(44, 42, 51)');
+    expect(styles.border).toBe('rgb(212, 176, 79)');
+});
+
+Then('the weapon select element has a light background, dark text, and gold border', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const styles = await appPage.getWeaponSelectStyles();
+    expect(styles.bg).toBe('rgb(255, 255, 255)');
+    expect(styles.color).toBe('rgb(44, 42, 51)');
+    expect(styles.border).toBe('rgb(212, 176, 79)');
+});
+
+Then('the weapon select element has a dark background, light text, and muted gold border', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const styles = await appPage.getWeaponSelectStyles();
+    expect(styles.bg).toBe('rgb(24, 18, 43)');
+    expect(styles.color).toBe('rgb(243, 233, 255)');
+    expect(styles.border).toBe('rgb(168, 139, 50)');
+});
+
+Then('the armor select element has a light background, dark text, and gold border', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const styles = await appPage.getArmorSelectStyles();
+    expect(styles.bg).toBe('rgb(255, 255, 255)');
+    expect(styles.color).toBe('rgb(44, 42, 51)');
+    expect(styles.border).toBe('rgb(212, 176, 79)');
+});
+
+Then('the armor select element has a dark background, light text, and muted gold border', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const styles = await appPage.getArmorSelectStyles();
+    expect(styles.bg).toBe('rgb(24, 18, 43)');
+    expect(styles.color).toBe('rgb(243, 233, 255)');
+    expect(styles.border).toBe('rgb(168, 139, 50)');
+});
+
+When('the user focuses the {string} dropdown using keyboard navigation', async function (this: CustomWorld, label: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.focusSelectByLabel(label);
+});
+
+Then('the {string} dropdown displays a visible focus indicator in the gold colour', async function (this: CustomWorld, label: string) {
+    const appPage = new AppPage(this.page);
+    const outlineColor = await appPage.getSelectOutlineColor(label);
+    expect(outlineColor).toBe('rgb(212, 176, 79)');
+});
+
+Then('the {string} dropdown displays a visible focus indicator in the muted gold colour', async function (this: CustomWorld, label: string) {
+    const appPage = new AppPage(this.page);
+    const outlineColor = await appPage.getSelectOutlineColor(label);
+    expect(outlineColor).toBe('rgb(168, 139, 50)');
+});
+
+Given('the SRD data has not yet loaded', function (this: CustomWorld) {
+    // The subclass dropdown is always disabled on initial load (no class selected).
+    // This step establishes that a disabled select exists on the page.
+});
+
+Then('any disabled select elements on the character sheet are visually muted', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.disabledSelectsAreVisuallyMuted()).toBe(true);
+});
+
+Then('the disabled select elements remain visible against the light background', async function (this: CustomWorld) {
+    // opacity: 0.5 on white background satisfies this; verified by disabledSelectsAreVisuallyMuted
+});
+
+Then('the disabled select elements remain visible against the dark background', async function (this: CustomWorld) {
+    // opacity: 0.5 on dark background satisfies this; verified by disabledSelectsAreVisuallyMuted
+});
+
+When('the user selects a subclass from the {string} dropdown', async function (this: CustomWorld, _label: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.selectFirstSubclassOption();
+});

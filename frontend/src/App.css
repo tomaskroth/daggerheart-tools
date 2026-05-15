@@ -836,7 +836,7 @@ main {
 .character-sheet__section select {
   border: 2px solid #d4b04f;
   border-radius: 0.3rem;
-  padding: 0.35rem 0.5rem;
+  padding: 0.35rem 2.5rem 0.35rem 0.5rem;
   font-size: 0.95rem;
   width: 100%;
   box-sizing: border-box;
@@ -844,12 +844,41 @@ main {
   color: #2c2a33;
   font-family: inherit;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Cpath d="M3 6L8 11L13 6" stroke="%23d4b04f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
 }
 
 .dark-mode .character-sheet__section select {
   background-color: #18122b;
   color: #f3e9ff;
   border-color: #a88b32;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Cpath d="M3 6L8 11L13 6" stroke="%23a88b32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/%3E%3C/svg%3E');
+}
+
+.character-sheet__section select:hover {
+  border-color: #c9a84c;
+}
+
+.dark-mode .character-sheet__section select:hover {
+  border-color: #c9a84c;
+}
+
+.character-sheet__section select:focus {
+  outline: 2px solid #d4b04f;
+  outline-offset: 2px;
+}
+
+.dark-mode .character-sheet__section select:focus {
+  outline: 2px solid #a88b32;
+}
+
+.character-sheet__section select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ============================================================
@@ -913,6 +942,43 @@ main {
   background-color: #18122b;
   color: #f3e9ff;
   border-color: #a88b32;
+}
+
+.class-header__field select {
+  padding: 0.35rem 2.5rem 0.35rem 0.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Cpath d="M3 6L8 11L13 6" stroke="%23d4b04f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
+}
+
+.dark-mode .class-header__field select {
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Cpath d="M3 6L8 11L13 6" stroke="%23a88b32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/%3E%3C/svg%3E');
+}
+
+.class-header__field select:hover {
+  border-color: #c9a84c;
+}
+
+.dark-mode .class-header__field select:hover {
+  border-color: #c9a84c;
+}
+
+.class-header__field select:focus {
+  outline: 2px solid #d4b04f;
+  outline-offset: 2px;
+}
+
+.dark-mode .class-header__field select:focus {
+  outline: 2px solid #a88b32;
+}
+
+.class-header__field select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .class-header__badges {
@@ -1459,6 +1525,49 @@ main {
 
 .dark-mode .weapon-panel--primary {
   border-left-color: #a88b32;
+}
+
+.weapon-panel__select {
+  border: 2px solid #d4b04f;
+  border-radius: 0.3rem;
+  padding: 0.35rem 2.5rem 0.35rem 0.5rem;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: white;
+  color: #2c2a33;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Cpath d="M3 6L8 11L13 6" stroke="%23d4b04f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
+}
+
+.dark-mode .weapon-panel__select {
+  background-color: #18122b;
+  color: #f3e9ff;
+  border-color: #a88b32;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"%3E%3Cpath d="M3 6L8 11L13 6" stroke="%23a88b32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/%3E%3C/svg%3E');
+}
+
+.weapon-panel__select:hover {
+  border-color: #c9a84c;
+}
+
+.dark-mode .weapon-panel__select:hover {
+  border-color: #c9a84c;
+}
+
+.weapon-panel__select:focus {
+  outline: 2px solid #d4b04f;
+  outline-offset: 2px;
+}
+
+.dark-mode .weapon-panel__select:focus {
+  outline: 2px solid #a88b32;
 }
 
 /* ============================================================
