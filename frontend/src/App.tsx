@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { CharacterSheetPage } from './features/character-sheet';
 import SearchBar from './components/SearchBar';
 import ItemList from './components/ItemList';
@@ -44,6 +44,7 @@ function App({ serverUrl }: AppProps) {
   const { types } = useSrdTypes(serverUrl);
   const { items, search, filterByType } = useSrdSearch(serverUrl);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const stored = localStorage.getItem('darkMode');
@@ -54,6 +55,8 @@ function App({ serverUrl }: AppProps) {
       window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
+  const [isCompendiumOpen, setIsCompendiumOpen] = useState<boolean>(true);
+
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add('dark-mode');
@@ -63,6 +66,10 @@ function App({ serverUrl }: AppProps) {
       document.documentElement.classList.remove('dark-mode');
     }
   }, [darkMode]);
+
+  useEffect(() => {
+    setIsCompendiumOpen(location.pathname !== '/character-sheet');
+  }, [location.pathname]);
 
   const toggleDarkMode = () => {
     setDarkMode(dm => {
@@ -98,10 +105,28 @@ function App({ serverUrl }: AppProps) {
           {!darkMode ? '🌙' : '☀️'}
         </button>
         <SearchBar onSearch={handleSearch} />
-        <TypeMenu types={types} onTypeClick={handleTypeClick} />
-        <nav className="app-nav">
-          <Link to="/character-sheet" className="app-nav__link">Character Sheet</Link>
+        <nav className="app-nav-primary" aria-label="Primary navigation">
+          <button
+            className={`app-nav__btn${isCompendiumOpen ? ' app-nav__btn--open' : ''}`}
+            onClick={() => setIsCompendiumOpen(o => !o)}
+            aria-expanded={isCompendiumOpen}
+            aria-controls="compendium-nav"
+          >
+            Compendium
+          </button>
+          <Link to="/character-sheet" className="app-nav__btn">
+            Character Sheet
+          </Link>
         </nav>
+        {isCompendiumOpen && (
+          <nav
+            id="compendium-nav"
+            className="app-nav-secondary"
+            aria-label="Compendium categories"
+          >
+            <TypeMenu types={types} onTypeClick={handleTypeClick} />
+          </nav>
+        )}
       </header>
       <main>
         <Routes>
