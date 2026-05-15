@@ -65,15 +65,18 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 ## Current State
 
-**Active increment:** Identity bar compact layout — PBI-023 complete, awaiting validation
+**Active increment:** None — awaiting next increment statement
 
-**Stage:** All PBIs complete — Increment validation in progress
+**Stage:** Increment accepted — awaiting next increment statement
 
 **Completed increments:**
 - Foundation & compendium (PBI-001–012) ✅
 - Character sheet polish (PBI-013–016) ✅
 - Character sheet data (PBI-017–019) ✅
 - UI consolidation (PBI-020–022) ✅ — accepted 2026-05-15
+- Identity bar compact layout (PBI-023) ✅ — accepted 2026-05-15
+
+**To start a new increment:** Tell Claude: "Start a new increment: [your goal]"
 
 **PBI status:**
 - `PBI-001` ✅ Complete
@@ -169,7 +172,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `ADR-013-weapon-armor-srd-item-types.md` — WEAPONS/ARMOR as structured SrdItem types in srd.json; HTML-parsing amendment approved 2026-05-14
 - `ADR-014-class-hp-slot-count.md` — `hpSlotCount` parsed from CLASSES content at ingestion, stored as nullable `Integer` on `SrdItem`; approved 2026-05-14
 
-**Last updated:** 2026-05-15 — PBI-023 completed and passed independent review; identity bar compact layout increment on `increment/identity-bar-compact`
+**Last updated:** 2026-05-15 — identity bar compact layout increment (PBI-023) accepted; awaiting next increment statement
 
 ---
 
