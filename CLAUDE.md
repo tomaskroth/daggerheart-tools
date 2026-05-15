@@ -65,18 +65,17 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 ## Current State
 
-**Active increment:** None — awaiting next increment statement
+**Active increment:** Theme-consistent select elements (PBI-024) — all PBIs complete
 
-**Stage:** Increment accepted — awaiting next increment statement
+**Stage:** All PBIs complete — Increment validation in progress
 
-**Completed increments:**
-- Foundation & compendium (PBI-001–012) ✅
-- Character sheet polish (PBI-013–016) ✅
-- Character sheet data (PBI-017–019) ✅
-- UI consolidation (PBI-020–022) ✅ — accepted 2026-05-15
-- Identity bar compact layout (PBI-023) ✅ — accepted 2026-05-15
+**PBI status:**
+- `PBI-024` ✅ Complete — styled select elements (dark/gold aesthetic, both light and dark modes, custom CSS arrow)
 
-**To start a new increment:** Tell Claude: "Start a new increment: [your goal]"
+**Feature files:** All complete ✅
+- `PBI-024-styled-select-elements.feature` ✅
+
+**Accepted ADRs for this increment:** None (CSS-only change; flow descriptor only — see `dev-flow/engineering/architecture/PBI-024-styled-select-elements-flow.md`)
 
 **Full PBI history, feature file list, and accepted ADR index:** `dev-flow/HISTORY.md`
 
@@ -100,15 +99,16 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - Character sheet layout (PBI-021): `ClassHeader` renders in `.character-sheet__identity-row`; `TraitsSection` renders in `.character-sheet__traits-row` — both are full-width wrapper divs above `.character-sheet__columns`, not inside the column grid. Traits internal grid is `repeat(6, 1fr)`; collapses to `repeat(3, 1fr)` at ≤768px and `repeat(2, 1fr)` at ≤480px.
 - Damage thresholds (PBI-022): `DamageThresholds` type is `{ minor: number | null; major: number | null }` — `severe` field removed. Inline row has `data-testid="damage-thresholds-inline"`; inputs are `data-testid="threshold-minor"` and `data-testid="threshold-major"`.
 - Identity bar (PBI-023): `.class-header__identity` grid is `repeat(3, 1fr)` at >768px, `repeat(2, 1fr)` at ≤768px, `1fr` at ≤480px. `AppPage.getIdentityGridColumnCount()` uses bounding-box row grouping (5px tolerance). `AppPage.getIdentityFieldsOnRow(n)` groups fields by y-position and returns labels for row n (1-indexed).
+- Select elements (PBI-024): all character sheet selects use `appearance: none` + CSS `background-image` SVG chevron (no wrapper divs). `.character-sheet__section select` covers armor; `.class-header__field select` covers class/heritage/subclass; `.weapon-panel__select` has its own full rule (was previously unstyled). SVG data URIs use percent-encoded `%3C`/`%3E` for cross-browser compatibility. Light mode: white bg, `#2c2a33` text, `#d4b04f` border. Dark mode: `#18122b` bg, `#f3e9ff` text, `#a88b32` border.
 - Version control: all work happens on `increment/<slug>` or `fix/PBI-XXX-<slug>` branches in the main working tree. No git worktrees (removed from guidelines 2026-05-14).
 
 **Technical debt:** `dev-flow/product/technical-debt-backlog.md`
 - `TD-001` ✅ Resolved — `frontend/vercel.json` SPA rewrite rule created in PBI-005
-- `TD-002` P2 — Backend search endpoint Lucene query injection hardening
+- `TD-002` P2 — Backend search endpoint Lucene query injection hardening — deferred to next backend increment; will not be picked up during frontend-only increments
 - `TD-003` ✅ Resolved — Playwright XSS assertion implemented in PBI-009 step defs (`page.on('dialog', ...)`)
 - `TD-004` P3 — Migrate data-fetching hooks to React Query
 
-**Last updated:** 2026-05-15 — identity bar compact layout increment (PBI-023) accepted; dev-flow retrospective improvements applied
+**Last updated:** 2026-05-15 — PBI-024 (styled select elements) passed independent review; increment ready for validation
 
 ---
 
