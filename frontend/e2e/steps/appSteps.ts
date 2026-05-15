@@ -1675,6 +1675,77 @@ Then('the second damage threshold input displays {string}', async function (this
     expect(await appPage.getDamageThresholdInputValue(2)).toBe(expected);
 });
 
+// =============================================================================
+// PBI-023 @frontend — Identity bar three-column layout
+// =============================================================================
+
+Given('the user has navigated to the character sheet', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    await appPage.navigateToCharacterSheet();
+    await appPage.waitForCharacterSheet();
+});
+
+Given('the viewport is {int}px wide', async function (this: CustomWorld, width: number) {
+    const appPage = new AppPage(this.page);
+    await appPage.setViewportWidth(width);
+});
+
+Then('the identity bar displays three fields on the first row: {string}, {string}, and {string}',
+    async function (this: CustomWorld, f1: string, f2: string, f3: string) {
+        const appPage = new AppPage(this.page);
+        const fields = await appPage.getIdentityFieldsOnRow(1);
+        expect(fields).toEqual([f1, f2, f3]);
+    },
+);
+
+Then('the identity bar displays three fields on the second row: {string}, {string}, and {string}',
+    async function (this: CustomWorld, f1: string, f2: string, f3: string) {
+        const appPage = new AppPage(this.page);
+        const fields = await appPage.getIdentityFieldsOnRow(2);
+        expect(fields).toEqual([f1, f2, f3]);
+    },
+);
+
+Then('the identity fields appear in order: {string}, {string}, {string}, {string}, {string}, {string}',
+    async function (this: CustomWorld, f1: string, f2: string, f3: string, f4: string, f5: string, f6: string) {
+        const appPage = new AppPage(this.page);
+        const order = await appPage.getIdentityFieldOrder();
+        expect(order).toEqual([f1, f2, f3, f4, f5, f6]);
+    },
+);
+
+Then('the identity bar displays two fields per row', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const count = await appPage.getIdentityGridColumnCount();
+    expect(count).toBe(2);
+});
+
+Then('the identity bar displays one field per row', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    const count = await appPage.getIdentityGridColumnCount();
+    expect(count).toBe(1);
+});
+
+When('the user types {string} into the {string} field', async function (this: CustomWorld, value: string, fieldLabel: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.fillTextField(fieldLabel, value);
+});
+
+When('the user selects a class from the {string} dropdown', async function (this: CustomWorld, dropdownLabel: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.selectFirstOptionFromDropdown(dropdownLabel);
+});
+
+When('the user enters {string} into the {string} field', async function (this: CustomWorld, value: string, fieldLabel: string) {
+    const appPage = new AppPage(this.page);
+    await appPage.fillTextField(fieldLabel, value);
+});
+
+Then('all entered values are visible in the identity bar', async function (this: CustomWorld) {
+    const appPage = new AppPage(this.page);
+    expect(await appPage.allIdentityFieldsAreVisible()).toBe(true);
+});
+
 Then('the first damage threshold input still displays {string}', async function (this: CustomWorld, expected: string) {
     const appPage = new AppPage(this.page);
     expect(await appPage.getDamageThresholdInputValue(1)).toBe(expected);
