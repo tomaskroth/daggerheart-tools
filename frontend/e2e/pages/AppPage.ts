@@ -918,4 +918,87 @@ export class AppPage {
         const testId = position === 1 ? 'threshold-minor' : 'threshold-major';
         return this.page.locator(`[data-testid="${testId}"]`).inputValue();
     }
+
+    // =============================================================================
+    // Identity bar layout helpers (PBI-023)
+    // =============================================================================
+
+    async setViewportWidth(width: number): Promise<void> {
+        await this.page.setViewportSize({ width, height: 800 });
+        await this.page.waitForTimeout(100);
+    }
+
+    async getIdentityGridColumnCount(): Promise<number> {
+        await this.page.waitForSelector('.class-header__identity', { timeout: 5000 });
+        return this.page.evaluate(() => {
+            const container = document.querySelector('.class-header__identity');
+            if (!container) return 0;
+            const fields = Array.from(container.querySelectorAll('.class-header__field'));
+            if (fields.length === 0) return 0;
+            const firstTop = Math.round(fields[0].getBoundingClientRect().top);
+            return fields.filter(
+                (f) => Math.abs(Math.round(f.getBoundingClientRect().top) - firstTop) < 5,
+            ).length;
+        });
+    }
+
+    async getIdentityFieldsOnRow(rowIndex: number): Promise<string[]> {
+        await this.page.waitForSelector('.class-header__identity', { timeout: 5000 });
+        return this.page.evaluate((row) => {
+            const container = document.querySelector('.class-header__identity');
+            if (!container) return [];
+            const fields = Array.from(container.querySelectorAll('.class-header__field'));
+            const rowGroups = new Map<number, string[]>();
+            for (const field of fields) {
+                const top = Math.round(field.getBoundingClientRect().top);
+                const label = field.querySelector('label')?.textContent?.trim() ?? '';
+                const existingKey = Array.from(rowGroups.keys()).find((k) => Math.abs(k - top) < 5);
+                if (existingKey !== undefined) {
+                    rowGroups.get(existingKey)!.push(label);
+                } else {
+                    rowGroups.set(top, [label]);
+                }
+            }
+            const sortedKeys = Array.from(rowGroups.keys()).sort((a, b) => a - b);
+            if (row - 1 >= sortedKeys.length) return [];
+            return rowGroups.get(sortedKeys[row - 1]) ?? [];
+        }, rowIndex);
+    }
+
+    async getIdentityFieldOrder(): Promise<string[]> {
+        await this.page.waitForSelector('.class-header__identity', { timeout: 5000 });
+        return this.page.evaluate(() => {
+            const container = document.querySelector('.class-header__identity');
+            if (!container) return [];
+            return Array.from(container.querySelectorAll('.class-header__field label')).map(
+                (el) => el.textContent?.trim() ?? '',
+            );
+        });
+    }
+
+    async allIdentityFieldsAreVisible(): Promise<boolean> {
+        await this.page.waitForSelector('.class-header__identity', { timeout: 5000 });
+        return this.page.evaluate(() => {
+            const container = document.querySelector('.class-header__identity');
+            if (!container) return false;
+            const fields = Array.from(container.querySelectorAll('.class-header__field'));
+            return fields.every((f) => {
+                const rect = f.getBoundingClientRect();
+                return rect.height > 0 && rect.width > 0;
+            });
+        });
+    }
+
+    async selectFirstOptionFromDropdown(ariaLabel: string): Promise<void> {
+        const select = this.page.locator(`select[aria-label="${ariaLabel}"]`);
+        await select.waitFor({ timeout: 10000 });
+        const options = await select.locator('option').all();
+        if (options.length > 1) {
+            const firstOptionValue = await options[1].getAttribute('value');
+            if (firstOptionValue) {
+                await select.selectOption({ value: firstOptionValue });
+            }
+        }
+        await this.page.waitForTimeout(300);
+    }
 }
