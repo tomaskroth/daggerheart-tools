@@ -16,11 +16,14 @@ function CharacterSheetPageInner(): React.ReactElement {
   return (
     <div className="character-sheet" data-testid="character-sheet">
       <h1 className="character-sheet__title">Character Sheet</h1>
+      <div className="character-sheet__identity-row" data-testid="identity-row">
+        <ClassHeader />
+      </div>
+      <div className="character-sheet__traits-row" data-testid="traits-row">
+        <TraitsSection />
+      </div>
       <div className="character-sheet__columns">
         <div className="character-sheet__column character-sheet__column--left" data-testid="left-column">
-          <ClassHeader />
-          {/* Traits & Defence (PBI-010) */}
-          <TraitsSection />
           <DefenceSection />
           <DamageHealthSection />
           <HopeSection />
@@ -33,7 +36,6 @@ function CharacterSheetPageInner(): React.ReactElement {
           <InventorySection />
         </div>
       </div>
-      {/* Class Feature spans full width below the two-column grid (PBI-016) */}
       <ClassFeatureSection />
     </div>
   );
