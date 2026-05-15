@@ -22,18 +22,18 @@ daggerheart-tools/
 
 All work on this project follows the process defined in `dev-flow/`. The short version:
 
-1. **Product track** — increment is broken into PBIs → prioritised → acceptance scenarios written (`.feature` files in `dev-flow/product/`)
+1. **Product track** — increment is broken into PBIs → prioritised → acceptance scenarios written (`.feature` files in `dev-flow/product/`). Each PBI is classified as `minor`, `standard`, or `significant` — see `dev-flow/product/product-track-guidelines.md` for what each tier skips.
 2. **Human checkpoint** — human approves scenarios
-3. **Design** — Design Agent produces a Design Specification for any PBI with frontend scope (skipped for backend-only PBIs)
+3. **Design** — Design Agent produces a Design Specification for any PBI with frontend scope (skipped for backend-only PBIs and `minor` tier PBIs)
 4. **Human checkpoint** — human approves design before engineering begins
-5. **Architecture** — ADRs and flow descriptors produced for each PBI
+5. **Architecture** — ADRs and flow descriptors produced for each PBI (flow descriptors optional for `minor` tier)
 6. **Human checkpoint** — human approves architecture
 7. **Implementation** — Frontend and backend agents implement against the approved design and architecture
-8. **Security review** — inline, two passes (design + implementation)
+8. **Security review** — inline, two passes (design + implementation); `minor` tier uses a combined single pass
 9. **Testing** — Test agent writes step definitions from `.feature` files
-10. **Independent review** — separate agent reviews code against guidelines
+10. **Independent review** — separate agent reviews code against guidelines; `minor` tier uses a combined security+review pass
 11. **Human checkpoint** — human reviews escalations only
-12. **State update** — State Update Agent rewrites `Current State` in this file
+12. **State update** — State Update Agent rewrites `Current State` in this file once all PBIs in the increment are complete
 13. **Validation** — increment validated against original intent
 14. **State update** — State Update Agent rewrites `Current State` in this file again after increment is accepted
 
@@ -78,55 +78,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 
 **To start a new increment:** Tell Claude: "Start a new increment: [your goal]"
 
-**PBI status:**
-- `PBI-001` ✅ Complete
-- `PBI-002` ✅ Complete
-- `PBI-003` ✅ Complete
-- `PBI-004` ✅ Complete
-- `PBI-005` ✅ Complete
-- `PBI-006` ✅ Complete
-- `PBI-007` ✅ Complete
-- `PBI-008` ✅ Complete
-- `PBI-009` ✅ Complete
-- `PBI-010` ✅ Complete
-- `PBI-011` ✅ Complete
-- `PBI-012` ✅ Complete
-- `PBI-013` ✅ Complete — character sheet styles and styled nav link
-- `PBI-014` ✅ Complete — trait score input width widened to prevent clipping
-- `PBI-015` ✅ Complete — slot trackers fill/empty as sequential gauges via `gaugeToggle`
-- `PBI-016` ✅ Complete — Class Feature section moved below two-column grid for full width
-- `PBI-017` ✅ Complete — backend parses `STARTING HIT POINTS` at ingestion into `hpSlotCount`; frontend wires `hpSolidCount` through context into `DamageHealthSection`
-- `PBI-018` ✅ Complete — `extractDomains` fixed to capture `<a>` link text instead of stopping at first HTML tag
-- `PBI-019` ✅ Complete — experience lines split into separate name (text) and modifier (number) fields; `ExperienceEntry` type, reducer, hook, component, and CSS updated
-- `PBI-020` ✅ Complete — nav restructured into primary row (Compendium + Character Sheet buttons with diamond decorations) and secondary row (SRD category links); route-aware open/closed state
-- `PBI-021` ✅ Complete — character sheet identity row (`ClassHeader`) and traits row (`TraitsSection`) moved to full-width rows above the two-column grid; traits grid changed to `repeat(6, 1fr)`
-- `PBI-022` ✅ Complete — damage thresholds rendered as inline single row with two inputs; `severe` field removed from `DamageThresholds` state
-- `PBI-023` ✅ Complete — identity bar grid changed from `1fr 1fr` to `repeat(3, 1fr)`; responsive overrides: 2 cols at ≤768px, 1 col at ≤480px
-
-**Feature files:** All complete ✅ (`dev-flow/product/`)
-- `PBI-001-security-baseline.feature` ✅
-- `PBI-002-backend-service-layer.feature` ✅
-- `PBI-003-backend-test-infrastructure.feature` ✅
-- `PBI-004-frontend-typescript-migration.feature` ✅
-- `PBI-005-frontend-architecture.feature` ✅
-- `PBI-006-frontend-test-infrastructure.feature` ✅
-- `PBI-007-multiword-item-navigation.feature` ✅
-- `PBI-008-character-sheet-foundation.feature` ✅
-- `PBI-009-character-sheet-class-identity.feature` ✅
-- `PBI-010-character-sheet-traits-defence.feature` ✅
-- `PBI-011-character-sheet-health-hope-gold.feature` ✅
-- `PBI-012-character-sheet-weapons-armor.feature` ✅
-- `PBI-013-character-sheet-styles.feature` ✅
-- `PBI-014-trait-input-width.feature` ✅
-- `PBI-015-slot-tracker-gauge-behaviour.feature` ✅
-- `PBI-016-class-feature-full-width.feature` ✅
-- `PBI-017-class-hp-slot-count.feature` ✅
-- `PBI-018-domain-badges-fix.feature` ✅
-- `PBI-019-experience-name-and-modifier.feature` ✅
-- `PBI-020-nav-compendium-dropdown.feature` ✅
-- `PBI-021-character-sheet-identity-traits-layout.feature` ✅
-- `PBI-022-damage-thresholds-inline.feature` ✅
-- `PBI-023-identity-bar-three-column.feature` ✅
+**Full PBI history, feature file list, and accepted ADR index:** `dev-flow/HISTORY.md`
 
 **Key constraints:**
 - Step-def method naming convention (`should_/when_`) is established as exempt for BDD step definition methods (applies only to `@Test` JUnit methods).
@@ -156,23 +108,7 @@ Determine what you're being asked to do, then read the corresponding guideline f
 - `TD-003` ✅ Resolved — Playwright XSS assertion implemented in PBI-009 step defs (`page.on('dialog', ...)`)
 - `TD-004` P3 — Migrate data-fetching hooks to React Query
 
-**Accepted ADRs:**
-- `ADR-001-spring-security-admin-protection.md` — Spring Security HTTP Basic for admin endpoints
-- `ADR-002-html-content-sanitisation.md` — Jsoup `Safelist.basic()` sanitisation on ingest
-- `ADR-003-cucumber-acceptance-testing.md` — Cucumber JVM 7.x for backend acceptance tests
-- `ADR-004-vitest-component-testing.md` — Vitest 3.x + React Testing Library for frontend component tests
-- `ADR-005-playwright-cucumber-e2e.md` — Playwright + Cucumber JS for frontend e2e acceptance tests
-- `ADR-006-typescript-compiler-configuration.md` — strict: true tsconfig for frontend TypeScript
-- `ADR-007-cra-typescript-integration.md` — CRA used for PBI-004; superseded by ADR-009
-- `ADR-008-type-strategy-third-party-deps.md` — @types/react@^18.3, @types/react-dom@^18.3
-- `ADR-009-vite-migration.md` — Vite replaces CRA; custom SCSS tilde-fix plugin; `server.port: 3000`
-- `ADR-010-api-service-layer-and-hooks.md` — srdApi.ts service layer; useSrdTypes + useSrdSearch hooks; zero fetch calls in components
-- `ADR-011-react-router-url-navigation.md` — BrowserRouter in index.tsx; /:type/:filename route; DetailRoute uses fetchItemBySlug (GET /api/srd/{slug}) not search
-- `ADR-012-character-sheet-state-management.md` — React Context + useReducer scoped to character-sheet feature; approved 2026-05-14
-- `ADR-013-weapon-armor-srd-item-types.md` — WEAPONS/ARMOR as structured SrdItem types in srd.json; HTML-parsing amendment approved 2026-05-14
-- `ADR-014-class-hp-slot-count.md` — `hpSlotCount` parsed from CLASSES content at ingestion, stored as nullable `Integer` on `SrdItem`; approved 2026-05-14
-
-**Last updated:** 2026-05-15 — identity bar compact layout increment (PBI-023) accepted; awaiting next increment statement
+**Last updated:** 2026-05-15 — identity bar compact layout increment (PBI-023) accepted; dev-flow retrospective improvements applied
 
 ---
 
@@ -187,6 +123,6 @@ These apply regardless of what you've been asked to do:
 5. **TypeScript only.** No new `.js` or `.jsx` files. All new frontend code is `.ts` or `.tsx`.
 6. **Tests are not optional.** Every PBI must have passing step definitions for all its `@backend` and `@frontend` scenarios before it is considered done.
 7. **ADRs before implementation.** Any decision that meets the ADR trigger criteria in `dev-flow/engineering/architecture/architecture-guidelines.md` must be documented and acknowledged before the implementation begins.
-8. **Security agent runs twice.** Once at design time (after architecture, before implementation) and once after implementation (before independent review). Both passes are required for any PBI touching auth, endpoints, user input, or data persistence.
-9. **State Update Agent runs automatically.** After every PBI passes independent review, and after every accepted increment, the State Update Agent must update the `Current State` section of this file. Do not skip this step — it is how the next session knows where to start.
+8. **Security agent runs twice.** Once at design time (after architecture, before implementation) and once after implementation (before independent review). Both passes are required for any PBI touching auth, endpoints, user input, or data persistence. `minor` tier PBIs use a single combined security+review pass — see `dev-flow/product/product-track-guidelines.md`.
+9. **State Update Agent runs once per increment, not per PBI.** It runs after all PBIs in the increment pass independent review (on the increment branch), and again after the human accepts the increment (docs branch). Do not run it after every individual PBI. This is how the next session knows where to start.
 10. **Nothing is ever committed directly to `main`.** All changes — code, ADRs, feature files, `CLAUDE.md`, dev-flow documentation — reach `main` through a branch and a pull request. See `dev-flow/engineering/version-control-guidelines.md` for branch naming conventions and the full branching model.

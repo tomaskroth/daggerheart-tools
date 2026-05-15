@@ -6,13 +6,15 @@ The State Update Agent runs automatically at two points in the workflow and has 
 
 ## When It Runs
 
-### Trigger 1: After a PBI is completed (on the increment branch)
+### Trigger 1: After all PBIs in an increment are complete (on the increment branch)
 
-A PBI is complete when:
-- The Independent Review Agent has passed it (no remaining Blockers)
-- All `@backend` and `@frontend` acceptance scenarios for that PBI are passing in CI
+The State Update Agent runs **once per increment**, not after every individual PBI. It runs when:
+- All PBIs in the increment have passed Independent Review (no remaining Blockers on any PBI)
+- All `@backend` and `@frontend` acceptance scenarios for the increment are passing
 
 At this point the State Update Agent runs, updates `CLAUDE.md`, and **commits the change to the current increment branch**. This update is included in the PR and reaches `main` when the branch merges — it is not committed to `main` directly.
+
+If an increment has only one PBI, this trigger fires when that PBI is complete. For multi-PBI increments, do not run the State Update Agent after each individual PBI — run it once when all PBIs are done.
 
 ### Trigger 2: After an increment is accepted (docs branch)
 
@@ -73,7 +75,7 @@ The agent edits **only the `Current State` section** of `CLAUDE.md`. It does not
 
 **Accepted ADRs:** [List of accepted ADR filenames, or "None yet"]
 
-**Last updated:** YYYY-MM-DD after [trigger description, e.g. "PBI-002 completed"]
+**Last updated:** YYYY-MM-DD after [trigger description, e.g. "all PBIs complete" or "increment accepted"]
 ```
 
 ### Stage descriptions
@@ -86,10 +88,9 @@ Use exactly one of these for the `Stage` field:
 | `Scenarios approved — Architecture Agent running` | Human approved scenarios; architecture work in progress |
 | `Awaiting architecture approval — ADRs ready for human review` | Architecture Agent has produced ADRs/flow descriptors; human has not yet approved |
 | `Architecture approved — Implementation in progress` | Human approved architecture; implementation underway |
-| `Implementation complete — Security review in progress` | Implementation done; Security Agent Pass 2 running |
+| `Implementation complete — Security review in progress` | Implementation done; Security Agent Pass 2 running (or combined pass for `minor` tier) |
 | `Security approved — Independent review in progress` | Security Agent approved; Independent Review Agent running |
-| `PBI-XXX complete — PBI-YYY starting` | A PBI just finished and the next is beginning |
-| `All PBIs complete — Increment validation in progress` | All PBIs done; Validation Agent running |
+| `All PBIs complete — Increment validation in progress` | All PBIs done and State Update Agent has run on the branch; Validation Agent running |
 | `Increment accepted — awaiting next increment statement` | Increment validated and accepted; no new increment started yet |
 
 ---
